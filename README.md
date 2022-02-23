@@ -11,13 +11,13 @@ Using the module with a relay server is a much better user experience, but requi
 ### Import
 
 ```
-import { BrightID10KNftMint } from "react-brightid-10k-nft-mint";
+import { BrightIDNftMint } from "react-brightid-10k-nft-mint";
 ```
 
 ### Include in Template
 
 ```
-<BrightID10KNftMint
+<BrightIDNftMint
     context="__YOUR_BRIGHT_ID_CONTEXT__"
     contractAddr="__YOUR_REGISTRATION_CONTRACT_ADDRESS__"
     mainnetRpcUrl="https://mainnet.infura.io/v3/__YOUR_INFURA_ID__"
@@ -43,13 +43,13 @@ verificationUrl = "https://app.brightid.org/node/v5/verifications"
 ### Import
 
 ```
-import { BrightID10KNftMint } from "react-brightid-10k-nft-mint";
+import { BrightIDNftMint } from "react-brightid-10k-nft-mint";
 ```
 
 ### Include in Template
 
 ```
-<BrightID10KNftMint
+<BrightIDNftMint
     context="__YOUR_BRIGHT_ID_CONTEXT__"
     contractAddr="__YOUR_REGISTRATION_CONTRACT_ADDRESS__"
     mainnetRpcUrl="https://mainnet.infura.io/v3/__YOUR_INFURA_ID__"

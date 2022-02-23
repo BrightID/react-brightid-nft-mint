@@ -1,3 +1,3 @@
-import BrightID10KNftMint from "./BrightID10KNftMint";
+import BrightIDNftMint from "./BrightIDNftMint";
 
-export default BrightID10KNftMint;
+export default BrightIDNftMint;

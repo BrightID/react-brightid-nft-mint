@@ -2,7 +2,7 @@ import { ethers, utils } from "ethers";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
-class BrightID10KNftMintModel {
+class BrightIDNftMintModel {
     contractAbi = [
         {
             type: "constructor",
@@ -1101,4 +1101,4 @@ class BrightID10KNftMintModel {
     }
 }
 
-export default BrightID10KNftMintModel;
+export default BrightIDNftMintModel;
