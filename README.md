@@ -1,8 +1,8 @@
-# React BrightID Registration
+# React BrightID 10K NFT Mint
 
 ## Install
 
-    npm install react-brightid-registration
+    npm install react-brightid-10k-nft-mint
 
 ## Use With Relay Server
 
@@ -11,7 +11,7 @@ Using the module with a relay server is a much better user experience, but requi
 ### Import
 
 ```
-import { BrightID10KNftMint } from "react-brightid-registration";
+import { BrightID10KNftMint } from "react-brightid-10k-nft-mint";
 ```
 
 ### Include in Template
@@ -43,7 +43,7 @@ verificationUrl = "https://app.brightid.org/node/v5/verifications"
 ### Import
 
 ```
-import { BrightID10KNftMint } from "react-brightid-registration";
+import { BrightID10KNftMint } from "react-brightid-10k-nft-mint";
 ```
 
 ### Include in Template
