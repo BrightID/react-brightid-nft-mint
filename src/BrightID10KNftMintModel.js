@@ -1,20 +1,31 @@
-import { ethers } from "ethers";
+import { ethers, utils } from "ethers";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
-class BrightIDRegistrationModel {
+class BrightID10KNftMintModel {
     contractAbi = [
         {
             type: "constructor",
             stateMutability: "nonpayable",
             inputs: [
-                {
-                    type: "address",
-                    name: "_verifierToken",
-                    internalType: "contract IERC20",
-                },
-                { type: "bytes32", name: "_app", internalType: "bytes32" },
+                { type: "address", name: "verifier", internalType: "address" },
+                { type: "bytes32", name: "context", internalType: "bytes32" },
+                { type: "string", name: "name_", internalType: "string" },
+                { type: "string", name: "symbol_", internalType: "string" },
             ],
+        },
+        {
+            type: "event",
+            name: "ContextSet",
+            inputs: [
+                {
+                    type: "bytes32",
+                    name: "context",
+                    internalType: "bytes32",
+                    indexed: false,
+                },
+            ],
+            anonymous: false,
         },
         {
             type: "event",
@@ -37,12 +48,24 @@ class BrightIDRegistrationModel {
         },
         {
             type: "event",
-            name: "Sponsor",
+            name: "Transfer",
             inputs: [
                 {
                     type: "address",
-                    name: "addr",
+                    name: "from",
                     internalType: "address",
+                    indexed: true,
+                },
+                {
+                    type: "address",
+                    name: "to",
+                    internalType: "address",
+                    indexed: true,
+                },
+                {
+                    type: "uint256",
+                    name: "tokenId",
+                    internalType: "uint256",
                     indexed: true,
                 },
             ],
@@ -50,25 +73,12 @@ class BrightIDRegistrationModel {
         },
         {
             type: "event",
-            name: "Verified",
+            name: "VerifierSet",
             inputs: [
                 {
                     type: "address",
-                    name: "addr",
+                    name: "verifier",
                     internalType: "address",
-                    indexed: true,
-                },
-            ],
-            anonymous: false,
-        },
-        {
-            type: "event",
-            name: "VerifierTokenSet",
-            inputs: [
-                {
-                    type: "address",
-                    name: "verifierToken",
-                    internalType: "contract IERC20",
                     indexed: false,
                 },
             ],
@@ -77,32 +87,67 @@ class BrightIDRegistrationModel {
         {
             type: "function",
             stateMutability: "view",
-            outputs: [{ type: "uint32", name: "", internalType: "uint32" }],
-            name: "REGISTRATION_PERIOD",
-            inputs: [],
-        },
-        {
-            type: "function",
-            stateMutability: "view",
-            outputs: [{ type: "bytes32", name: "", internalType: "bytes32" }],
-            name: "app",
-            inputs: [],
-        },
-        {
-            type: "function",
-            stateMutability: "view",
-            outputs: [{ type: "address", name: "", internalType: "address" }],
-            name: "history",
-            inputs: [{ type: "address", name: "", internalType: "address" }],
-        },
-        {
-            type: "function",
-            stateMutability: "view",
-            outputs: [{ type: "bool", name: "", internalType: "bool" }],
-            name: "isVerifiedUser",
+            outputs: [{ type: "uint256", name: "", internalType: "uint256" }],
+            name: "balanceOf",
             inputs: [
-                { type: "address", name: "_user", internalType: "address" },
+                { type: "address", name: "owner", internalType: "address" },
             ],
+        },
+        {
+            type: "function",
+            stateMutability: "nonpayable",
+            outputs: [],
+            name: "bind",
+            inputs: [
+                { type: "address", name: "owner", internalType: "address" },
+                { type: "bytes32", name: "uuidHash", internalType: "bytes32" },
+                { type: "uint256", name: "nonce", internalType: "uint256" },
+                { type: "bytes", name: "signature", internalType: "bytes" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "pure",
+            outputs: [{ type: "bytes32", name: "", internalType: "bytes32" }],
+            name: "getUUIDHash",
+            inputs: [
+                { type: "address", name: "owner", internalType: "address" },
+                { type: "bytes32", name: "uuidHash", internalType: "bytes32" },
+                { type: "uint256", name: "nonce", internalType: "uint256" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "pure",
+            outputs: [{ type: "bytes32", name: "", internalType: "bytes32" }],
+            name: "hashUUID",
+            inputs: [
+                { type: "bytes32", name: "uuid", internalType: "bytes32" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "nonpayable",
+            outputs: [],
+            name: "mint",
+            inputs: [
+                {
+                    type: "bytes32[]",
+                    name: "contextIds",
+                    internalType: "bytes32[]",
+                },
+                { type: "uint256", name: "timestamp", internalType: "uint256" },
+                { type: "uint8", name: "v", internalType: "uint8" },
+                { type: "bytes32", name: "r", internalType: "bytes32" },
+                { type: "bytes32", name: "s", internalType: "bytes32" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "view",
+            outputs: [{ type: "string", name: "", internalType: "string" }],
+            name: "name",
+            inputs: [],
         },
         {
             type: "function",
@@ -110,6 +155,15 @@ class BrightIDRegistrationModel {
             outputs: [{ type: "address", name: "", internalType: "address" }],
             name: "owner",
             inputs: [],
+        },
+        {
+            type: "function",
+            stateMutability: "view",
+            outputs: [{ type: "address", name: "", internalType: "address" }],
+            name: "ownerOf",
+            inputs: [
+                { type: "uint256", name: "tokenId", internalType: "uint256" },
+            ],
         },
         {
             type: "function",
@@ -122,23 +176,107 @@ class BrightIDRegistrationModel {
             type: "function",
             stateMutability: "nonpayable",
             outputs: [],
-            name: "setVerifierToken",
+            name: "rescue",
             inputs: [
                 {
-                    type: "address",
-                    name: "_verifierToken",
-                    internalType: "contract IERC20",
+                    type: "bytes32[]",
+                    name: "contextIds",
+                    internalType: "bytes32[]",
                 },
+                { type: "uint256", name: "timestamp", internalType: "uint256" },
+                { type: "uint256", name: "tokenId", internalType: "uint256" },
+                { type: "uint8", name: "v", internalType: "uint8" },
+                { type: "bytes32", name: "r", internalType: "bytes32" },
+                { type: "bytes32", name: "s", internalType: "bytes32" },
             ],
         },
         {
             type: "function",
             stateMutability: "nonpayable",
             outputs: [],
-            name: "sponsor",
+            name: "rescue",
             inputs: [
-                { type: "address", name: "addr", internalType: "address" },
+                {
+                    type: "bytes32[]",
+                    name: "contextIds",
+                    internalType: "bytes32[]",
+                },
+                { type: "uint256", name: "timestamp", internalType: "uint256" },
+                { type: "uint256", name: "tokenId", internalType: "uint256" },
+                { type: "uint8", name: "v", internalType: "uint8" },
+                { type: "bytes32", name: "r", internalType: "bytes32" },
+                { type: "bytes32", name: "s", internalType: "bytes32" },
+                { type: "bytes", name: "data", internalType: "bytes" },
             ],
+        },
+        {
+            type: "function",
+            stateMutability: "nonpayable",
+            outputs: [],
+            name: "setContext",
+            inputs: [
+                { type: "bytes32", name: "context", internalType: "bytes32" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "nonpayable",
+            outputs: [],
+            name: "setVerifier",
+            inputs: [
+                { type: "address", name: "verifier", internalType: "address" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "view",
+            outputs: [{ type: "bool", name: "", internalType: "bool" }],
+            name: "supportsInterface",
+            inputs: [
+                { type: "bytes4", name: "interfaceId", internalType: "bytes4" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "view",
+            outputs: [{ type: "string", name: "", internalType: "string" }],
+            name: "symbol",
+            inputs: [],
+        },
+        {
+            type: "function",
+            stateMutability: "view",
+            outputs: [{ type: "uint256", name: "", internalType: "uint256" }],
+            name: "tokenByIndex",
+            inputs: [
+                { type: "uint256", name: "index", internalType: "uint256" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "view",
+            outputs: [{ type: "uint256", name: "", internalType: "uint256" }],
+            name: "tokenOfOwnerByIndex",
+            inputs: [
+                { type: "address", name: "owner", internalType: "address" },
+                { type: "uint256", name: "index", internalType: "uint256" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "view",
+            outputs: [{ type: "string", name: "", internalType: "string" }],
+            name: "tokenURI",
+            inputs: [
+                { type: "uint256", name: "tokenId", internalType: "uint256" },
+            ],
+        },
+        {
+            type: "function",
+            stateMutability: "view",
+            outputs: [{ type: "uint256", name: "", internalType: "uint256" }],
+            name: "totalSupply",
+            inputs: [],
         },
         {
             type: "function",
@@ -147,38 +285,6 @@ class BrightIDRegistrationModel {
             name: "transferOwnership",
             inputs: [
                 { type: "address", name: "newOwner", internalType: "address" },
-            ],
-        },
-        {
-            type: "function",
-            stateMutability: "view",
-            outputs: [
-                { type: "uint256", name: "time", internalType: "uint256" },
-                { type: "bool", name: "isVerified", internalType: "bool" },
-            ],
-            name: "verifications",
-            inputs: [{ type: "address", name: "", internalType: "address" }],
-        },
-        {
-            type: "function",
-            stateMutability: "view",
-            outputs: [
-                { type: "address", name: "", internalType: "contract IERC20" },
-            ],
-            name: "verifierToken",
-            inputs: [],
-        },
-        {
-            type: "function",
-            stateMutability: "nonpayable",
-            outputs: [],
-            name: "verify",
-            inputs: [
-                { type: "address[]", name: "addrs", internalType: "address[]" },
-                { type: "uint256", name: "timestamp", internalType: "uint256" },
-                { type: "uint8", name: "v", internalType: "uint8" },
-                { type: "bytes32", name: "r", internalType: "bytes32" },
-                { type: "bytes32", name: "s", internalType: "bytes32" },
             ],
         },
     ];
@@ -970,6 +1076,29 @@ class BrightIDRegistrationModel {
 
         return await fetch(request);
     }
+
+    async signMessage() {
+        const encoded = utils.defaultAbiCoder.encode(
+            ["address", "uint256"],
+            [
+                "0xD0D801c1053555726bdCF188F4A55e690C440E74",
+                // 1000000000000000000000,
+                // 1000000000000000000
+                1000,
+            ]
+        );
+        console.log(encoded);
+
+        const hash = utils.keccak256(encoded);
+        console.log(hash);
+
+        const provider = await this.getProvider();
+        const signature = await provider.getSigner().signMessage(hash);
+
+        var sig = await ethers.utils.splitSignature(signature);
+
+        console.log(sig);
+    }
 }
 
-export default BrightIDRegistrationModel;
+export default BrightID10KNftMintModel;

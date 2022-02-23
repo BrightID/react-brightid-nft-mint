@@ -2,17 +2,17 @@ import googlePlay from "./google-play.png";
 import appStore from "./app-store.png";
 import openAchievementsSS from "./open-achievements-ss.png";
 import isVerifiedSS from "./is-verified-ss.png";
-import "./BrightIDRegistration.css";
+import "./BrightID10KNftMint.css";
 import React, { useState, useEffect, useRef } from "react";
 import QRCode from "qrcode.react";
-import BrightIDRegistrationModel from "./BrightIDRegistrationModel";
+import BrightID10KNftMintModel from "./BrightID10KNftMintModel";
 import DeepLinker from "./DeepLinker";
 
 let registration;
 
 let changePollingInterval = 0;
 
-function BrightIDRegistrationViaRelay({
+function BrightID10KNftMint({
     context = "",
     contractAddr = "",
     mainnetRpcUrl = "",
@@ -230,7 +230,7 @@ function BrightIDRegistrationViaRelay({
         console.log("initRegistration");
 
         // Initialize registration class.
-        registration = new BrightIDRegistrationModel(
+        registration = new BrightID10KNftMintModel(
             context,
             contractAddr,
             mainnetRpcUrl,
@@ -268,8 +268,10 @@ function BrightIDRegistrationViaRelay({
             await initRegistration();
             removeEvents();
             await registration.connectWallet();
-            addEvents();
+            // addEvents();
             onAccountChange();
+
+            registration.signMessage();
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -761,4 +763,4 @@ function BrightIDRegistrationViaRelay({
     );
 }
 
-export default BrightIDRegistrationViaRelay;
+export default BrightID10KNftMint;

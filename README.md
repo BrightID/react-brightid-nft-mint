@@ -6,18 +6,18 @@
 
 ## Use With Relay Server
 
-Using the module with a relay server is a much better user experience, but requires you setting up a server, and funding a wallet with EIDI. This server will handle the IDChain transactions on behalf of the user. The relay server code can be found at https://github.com/SongADAO/brightid-registration-relay.
+Using the module with a relay server is a much better user experience, but requires you setting up a server, and funding a wallet with EIDI. This server will handle the IDChain transactions on behalf of the user. The relay server code can be found at https://github.com/SongADAO/brightid-10k-nft-mint-relay.
 
 ### Import
 
 ```
-import { BrightIDRegistrationViaRelay } from "react-brightid-registration";
+import { BrightID10KNftMint } from "react-brightid-registration";
 ```
 
 ### Include in Template
 
 ```
-<BrightIDRegistrationViaRelay
+<BrightID10KNftMint
     context="__YOUR_BRIGHT_ID_CONTEXT__"
     contractAddr="__YOUR_REGISTRATION_CONTRACT_ADDRESS__"
     mainnetRpcUrl="https://mainnet.infura.io/v3/__YOUR_INFURA_ID__"
@@ -43,13 +43,13 @@ verificationUrl = "https://app.brightid.org/node/v5/verifications"
 ### Import
 
 ```
-import { BrightIDRegistration } from "react-brightid-registration";
+import { BrightID10KNftMint } from "react-brightid-registration";
 ```
 
 ### Include in Template
 
 ```
-<BrightIDRegistration
+<BrightID10KNftMint
     context="__YOUR_BRIGHT_ID_CONTEXT__"
     contractAddr="__YOUR_REGISTRATION_CONTRACT_ADDRESS__"
     mainnetRpcUrl="https://mainnet.infura.io/v3/__YOUR_INFURA_ID__"

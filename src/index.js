@@ -1,4 +1,3 @@
-import BrightIDRegistration from "./BrightIDRegistration";
-import BrightIDRegistrationViaRelay from "./BrightIDRegistrationViaRelay";
+import BrightID10KNftMint from "./BrightID10KNftMint";
 
-export { BrightIDRegistration, BrightIDRegistrationViaRelay };
+export default BrightID10KNftMint;
