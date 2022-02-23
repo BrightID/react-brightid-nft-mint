@@ -311,8 +311,6 @@ class BrightIDNftMintModel {
 
     walletConnectInfuraId = "";
 
-    relaySponsorURL = "";
-
     relayVerificationURL = "";
 
     appStoreAndroid = "";
@@ -330,7 +328,6 @@ class BrightIDNftMintModel {
         contractAddr = "",
         mainnetRpcUrl = "",
         walletConnectInfuraId = "",
-        relaySponsorURL = "",
         relayVerificationURL = "",
         appStoreAndroid = "https://play.google.com/store/apps/details?id=org.brightid",
         appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
@@ -343,7 +340,6 @@ class BrightIDNftMintModel {
         this.contractAddr = contractAddr;
         this.mainnetRpcUrl = mainnetRpcUrl;
         this.walletConnectInfuraId = walletConnectInfuraId;
-        this.relaySponsorURL = relaySponsorURL;
         this.relayVerificationURL = relayVerificationURL;
 
         this.appStoreAndroid = appStoreAndroid;
@@ -547,23 +543,6 @@ class BrightIDNftMintModel {
             // console.log(e);
 
             return "";
-        }
-    }
-
-    async queryChainId() {
-        try {
-            console.log("queryChainId");
-
-            const provider = await this.getProvider();
-
-            const { chainId } = await provider.getNetwork();
-
-            return chainId;
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-
-            return 0;
         }
     }
 
