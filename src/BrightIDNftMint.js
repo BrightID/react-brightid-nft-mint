@@ -51,11 +51,9 @@ function BrightIDNftMint({
 
     const [stepConnectWalletError, setStepConnectWalletError] = useState("");
 
-    const [stepVerifyViaContractStatus, setStepVerifyViaContractStatus] =
-        useState("");
+    const [stepMintViaRelayStatus, setStepMintViaRelayStatus] = useState("");
 
-    const [stepVerifyViaContractError, setStepVerifyViaContractError] =
-        useState("");
+    const [stepMintViaRelayError, setStepMintViaRelayError] = useState("");
 
     const [linkAddressToBrightIDError, setLinkAddressToBrightIDError] =
         useState("");
@@ -87,7 +85,7 @@ function BrightIDNftMint({
         }
 
         if (registration.isVerifiedViaContract === false) {
-            initIsVerifiedViaContract();
+            // initIsVerifiedViaContract();
         }
     }
 
@@ -268,10 +266,8 @@ function BrightIDNftMint({
             await initRegistration();
             removeEvents();
             await registration.connectWallet();
-            // addEvents();
+            addEvents();
             onAccountChange();
-
-            registration.signMessage();
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -308,13 +304,13 @@ function BrightIDNftMint({
         }
     }
 
-    async function verifyViaContract() {
+    async function mintViaRelay() {
         try {
-            setStepVerifyViaContractStatus(
-                "We're registering your BrightID account with Snapshot.  This can take up to a minute. Please wait."
+            setStepMintViaRelayStatus(
+                "We're minting your NFT.  This could take a minute or two. Please wait."
             );
 
-            const response = await registration.verifyViaRelay();
+            const response = await registration.mintViaRelay();
 
             if (response.ok === false) {
                 const body = await response.json();
@@ -324,16 +320,16 @@ function BrightIDNftMint({
 
             await initIsVerifiedViaContract();
 
-            setStepVerifyViaContractError("");
-            setStepVerifyViaContractStatus("");
+            setStepMintViaRelayError("");
+            setStepMintViaRelayStatus("");
         } catch (e) {
             // console.error(e);
             // console.log(e);
 
             await initIsVerifiedViaContract();
 
-            setStepVerifyViaContractError(e.message);
-            setStepVerifyViaContractStatus("");
+            setStepMintViaRelayError(e.message);
+            setStepMintViaRelayStatus("");
         }
     }
 
@@ -367,7 +363,7 @@ function BrightIDNftMint({
         return hasBrightIDLinked();
     }
 
-    function stepVerifyViaContractComplete() {
+    function stepMintViaRelayComplete() {
         return hasVerifiedViaContract();
     }
 
@@ -386,7 +382,7 @@ function BrightIDNftMint({
         return stepConnectWalletComplete() && stepConnectWalletActive();
     }
 
-    function stepVerifyViaContractActive() {
+    function stepMintViaRelayActive() {
         return stepBrightIDLinkedComplete() && stepBrightIDLinkedActive();
     }
 
@@ -698,10 +694,10 @@ function BrightIDNftMint({
                     className={`
                         brightid-10k-nft-mint-step
                         brightid-10k-nft-mint-step--${getStepCompleteString(
-                            stepVerifyViaContractComplete()
+                            stepMintViaRelayComplete()
                         )}
                         brightid-10k-nft-mint-step--${getStepActiveString(
-                            stepVerifyViaContractActive()
+                            stepMintViaRelayActive()
                         )}
                     `}
                 >
@@ -711,7 +707,7 @@ function BrightIDNftMint({
                         </div>
                         <div className="brightid-10k-nft-mint-step__header">
                             <h2 className="brightid-10k-nft-mint-step__heading">
-                                Register Wallet with Snapshot
+                                Mint NFT
                             </h2>
                         </div>
                         <div className="brightid-10k-nft-mint-step__action">
@@ -719,15 +715,15 @@ function BrightIDNftMint({
                                 stepBrightIDLinkedComplete() && (
                                     <button
                                         className="brightid-10k-nft-mint-step__button"
-                                        onClick={() => verifyViaContract()}
+                                        onClick={() => mintViaRelay()}
                                     >
-                                        Register
+                                        Mint
                                     </button>
                                 )}
                         </div>
                     </div>
                     <div className="brightid-10k-nft-mint-step__feedback">
-                        {stepVerifyViaContractStatus && (
+                        {stepMintViaRelayStatus && (
                             <div className="brightid-10k-nft-mint-step__response">
                                 <div className="brightid-10k-nft-mint-step__response-loading-icon">
                                     <div className="brightid-10k-nft-mint-step__loading-icon">
@@ -738,16 +734,16 @@ function BrightIDNftMint({
                                     </div>
                                 </div>
                                 <div className="brightid-10k-nft-mint-step__response-message">
-                                    <div>{stepVerifyViaContractStatus}</div>
+                                    <div>{stepMintViaRelayStatus}</div>
                                 </div>
                             </div>
                         )}
-                        {stepVerifyViaContractError && (
+                        {stepMintViaRelayError && (
                             <div className="brightid-10k-nft-mint-step__response brightid-10k-nft-mint-step__response--error">
-                                {stepVerifyViaContractError}
+                                {stepMintViaRelayError}
                             </div>
                         )}
-                        {stepVerifyViaContractComplete() && (
+                        {stepMintViaRelayComplete() && (
                             <div className="brightid-10k-nft-mint-step__description">
                                 <p className="brightid-10k-nft-mint-step__description-p">
                                     <strong>

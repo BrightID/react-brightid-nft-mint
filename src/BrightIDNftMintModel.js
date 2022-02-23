@@ -297,17 +297,9 @@ class BrightIDNftMintModel {
 
     ensName = "";
 
-    chainId = 0;
-
-    gasBalance = 0.0;
-
     brightIDLinkedWallets = [];
 
-    isBrightIDIdchainLinked = false;
-
     isBrightIDLinked = false;
-
-    isSponsoredViaContract = false;
 
     isVerifiedViaContract = false;
 
@@ -331,24 +323,6 @@ class BrightIDNftMintModel {
 
     deepLinkPrefix = "";
 
-    faucetClaimURL = "";
-
-    registrationBlockExplorerUrl = "";
-
-    registrationBlockExplorerTxnPath = "";
-
-    registrationChainId = "";
-
-    registrationChainName = "";
-
-    registrationIconUrl = "";
-
-    registrationRpcUrl = "";
-
-    registrationTokenDecimal = "";
-
-    registrationTokenName = "";
-
     verificationUrl = "";
 
     constructor(
@@ -362,15 +336,7 @@ class BrightIDNftMintModel {
         appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
         brightIdMeetUrl = "https://meet.brightid.org",
         deepLinkPrefix = "brightid://link-verification/http:%2f%2fnode.brightid.org",
-        faucetClaimURL = "https://idchain.one/begin/api/claim",
-        registrationBlockExplorerTxnPath = "/tx/",
-        registrationBlockExplorerUrl = "https://explorer.idchain.one",
-        registrationChainId = "74",
-        registrationChainName = "IDChain",
-        registrationIconUrl = "https://apps.brightid.org/logos/idchain.png",
         registrationRpcUrl = "https://idchain.one/rpc/",
-        registrationTokenDecimal = "18",
-        registrationTokenName = "Eidi",
         verificationUrl = "https://app.brightid.org/node/v5/verifications"
     ) {
         this.context = context;
@@ -384,27 +350,14 @@ class BrightIDNftMintModel {
         this.appStoreIos = appStoreIos;
         this.brightIdMeetUrl = brightIdMeetUrl;
         this.deepLinkPrefix = deepLinkPrefix;
-        this.faucetClaimURL = faucetClaimURL;
-        this.registrationBlockExplorerTxnPath =
-            registrationBlockExplorerTxnPath;
-        this.registrationBlockExplorerUrl = registrationBlockExplorerUrl;
-        this.registrationChainId = registrationChainId;
-        this.registrationChainName = registrationChainName;
-        this.registrationIconUrl = registrationIconUrl;
         this.registrationRpcUrl = registrationRpcUrl;
-        this.registrationTokenDecimal = registrationTokenDecimal;
-        this.registrationTokenName = registrationTokenName;
         this.verificationUrl = verificationUrl;
     }
 
     resetWalletData() {
         this.walletAddress = "";
         this.ensName = "";
-        this.chainId = 0;
-        this.gasBalance = 0.0;
-        this.isBrightIDIdchainLinked = false;
         this.isBrightIDLinked = false;
-        this.isSponsoredViaContract = false;
         this.isVerifiedViaContract = false;
     }
 
@@ -423,14 +376,9 @@ class BrightIDNftMintModel {
                 package: WalletConnectProvider,
                 options: {
                     infuraId: this.walletConnectInfuraId, // required
-                    rpc: {},
-                    // network: this.registrationChainName,
                 },
             },
         };
-
-        providerOptions.walletconnect.options.rpc[this.registrationChainId] =
-            this.registrationRpcUrl;
 
         this.web3Modal = new Web3Modal({
             network: "mainnet", // optional
@@ -481,15 +429,15 @@ class BrightIDNftMintModel {
         return new ethers.providers.JsonRpcProvider(this.mainnetRpcUrl);
     }
 
-    getIdchainProvider() {
+    getRegistrationProvider() {
         return new ethers.providers.JsonRpcProvider(this.registrationRpcUrl);
     }
 
     /* Contracts */
     /* ---------------------------------------------------------------------- */
 
-    async getIdchainProviderContract() {
-        const provider = await this.getIdchainProvider();
+    async getRegistrationProviderContract() {
+        const provider = await this.getRegistrationProvider();
 
         return new ethers.Contract(
             this.contractAddr,
@@ -560,12 +508,6 @@ class BrightIDNftMintModel {
         return `${this.deepLinkPrefix}/${this.context}/${addr}`;
     }
 
-    async getQrCodeIdchainUrl() {
-        const addr = await this.getWalletAddress();
-
-        return `${this.deepLinkPrefix}/idchain/${addr}`;
-    }
-
     async queryWalletAddress() {
         try {
             console.log("queryWalletAddress");
@@ -622,76 +564,6 @@ class BrightIDNftMintModel {
             // console.log(e);
 
             return 0;
-        }
-    }
-
-    async queryGasBalance() {
-        try {
-            console.log("checkGas");
-
-            const addr = await this.getWalletAddress();
-
-            const provider = await this.getIdchainProvider();
-
-            const balanceRaw = await provider.getBalance(addr);
-
-            const balanceFormatted = await ethers.utils.formatEther(balanceRaw);
-
-            return parseFloat(balanceFormatted);
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-
-            return 0.0;
-        }
-    }
-
-    async queryBrightIDIdchainLink(contextId) {
-        try {
-            console.log("queryBrightIDIdchainLink");
-
-            const userVerificationUrl = `${this.verificationUrl}/idchain/${contextId}?signed=null&timestamp=null`;
-
-            // console.log(userVerificationUrl);
-
-            const request = new Request(userVerificationUrl, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                },
-            });
-
-            const response = await fetch(request);
-
-            // console.log(response);
-
-            if (response.ok === true) {
-                const responseJson = await response.json();
-
-                // console.log(responseJson);
-
-                this.brightIDLinkedWallets = responseJson.data.contextIds;
-
-                return (
-                    responseJson.data.contextIds[0].toLowerCase() ===
-                    contextId.toLowerCase()
-                );
-            }
-
-            if (response.status === 403) {
-                this.brightIDLinkedWallets = [];
-
-                return true;
-            }
-
-            this.brightIDLinkedWallets = [];
-
-            return false;
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-
-            return false;
         }
     }
 
@@ -772,7 +644,7 @@ class BrightIDNftMintModel {
 
             const addr = await this.getWalletAddress();
 
-            const contract = await this.getIdchainProviderContract();
+            const contract = await this.getRegistrationProviderContract();
 
             const isVerified = await contract.isVerifiedUser(addr);
 
@@ -841,48 +713,13 @@ class BrightIDNftMintModel {
         }
     }
 
-    async initChainId() {
-        try {
-            this.chainId = await this.queryChainId();
-
-            return this.chainId;
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
-
-    async initGasBalance() {
-        try {
-            this.gasBalance = await this.queryGasBalance();
-
-            return this.gasBalance;
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
-
-    async initIsBrightIDIdchainLinked() {
-        try {
-            const addr = await this.getWalletAddress();
-
-            this.isBrightIDIdchainLinked = await this.queryBrightIDIdchainLink(
-                addr
-            );
-
-            return this.isBrightIDIdchainLinked;
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
-
     async initIsBrightIDLinked() {
         try {
-            const addr = await this.getWalletAddress();
+            // const addr = await this.getWalletAddress();
 
-            this.isBrightIDLinked = await this.queryBrightIDLink(addr);
+            // this.isBrightIDLinked = await this.queryBrightIDLink(addr);
+
+            this.isBrightIDLinked = true; // DEBUG
 
             return this.isBrightIDLinked;
         } catch (e) {
@@ -891,28 +728,15 @@ class BrightIDNftMintModel {
         }
     }
 
-    async initIsSponsoredViaContract() {
-        try {
-            const addr = await this.getWalletAddress();
-
-            this.isSponsoredViaContract = await this.queryBrightIDSponsorship(
-                addr
-            );
-
-            return this.isSponsoredViaContract;
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
-
     async initIsVerifiedViaContract() {
         try {
-            const addr = await this.getWalletAddress();
+            // const addr = await this.getWalletAddress();
 
-            this.isVerifiedViaContract = await this.queryBrightIDVerification(
-                addr
-            );
+            // this.isVerifiedViaContract = await this.queryBrightIDVerification(
+            //     addr
+            // );
+
+            // this.isVerifiedViaContract = true; // DEBUG
 
             return this.isVerifiedViaContract;
         } catch (e) {
@@ -932,136 +756,7 @@ class BrightIDNftMintModel {
         await this.initFreshInstance();
     }
 
-    async faucetClaim() {
-        const addr = await this.getWalletAddress();
-
-        const request = new Request(this.faucetClaimURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-            },
-            body: JSON.stringify({ addr: addr }),
-        });
-
-        return await fetch(request);
-    }
-
-    async switchToMainnetNetwork() {
-        const provider = await this.getProvider();
-
-        return await provider.provider.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: "0x1" }],
-        });
-    }
-
-    async switchToIDChainNetwork() {
-        const registrationHexChainId = ethers.utils.hexlify(
-            Number(this.registrationChainId)
-        );
-
-        const provider = await this.getProvider();
-
-        return await provider.provider.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: registrationHexChainId }],
-        });
-    }
-
-    async addIDChainNetwork() {
-        const registrationHexChainId = ethers.utils.hexlify(
-            Number(this.registrationChainId)
-        );
-
-        const provider = await this.getProvider();
-
-        return await provider.provider.request({
-            method: "wallet_addEthereumChain",
-            params: [
-                {
-                    chainId: registrationHexChainId,
-                    chainName: this.registrationChainName,
-                    nativeCurrency: {
-                        name: this.registrationTokenName,
-                        symbol: this.registrationTokenName,
-                        decimals: Number(this.registrationTokenDecimal),
-                    },
-                    rpcUrls: [this.registrationRpcUrl],
-                    blockExplorerUrls: [this.registrationBlockExplorerUrl],
-                    iconUrls: [this.registrationIconUrl],
-                },
-            ],
-        });
-    }
-
-    async sponsorViaContract() {
-        const chainId = await this.initChainId();
-
-        if (chainId !== Number(this.registrationChainId)) {
-            throw new Error(
-                `Please switch to the ${this.registrationChainName} network first.`
-            );
-        }
-
-        const addr = await this.getWalletAddress();
-
-        const contract = await this.getContractRw();
-
-        return await contract.sponsor(addr, {
-            gasLimit: 50000,
-            gasPrice: 10000000000,
-        });
-    }
-
-    async verifyViaContract() {
-        const chainId = await this.initChainId();
-
-        if (chainId !== Number(this.registrationChainId)) {
-            throw new Error(
-                `Please switch to the ${this.registrationChainName} network first.`
-            );
-        }
-
-        const addr = await this.getWalletAddress();
-
-        const verificationData = await this.queryBrightIDSignature(addr);
-
-        const contract = await this.getContractRw();
-
-        // const addrs = [addr];
-        const addrs = verificationData.data.contextIds;
-        const timestamp = verificationData.data.timestamp;
-        const v = verificationData.data.sig.v;
-        const r = "0x" + verificationData.data.sig.r;
-        const s = "0x" + verificationData.data.sig.s;
-
-        // // console.log("-------------------------------");
-        // // console.log(addrs);
-        // // console.log(timestamp);
-        // // console.log(v);
-        // // console.log(r);
-        // // console.log(s);
-        // // console.log("-------------------------------");
-
-        return await contract.verify(addrs, timestamp, v, r, s, {
-            gasLimit: 200000,
-            gasPrice: 10000000000,
-        });
-    }
-
-    async sponsorViaRelay() {
-        const addr = await this.getWalletAddress();
-
-        const request = new Request(this.relaySponsorURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-            },
-            body: JSON.stringify({ addr: addr }),
-        });
-
-        return await fetch(request);
-    }
+    async mintViaRelay() {}
 
     async verifyViaRelay() {
         const addr = await this.getWalletAddress();
