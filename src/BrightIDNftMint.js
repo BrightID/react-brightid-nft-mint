@@ -23,15 +23,7 @@ function BrightIDNftMint({
     appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
     brightIdMeetUrl = "https://meet.brightid.org",
     deepLinkPrefix = "brightid://link-verification/http:%2f%2fnode.brightid.org",
-    faucetClaimURL = "https://idchain.one/begin/api/claim",
-    registrationBlockExplorerTxnPath = "/tx/",
-    registrationBlockExplorerUrl = "https://explorer.idchain.one",
-    registrationChainId = "74",
-    registrationChainName = "IDChain",
-    registrationIconUrl = "https://apps.brightid.org/logos/idchain.png",
     registrationRpcUrl = "https://idchain.one/rpc/",
-    registrationTokenDecimal = "18",
-    registrationTokenName = "Eidi",
     verificationUrl = "https://app.brightid.org/node/v5/verifications",
 }) {
     /* State */
@@ -239,15 +231,7 @@ function BrightIDNftMint({
             appStoreIos,
             brightIdMeetUrl,
             deepLinkPrefix,
-            faucetClaimURL,
-            registrationBlockExplorerTxnPath,
-            registrationBlockExplorerUrl,
-            registrationChainId,
-            registrationChainName,
-            registrationIconUrl,
             registrationRpcUrl,
-            registrationTokenDecimal,
-            registrationTokenName,
             verificationUrl
         );
     }
