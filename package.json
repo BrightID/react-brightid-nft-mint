@@ -1,5 +1,5 @@
 {
-  "name": "react-brightid-10k-nft-mint",
+  "name": "react-brightid-nft-mint",
   "version": "1.0.0",
   "description": "React BrightID 10K NFT Mint",
   "main": "build/index.js",
@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/SongADAO/react-brightid-10k-nft-mint.git"
+    "url": "https://github.com/SongADAO/react-brightid-nft-mint.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
