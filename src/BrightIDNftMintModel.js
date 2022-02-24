@@ -302,6 +302,10 @@ class BrightIDNftMintModel {
 
     isBrightIDLinked = false;
 
+    isUUIDLinked = false;
+
+    isBindedViaContract = false;
+
     isVerifiedViaContract = false;
 
     context = "";
@@ -323,6 +327,10 @@ class BrightIDNftMintModel {
     deepLinkPrefix = "";
 
     verificationUrl = "";
+
+    uuid = "";
+
+    uuidHex = "";
 
     constructor(
         context = "",
@@ -349,12 +357,24 @@ class BrightIDNftMintModel {
         this.deepLinkPrefix = deepLinkPrefix;
         this.registrationRpcUrl = registrationRpcUrl;
         this.verificationUrl = verificationUrl;
+
+        console.log("UUID");
+        this.uuid = crypto.randomUUID();
+        // this.uuid = ethers.utils.randomBytes(16);
+        console.log(this.uuid);
+
+        console.log("UUID Hex");
+        this.uuidHex = this.uuid.replaceAll("-", "");
+        // this.uuidHex = new Buffer(this.uuid).toString("hex");
+        console.log(this.uuidHex);
     }
 
     resetWalletData() {
         this.walletAddress = "";
         this.ensName = "";
         this.isBrightIDLinked = false;
+        this.isUUIDLinked = false;
+        this.isBindedViaContract = false;
         this.isVerifiedViaContract = false;
     }
 
@@ -513,6 +533,10 @@ class BrightIDNftMintModel {
         const addr = await this.getWalletAddress();
 
         return `${this.deepLinkPrefix}/${this.context}/${addr}`;
+    }
+
+    async getQrCodeUUIDUrl() {
+        return `${this.deepLinkPrefix}/${this.context}/${this.uuidHex}`;
     }
 
     async queryWalletAddress() {
@@ -718,6 +742,36 @@ class BrightIDNftMintModel {
         }
     }
 
+    async initIsUUIDLinked() {
+        try {
+            // this.isUUIDLinked = await this.queryBrightIDLink(this.uuidHex);
+
+            this.isUUIDLinked = true; // DEBUG
+
+            return this.isUUIDLinked;
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async initIsBindedViaContract() {
+        try {
+            // const addr = await this.getWalletAddress();
+
+            // this.isBindedViaContract = await this.queryBrightIDVerification(
+            //     addr
+            // );
+
+            this.isBindedViaContract = true; // DEBUG
+
+            return this.isBindedViaContract;
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
     async initIsVerifiedViaContract() {
         try {
             // const addr = await this.getWalletAddress();
@@ -726,7 +780,7 @@ class BrightIDNftMintModel {
             //     addr
             // );
 
-            // this.isVerifiedViaContract = true; // DEBUG
+            this.isVerifiedViaContract = true; // DEBUG
 
             return this.isVerifiedViaContract;
         } catch (e) {
@@ -756,18 +810,8 @@ class BrightIDNftMintModel {
         // const addr = "0xe031628c95Df01073E95b411388deB48f09F33AA";
         console.log(addr);
 
-        console.log("UUID");
-        const uuid = crypto.randomUUID();
-        // const uuid = ethers.utils.randomBytes(16);
-        console.log(uuid);
-
-        console.log("UUID Hex");
-        const uuidHex = uuid.replaceAll("-", "");
-        // const uuidHex = new Buffer(uuid).toString("hex");
-        console.log(uuidHex);
-
         console.log("UUID Bytes32");
-        const uuidByte32 = "0x" + new Buffer(uuidHex).toString("hex");
+        const uuidByte32 = "0x" + new Buffer(this.uuidHex).toString("hex");
         console.log(uuidByte32);
 
         console.log("UUID Hash");

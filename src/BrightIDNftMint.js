@@ -849,6 +849,16 @@ function BrightIDNftMint({
                                 )}
                         </div>
                     </div>
+                    <div className="brightid-nft-mint-step__description">
+                        {registration && registration.uuidHex && (
+                            <p className="brightid-nft-mint-step__description-p">
+                                <strong>UUID: </strong>
+                                <span className="brightid-nft-mint-step__description-wallet-address">
+                                    {registration.uuidHex}
+                                </span>
+                            </p>
+                        )}
+                    </div>
                     <div className="brightid-nft-mint-step__feedback">
                         {stepBindViaRelayStatus && (
                             <div className="brightid-nft-mint-step__response">
@@ -873,9 +883,7 @@ function BrightIDNftMint({
                         {stepBindViaRelayComplete() && (
                             <div className="brightid-nft-mint-step__description">
                                 <p className="brightid-nft-mint-step__description-p">
-                                    <strong>
-                                        You're registered and ready to vote.
-                                    </strong>
+                                    <strong>You're UUID has been bound.</strong>
                                 </p>
                             </div>
                         )}
@@ -959,7 +967,7 @@ function BrightIDNftMint({
                                 <QRCode
                                     renderAs="svg"
                                     size={200}
-                                    value={qrCodeUrl}
+                                    value={qrCodeUUIDUrl}
                                 />
                             </p>
                             <div className="brightid-nft-mint-step--desktop">
@@ -1031,9 +1039,7 @@ function BrightIDNftMint({
                         {stepMintViaRelayComplete() && (
                             <div className="brightid-nft-mint-step__description">
                                 <p className="brightid-nft-mint-step__description-p">
-                                    <strong>
-                                        You're registered and ready to vote.
-                                    </strong>
+                                    <strong>You're NFT has been minted.</strong>
                                 </p>
                             </div>
                         )}
