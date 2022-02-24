@@ -333,6 +333,10 @@ class BrightIDNftMintModel {
 
     mintChainName = "";
 
+    mintBlockExplorerUrl = "";
+
+    mintBlockExplorerTxnPath = "";
+
     verificationUrl = "";
 
     uuid = "";
@@ -354,6 +358,8 @@ class BrightIDNftMintModel {
         deepLinkPrefix = "brightid://link-verification/http:%2f%2fnode.brightid.org",
         mintChainId = 100,
         mintChainName = "Gnosis Chain",
+        mintBlockExplorerUrl = "https://blockscout.com/xdai/mainnet",
+        mintBlockExplorerTxnPath = "/tx/",
         mintRpcUrl = "https://rpc.gnosischain.com/",
         verificationUrl = "https://app.brightid.org/node/v5/verifications"
     ) {
@@ -370,6 +376,8 @@ class BrightIDNftMintModel {
         this.deepLinkPrefix = deepLinkPrefix;
         this.mintChainId = Number(mintChainId);
         this.mintChainName = mintChainName;
+        this.mintBlockExplorerUrl = mintBlockExplorerUrl;
+        this.mintBlockExplorerTxnPath = mintBlockExplorerTxnPath;
         this.mintRpcUrl = mintRpcUrl;
         this.verificationUrl = verificationUrl;
 
@@ -897,7 +905,6 @@ class BrightIDNftMintModel {
             this.uuidByte32
         );
 
-        // const addrs = [addr];
         const contextIds = verificationData.data.contextIds;
         const timestamp = verificationData.data.timestamp;
         const v = verificationData.data.sig.v;
@@ -935,19 +942,12 @@ class BrightIDNftMintModel {
         const contract = await this.getContractRw();
 
         console.log("tx");
-        const tx = await contract.bind(
+        return await contract.bind(
             bindParams.addr,
             bindParams.uuidHash,
             bindParams.nonce,
             bindParams.signature
         );
-        console.log(tx);
-
-        console.log("receipt");
-        const receipt = await tx.wait();
-        console.log(receipt);
-
-        return { ok: true };
     }
 
     async mintViaTransaction() {
@@ -963,21 +963,13 @@ class BrightIDNftMintModel {
 
         const contract = await this.getContractRw();
 
-        const tx = await contract.mint(
+        return await contract.mint(
             mintParams.contextIds,
             mintParams.timestamp,
             mintParams.v,
             mintParams.r,
             mintParams.s
         );
-
-        console.log(tx);
-
-        console.log("receipt");
-        const receipt = await tx.wait();
-        console.log(receipt);
-
-        return { ok: true };
     }
 
     async bindViaRelay() {

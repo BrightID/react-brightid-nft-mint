@@ -36,6 +36,8 @@ brightIdMeetUrl = "https://meet.brightid.org"
 deepLinkPrefix = "brightid://link-verification/http:%2f%2fnode.brightid.org"
 mintChainId = "100"
 mintChainName = "Gnosis Chain"
+mintBlockExplorerUrl = "https://blockscout.com/xdai/mainnet"
+mintBlockExplorerTxnPath = "/tx/"
 mintRpcUrl = "https://rpc.gnosischain.com/"
 verificationUrl = "https://app.brightid.org/node/v5/verifications"
 ```

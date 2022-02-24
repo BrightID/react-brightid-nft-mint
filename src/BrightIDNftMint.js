@@ -25,6 +25,8 @@ function BrightIDNftMint({
     deepLinkPrefix = "brightid://link-verification/http:%2f%2fnode.brightid.org",
     mintChainId = 100,
     mintChainName = "Gnosis Chain",
+    mintBlockExplorerUrl = "https://blockscout.com/xdai/mainnet/",
+    mintBlockExplorerTxnPath = "/tx/",
     mintRpcUrl = "https://rpc.gnosischain.com/",
     verificationUrl = "https://app.brightid.org/node/v5/verifications",
 }) {
@@ -63,6 +65,32 @@ function BrightIDNftMint({
         useState("");
 
     const [linkUUIDToBrightIDError, setLinkUUIDToBrightIDError] = useState("");
+
+    // ---
+
+    const [stepBoundViaContractError, setStepBoundViaContractError] =
+        useState("");
+
+    const [
+        isBoundViaContractTxnProcessing,
+        setIsBoundViaContractTxnProcessing,
+    ] = useState(false);
+
+    const [isBoundViaContractTxnId, setIsBoundViaContractTxnId] =
+        useState(null);
+
+    // ---
+
+    const [stepMintedViaContractError, setStepMintedViaContractError] =
+        useState("");
+
+    const [
+        isMintedViaContractTxnProcessing,
+        setIsMintedViaContractTxnProcessing,
+    ] = useState(false);
+
+    const [isMintedViaContractTxnId, setIsMintedViaContractTxnId] =
+        useState(null);
 
     /* Web3 Data Init & Monitoring */
     /* ---------------------------------------------------------------------- */
@@ -380,6 +408,62 @@ function BrightIDNftMint({
         }
     }
 
+    async function bindViaTransaction() {
+        try {
+            const tx = await registration.bindViaTransaction();
+
+            setIsBoundViaContractTxnProcessing(true);
+            setIsBoundViaContractTxnId(tx.hash);
+            setStepBoundViaContractError("");
+
+            // wait for the transaction to be mined
+            await tx.wait();
+            // const receipt = await tx.wait();
+            // // console.log(receipt);
+
+            await initIsBoundViaContract();
+
+            setIsBoundViaContractTxnProcessing(false);
+            setIsBoundViaContractTxnId(null);
+            setStepBoundViaContractError("");
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+
+            setIsBoundViaContractTxnProcessing(false);
+            setIsBoundViaContractTxnId(null);
+            setStepBoundViaContractError(e.message);
+        }
+    }
+
+    async function mintViaTransaction() {
+        try {
+            const tx = await registration.mintViaTransaction();
+
+            setIsMintedViaContractTxnProcessing(true);
+            setIsMintedViaContractTxnId(tx.hash);
+            setStepMintedViaContractError("");
+
+            // wait for the transaction to be mined
+            await tx.wait();
+            // const receipt = await tx.wait();
+            // // console.log(receipt);
+
+            await initIsMintedViaContract();
+
+            setIsMintedViaContractTxnProcessing(false);
+            setIsMintedViaContractTxnId(null);
+            setStepMintedViaContractError("");
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+
+            setIsMintedViaContractTxnProcessing(false);
+            setIsMintedViaContractTxnId(null);
+            setStepMintedViaContractError(e.message);
+        }
+    }
+
     async function bindViaRelay() {
         try {
             setStepBindViaRelayStatus(
@@ -580,6 +664,7 @@ function BrightIDNftMint({
                         </p>
                     </div>
                 </section>
+
                 <section className={`brightid-nft-mint-step`}>
                     <div className="brightid-nft-mint-step__main">
                         <div className="brightid-nft-mint-step__header">
@@ -665,6 +750,7 @@ function BrightIDNftMint({
                         </p>
                     </div>
                 </section>
+
                 <section
                     className={`
                         brightid-nft-mint-step
@@ -851,7 +937,16 @@ function BrightIDNftMint({
                                         className="brightid-nft-mint-step__button"
                                         onClick={() => bindViaRelay()}
                                     >
-                                        Bind
+                                        Bind Via Relay
+                                    </button>
+                                )}
+                            {stepConnectWalletComplete() &&
+                                stepBrightIDLinkedComplete() && (
+                                    <button
+                                        className="brightid-nft-mint-step__button"
+                                        onClick={() => bindViaTransaction()}
+                                    >
+                                        Bind Via Contract
                                     </button>
                                 )}
                         </div>
@@ -890,6 +985,36 @@ function BrightIDNftMint({
                         {stepBindViaRelayError && (
                             <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
                                 {stepBindViaRelayError}
+                            </div>
+                        )}
+                        {isBoundViaContractTxnProcessing && (
+                            <div className="brightid-registration-step__response">
+                                <div className="brightid-registration-step__response-loading-icon">
+                                    <div className="brightid-registration-step__loading-icon">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                                <div className="brightid-registration-step__response-message">
+                                    <div>Transaction is being processed...</div>
+                                    <div>
+                                        <a
+                                            className="brightid-registration-step__response-link"
+                                            href={`${mintBlockExplorerUrl}${mintBlockExplorerTxnPath}${isBoundViaContractTxnId}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            View Transaction
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {stepBoundViaContractError && (
+                            <div className="brightid-registration-step__response brightid-registration-step__response--error">
+                                {stepBoundViaContractError}
                             </div>
                         )}
                         {stepBindViaRelayComplete() && (
@@ -1028,6 +1153,15 @@ function BrightIDNftMint({
                                         Mint
                                     </button>
                                 )}
+                            {stepConnectWalletComplete() &&
+                                stepBrightIDLinkedComplete() && (
+                                    <button
+                                        className="brightid-nft-mint-step__button"
+                                        onClick={() => mintViaTransaction()}
+                                    >
+                                        Mint
+                                    </button>
+                                )}
                         </div>
                     </div>
                     <div className="brightid-nft-mint-step__feedback">
@@ -1049,6 +1183,36 @@ function BrightIDNftMint({
                         {stepMintViaRelayError && (
                             <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
                                 {stepMintViaRelayError}
+                            </div>
+                        )}
+                        {isMintedViaContractTxnProcessing && (
+                            <div className="brightid-registration-step__response">
+                                <div className="brightid-registration-step__response-loading-icon">
+                                    <div className="brightid-registration-step__loading-icon">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                                <div className="brightid-registration-step__response-message">
+                                    <div>Transaction is being processed...</div>
+                                    <div>
+                                        <a
+                                            className="brightid-registration-step__response-link"
+                                            href={`${mintBlockExplorerUrl}${mintBlockExplorerTxnPath}${isMintedViaContractTxnId}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            View Transaction
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {stepMintedViaContractError && (
+                            <div className="brightid-registration-step__response brightid-registration-step__response--error">
+                                {stepMintedViaContractError}
                             </div>
                         )}
                         {stepMintViaRelayComplete() && (
