@@ -351,6 +351,10 @@ function BrightIDNftMint({
             appStoreIos,
             brightIdMeetUrl,
             deepLinkPrefix,
+            mintChainId,
+            mintChainName,
+            mintBlockExplorerUrl,
+            mintBlockExplorerTxnPath,
             mintRpcUrl,
             verificationUrl
         );
