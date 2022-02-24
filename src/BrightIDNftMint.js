@@ -23,7 +23,9 @@ function BrightIDNftMint({
     appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
     brightIdMeetUrl = "https://meet.brightid.org",
     deepLinkPrefix = "brightid://link-verification/http:%2f%2fnode.brightid.org",
-    registrationRpcUrl = "https://rpc.gnosischain.com/",
+    mintChainId = 100,
+    mintChainName = "Gnosis Chain",
+    mintRpcUrl = "https://rpc.gnosischain.com/",
     verificationUrl = "https://app.brightid.org/node/v5/verifications",
 }) {
     /* State */
@@ -321,7 +323,7 @@ function BrightIDNftMint({
             appStoreIos,
             brightIdMeetUrl,
             deepLinkPrefix,
-            registrationRpcUrl,
+            mintRpcUrl,
             verificationUrl
         );
     }

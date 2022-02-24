@@ -297,6 +297,8 @@ class BrightIDNftMintModel {
 
     ensName = "";
 
+    chainId = 0;
+
     brightIDLinkedWallets = [];
 
     isBrightIDLinked = false;
@@ -327,6 +329,10 @@ class BrightIDNftMintModel {
 
     deepLinkPrefix = "";
 
+    mintChainId = 0;
+
+    mintChainName = "";
+
     verificationUrl = "";
 
     uuid = "";
@@ -346,7 +352,9 @@ class BrightIDNftMintModel {
         appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
         brightIdMeetUrl = "https://meet.brightid.org",
         deepLinkPrefix = "brightid://link-verification/http:%2f%2fnode.brightid.org",
-        registrationRpcUrl = "https://rpc.gnosischain.com/",
+        mintChainId = 100,
+        mintChainName = "Gnosis Chain",
+        mintRpcUrl = "https://rpc.gnosischain.com/",
         verificationUrl = "https://app.brightid.org/node/v5/verifications"
     ) {
         this.context = context;
@@ -360,7 +368,9 @@ class BrightIDNftMintModel {
         this.appStoreIos = appStoreIos;
         this.brightIdMeetUrl = brightIdMeetUrl;
         this.deepLinkPrefix = deepLinkPrefix;
-        this.registrationRpcUrl = registrationRpcUrl;
+        this.mintChainId = Number(mintChainId);
+        this.mintChainName = mintChainName;
+        this.mintRpcUrl = mintRpcUrl;
         this.verificationUrl = verificationUrl;
 
         console.log("UUID");
@@ -458,7 +468,7 @@ class BrightIDNftMintModel {
     }
 
     getRegistrationProvider() {
-        return new ethers.providers.JsonRpcProvider(this.registrationRpcUrl);
+        return new ethers.providers.JsonRpcProvider(this.mintRpcUrl);
     }
 
     /* Contracts */
@@ -589,6 +599,23 @@ class BrightIDNftMintModel {
             // console.log(e);
 
             return "";
+        }
+    }
+
+    async queryChainId() {
+        try {
+            console.log("queryChainId");
+
+            const provider = await this.getProvider();
+
+            const { chainId } = await provider.getNetwork();
+
+            return chainId;
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+
+            return 0;
         }
     }
 
@@ -741,6 +768,17 @@ class BrightIDNftMintModel {
         }
     }
 
+    async initChainId() {
+        try {
+            this.chainId = await this.queryChainId();
+
+            return this.chainId;
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
     async initIsBrightIDLinked() {
         try {
             // const addr = await this.getWalletAddress();
@@ -810,9 +848,8 @@ class BrightIDNftMintModel {
         await this.initFreshInstance();
     }
 
-    async bindViaRelay() {
+    async getBindParams() {
         const contract = await this.getRegistrationProviderContract();
-        const contractRw = await this.getContractRw();
         const provider = await this.getProvider();
 
         console.log("Wallet Address");
@@ -824,17 +861,13 @@ class BrightIDNftMintModel {
         console.log(uuidHash);
 
         console.log("nonce");
-        const nonce = ethers.utils.randomBytes(3);
-        const nonceDecimal = new Buffer(nonce).readUIntBE(0, nonce.length);
+        const nonceBytes = ethers.utils.randomBytes(3);
+        const nonce = new Buffer(nonceBytes).readUIntBE(0, nonceBytes.length);
+        console.log(nonceBytes);
         console.log(nonce);
-        console.log(nonceDecimal);
 
         console.log("getUUIDHash");
-        const hashToSign = await contract.getUUIDHash(
-            addr,
-            uuidHash,
-            nonceDecimal
-        );
+        const hashToSign = await contract.getUUIDHash(addr, uuidHash, nonce);
         console.log(hashToSign);
 
         console.log("signMessage");
@@ -847,64 +880,96 @@ class BrightIDNftMintModel {
         console.log("--------------------------");
         console.log(addr);
         console.log(uuidHash);
-        console.log(nonceDecimal);
+        console.log(nonce);
         console.log(signature);
         console.log("--------------------------");
 
-        console.log("tx");
-        const tx = await contractRw.bind(
+        return {
             addr,
             uuidHash,
-            nonceDecimal,
-            signature
-        );
-        console.log(tx);
-
-        console.log("receipt");
-        const receipt = await tx.wait();
-        console.log(receipt);
-
-        return { ok: true };
-
-        // const request = new Request(this.relayBindURL, {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json; charset=utf-8",
-        //     },
-        //     body: JSON.stringify({
-        //         addr: addr,
-        //         uuidHash: uuidHash,
-        //         nonce: nonceDecimal,
-        //         signature: signature,
-        //     }),
-        // });
-
-        // return await fetch(request);
+            nonce,
+            signature,
+        };
     }
 
-    async mintViaRelay() {
+    async getMintParams() {
         const verificationData = await this.queryBrightIDSignature(
             this.uuidByte32
         );
 
-        const contract = await this.getContractRw();
-
         // const addrs = [addr];
-        const addrs = verificationData.data.contextIds;
+        const contextIds = verificationData.data.contextIds;
         const timestamp = verificationData.data.timestamp;
         const v = verificationData.data.sig.v;
         const r = "0x" + verificationData.data.sig.r;
         const s = "0x" + verificationData.data.sig.s;
 
         console.log("-------------------------------");
-        console.log(addrs);
+        console.log(contextIds);
         console.log(timestamp);
         console.log(v);
         console.log(r);
         console.log(s);
         console.log("-------------------------------");
 
-        const tx = await contract.mint(addrs, timestamp, v, r, s);
+        return {
+            contextIds,
+            timestamp,
+            v,
+            r,
+            s,
+        };
+    }
+
+    async bindViaTransaction() {
+        const chainId = await this.initChainId();
+
+        if (chainId !== Number(this.mintChainId)) {
+            throw new Error(
+                `Please switch to "${this.mintChainName}" (chainId: ${this.mintChainId})`
+            );
+        }
+
+        const bindParams = await this.getBindParams();
+
+        const contract = await this.getContractRw();
+
+        console.log("tx");
+        const tx = await contract.bind(
+            bindParams.addr,
+            bindParams.uuidHash,
+            bindParams.nonce,
+            bindParams.signature
+        );
+        console.log(tx);
+
+        console.log("receipt");
+        const receipt = await tx.wait();
+        console.log(receipt);
+
+        return { ok: true };
+    }
+
+    async mintViaTransaction() {
+        const chainId = await this.initChainId();
+
+        if (chainId !== Number(this.mintChainId)) {
+            throw new Error(
+                `Please switch to the ${this.mintChainName} network (chainId: ${this.mintChainId}) first.`
+            );
+        }
+
+        const mintParams = this.getMintParams();
+
+        const contract = await this.getContractRw();
+
+        const tx = await contract.mint(
+            mintParams.contextIds,
+            mintParams.timestamp,
+            mintParams.v,
+            mintParams.r,
+            mintParams.s
+        );
 
         console.log(tx);
 
@@ -913,16 +978,35 @@ class BrightIDNftMintModel {
         console.log(receipt);
 
         return { ok: true };
+    }
 
-        // const request = new Request(this.relayMintURL, {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json; charset=utf-8",
-        //     },
-        //     body: JSON.stringify({ uuid: this.uuidByte32 }),
-        // });
+    async bindViaRelay() {
+        const bindParams = await this.getBindParams();
 
-        // return await fetch(request);
+        const request = new Request(this.relayBindURL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            body: JSON.stringify(bindParams),
+        });
+
+        return await fetch(request);
+    }
+
+    async mintViaRelay() {
+        const mintParams = this.getMintParams();
+
+        const request = new Request(this.relayMintURL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            body: JSON.stringify(mintParams),
+            // body: JSON.stringify({ uuid: this.uuidByte32 }),
+        });
+
+        return await fetch(request);
     }
 }
 
