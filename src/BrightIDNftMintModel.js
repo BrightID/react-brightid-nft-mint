@@ -304,7 +304,7 @@ class BrightIDNftMintModel {
 
     isUUIDLinked = false;
 
-    isBindedViaContract = false;
+    isBoundViaContract = false;
 
     isVerifiedViaContract = false;
 
@@ -374,7 +374,7 @@ class BrightIDNftMintModel {
         this.ensName = "";
         this.isBrightIDLinked = false;
         this.isUUIDLinked = false;
-        this.isBindedViaContract = false;
+        this.isBoundViaContract = false;
         this.isVerifiedViaContract = false;
     }
 
@@ -755,17 +755,17 @@ class BrightIDNftMintModel {
         }
     }
 
-    async initIsBindedViaContract() {
+    async initIsBoundViaContract() {
         try {
             // const addr = await this.getWalletAddress();
 
-            // this.isBindedViaContract = await this.queryBrightIDVerification(
+            // this.isBoundViaContract = await this.queryBrightIDVerification(
             //     addr
             // );
 
-            this.isBindedViaContract = true; // DEBUG
+            this.isBoundViaContract = true; // DEBUG
 
-            return this.isBindedViaContract;
+            return this.isBoundViaContract;
         } catch (e) {
             // console.error(e);
             // console.log(e);

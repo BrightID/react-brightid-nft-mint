@@ -42,7 +42,7 @@ function BrightIDNftMint({
 
     const [isUUIDLinked, setIsUUIDLinked] = useState(false);
 
-    const [isBindedViaContract, setIsBindedViaContract] = useState(false);
+    const [isBoundViaContract, setIsBoundViaContract] = useState(false);
 
     const [isVerifiedViaContract, setIsVerifiedViaContract] = useState(false);
 
@@ -72,7 +72,7 @@ function BrightIDNftMint({
         setQrCodeUUIDUrl("");
         setIsBrightIDLinked("");
         setIsUUIDLinked("");
-        setIsBindedViaContract("");
+        setIsBoundViaContract("");
         setIsVerifiedViaContract("");
     }
 
@@ -84,7 +84,7 @@ function BrightIDNftMint({
         initQrCodeUUIDUrl();
         initIsBrightIDLinked();
         initIsUUIDLinked();
-        initIsBindedViaContract();
+        initIsBoundViaContract();
         initIsVerifiedViaContract();
     }
 
@@ -97,8 +97,8 @@ function BrightIDNftMint({
             initIsUUIDLinked();
         }
 
-        if (registration.isBindedViaContract === false) {
-            // initIsBindedViaContract();
+        if (registration.isBoundViaContract === false) {
+            // initIsBoundViaContract();
         }
 
         if (registration.isVerifiedViaContract === false) {
@@ -210,14 +210,14 @@ function BrightIDNftMint({
         }
     }
 
-    async function initIsBindedViaContract() {
+    async function initIsBoundViaContract() {
         try {
-            const isBindedViaContract =
-                await registration.initIsBindedViaContract();
+            const isBoundViaContract =
+                await registration.initIsBoundViaContract();
 
-            // console.log(isBindedViaContract);
+            // console.log(isBoundViaContract);
 
-            setIsBindedViaContract(isBindedViaContract);
+            setIsBoundViaContract(isBoundViaContract);
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -390,7 +390,7 @@ function BrightIDNftMint({
                 throw new Error(body.errorMessage);
             }
 
-            await initIsBindedViaContract();
+            await initIsBoundViaContract();
 
             setStepBindViaRelayError("");
             setStepBindViaRelayStatus("");
@@ -398,7 +398,7 @@ function BrightIDNftMint({
             // console.error(e);
             // console.log(e);
 
-            await initIsBindedViaContract();
+            await initIsBoundViaContract();
 
             setStepBindViaRelayError(e.message);
             setStepBindViaRelayStatus("");
@@ -449,8 +449,8 @@ function BrightIDNftMint({
         return isUUIDLinked === true;
     }
 
-    function hasBindedViaContract() {
-        return isBindedViaContract === true;
+    function hasBoundViaContract() {
+        return isBoundViaContract === true;
     }
 
     function hasVerifiedViaContract() {
@@ -477,7 +477,7 @@ function BrightIDNftMint({
     }
 
     function stepBindViaRelayComplete() {
-        return hasBindedViaContract();
+        return hasBoundViaContract();
     }
 
     function stepMintViaRelayComplete() {
