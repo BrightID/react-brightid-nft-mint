@@ -751,49 +751,36 @@ class BrightIDNftMintModel {
         const contractRw = await this.getRegistrationProviderContractRw();
         const provider = await this.getProvider();
 
-        // console.log("Wallet Address");
-        // // const addr = await this.getWalletAddress();
+        console.log("Wallet Address");
+        const addr = await this.getWalletAddress();
         // const addr = "0xe031628c95Df01073E95b411388deB48f09F33AA";
-        // console.log(addr);
-
-        // console.log("UUID");
-        // const uuid = crypto.randomUUID();
-        // // const uuid = ethers.utils.randomBytes(16);
-        // console.log(uuid);
-
-        // console.log("UUID Hex");
-        // const uuidHex = uuid.replaceAll("-", "");
-        // // const uuidHex = new Buffer(uuid).toString("hex");
-        // console.log(uuidHex);
-
-        // console.log("UUID Bytes32");
-        // // const uuidByte32 = ethers.utils.formatBytes32String(uuidHex);
-        // const uuidByte32 = "0x" + new Buffer(uuidHex).toString("hex");
-        // console.log(uuidByte32);
-
-        // console.log("UUID Hash");
-        // const uuidHash = await contract.hashUUID(uuidByte32);
-        // console.log(uuidHash);
-
-        // console.log("nonce");
-        // const nonce = ethers.utils.randomBytes(32);
-        // const nonceHex = "0x" + new Buffer(nonce).toString("hex");
-        // const nonceDecimal = new Buffer(nonce).readUIntBE(0, nonce.length);
-        // console.log(nonce);
-        // console.log(nonceHex);
-        // console.log(nonceDecimal);
-
-        const addr = "0xe031628c95Df01073E95b411388deB48f09F33AA"; // DEBUG
-        const uuidHash =
-            "0x27d6dd660e7fb953dcccfbaf06bf63a8de568e9ad51af4e7e16f5532850d2850"; // DEBUG
-        // const nonceHex =
-        //     "0xd272af1dc749cc39e0d9994f0a710b47607c24d4ae4485eb19c032528b7f5931"; // DEBUG
-        // const nonceDecimal =
-        //     "95188327376307323746885050445706068406636006040718965432711697749307532728625"; // DEBUG
-        const nonceDecimal = 100;
-
         console.log(addr);
+
+        console.log("UUID");
+        const uuid = crypto.randomUUID();
+        // const uuid = ethers.utils.randomBytes(16);
+        console.log(uuid);
+
+        console.log("UUID Hex");
+        const uuidHex = uuid.replaceAll("-", "");
+        // const uuidHex = new Buffer(uuid).toString("hex");
+        console.log(uuidHex);
+
+        console.log("UUID Bytes32");
+        const uuidByte32 = "0x" + new Buffer(uuidHex).toString("hex");
+        console.log(uuidByte32);
+
+        console.log("UUID Hash");
+        const uuidHash = await contract.hashUUID(uuidByte32);
         console.log(uuidHash);
+
+        console.log("nonce");
+        // const nonce = 100;
+        const nonce = ethers.utils.randomBytes(3);
+        // const nonceHex = "0x" + new Buffer(nonce).toString("hex");
+        const nonceDecimal = new Buffer(nonce).readUIntBE(0, nonce.length);
+        console.log(nonce);
+        // console.log(nonceHex);
         console.log(nonceDecimal);
 
         // console.log("getUUIDHash");
@@ -804,42 +791,29 @@ class BrightIDNftMintModel {
         );
         console.log(hashToSign);
 
-        const signature = await provider.getSigner().signMessage(hashToSign);
+        const bytesDataHash = ethers.utils.arrayify(hashToSign);
+        const signature = await provider.getSigner().signMessage(bytesDataHash);
         console.log(signature);
+        // const signature = "0x05e6b7a62517ee73b44ef1fd5221210d7e746bf5af66378a173f4186e06df1884c51fdc3a354eb89a5c9f67a80302b753881899aa539457863063209f58efaef1b";
 
         // const addr = "0xe031628c95Df01073E95b411388deB48f09F33AA"; // DEBUG
         // const uuidHash =
         //     "0x27d6dd660e7fb953dcccfbaf06bf63a8de568e9ad51af4e7e16f5532850d2850"; // DEBUG
-        // const nonceHex =
-        //     "0xd272af1dc749cc39e0d9994f0a710b47607c24d4ae4485eb19c032528b7f5931"; // DEBUG
-        // const nonceDecimal =
-        //     "95188327376307323746885050445706068406636006040718965432711697749307532728625"; // DEBUG
+        // const nonceDecimal = 100;
         // const signature =
-        //     "0xb3d6e7e91fd2ccaec5d10bf12a316c5c578449fc05eea7f6d44ad1951f4e7d585d454adaee5d2ff91a1374961664cbb900a2304d5353c6d208199ac6385d0bdb1b"; // DEBUG
-
-        // 0xe031628c95df01073e95b411388deb48f09f33aa;
-        // 0x27d6dd660e7fb953dcccfbaf06bf63a8de568e9ad51af4e7e16f5532850d2850;
-        // 100;
-
-        // // 0x285d4ad86f379684028112820eb8db77ceafce70488fa14bffe0d1dbd1b2b02b;
-
-        // 0x05e6b7a62517ee73b44ef1fd5221210d7e746bf5af66378a173f4186e06df1884c51fdc3a354eb89a5c9f67a80302b753881899aa539457863063209f58efaef1b;
-
-        // 0xb9d52bbfa575fdf0b0dfee9fc09c5010feab98c9
-        // 0x176a140ec81212f8fce448e90fa6abe0ff1ff6d466f1d37b619eb024ea05e134
-        // 100
-        // 0xe49c7b6bbdfe71a578d439586df18fa5814fe596b6f52ec1ba0c1f59b1e0a71e12ca8235cb273f38fcb5dd8857373ebe0805b456c3a99a2f81dbfed859e6100a1cz
+        //     "0xfa60fb3e479777d1064f4672cb2579b50b73cfd30820e185cb96104f85fed11f7cb39826fb65a1914ce25e6022392230766e8a5619d1cafd4b4061fea30fd2a41b";
 
         // console.log("done");
-        // console.log("pass to bind");
-        // console.log("--------------------------");
-        // console.log(addr);
-        // console.log(uuidHash);
+        console.log("pass to bind");
+        console.log("--------------------------");
+        console.log(addr);
+        console.log(uuidHash);
+        // console.log(nonce);
         // console.log(nonceHex);
-        // console.log(nonceDecimal);
-        // console.log(signature);
-        // console.log("--------------------------");
-        // // const tx = await contractRw.bind(addr, uuidHash, nonce, signature);
+        console.log(nonceDecimal);
+        console.log(signature);
+        console.log("--------------------------");
+        // // const tx = await contractRw.bind(addr, uuidHash, nonceDecimal, signature);
 
         // // console.log(tx);
 
