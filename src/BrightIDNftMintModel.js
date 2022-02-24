@@ -1,7 +1,6 @@
 import { ethers, utils } from "ethers";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { randomBytes } from "crypto";
 
 class BrightIDNftMintModel {
     contractAbi = [
