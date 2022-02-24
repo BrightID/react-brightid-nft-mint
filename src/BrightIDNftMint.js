@@ -17,7 +17,8 @@ function BrightIDNftMint({
     contractAddr = "",
     mainnetRpcUrl = "",
     walletConnectInfuraId = "",
-    relayVerificationURL = "",
+    relayBindURL = "",
+    relayMintURL = "",
     appStoreAndroid = "https://play.google.com/store/apps/details?id=org.brightid",
     appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
     brightIdMeetUrl = "https://meet.brightid.org",
@@ -44,7 +45,7 @@ function BrightIDNftMint({
 
     const [isBoundViaContract, setIsBoundViaContract] = useState(false);
 
-    const [isVerifiedViaContract, setIsVerifiedViaContract] = useState(false);
+    const [isMintedViaContract, setIsMintedViaContract] = useState(false);
 
     const [stepConnectWalletError, setStepConnectWalletError] = useState("");
 
@@ -73,7 +74,7 @@ function BrightIDNftMint({
         setIsBrightIDLinked("");
         setIsUUIDLinked("");
         setIsBoundViaContract("");
-        setIsVerifiedViaContract("");
+        setIsMintedViaContract("");
     }
 
     async function onAccountChange() {
@@ -85,7 +86,7 @@ function BrightIDNftMint({
         initIsBrightIDLinked();
         initIsUUIDLinked();
         initIsBoundViaContract();
-        initIsVerifiedViaContract();
+        initIsMintedViaContract();
     }
 
     function onChangePolling() {
@@ -98,11 +99,11 @@ function BrightIDNftMint({
         }
 
         if (registration.isBoundViaContract === false) {
-            // initIsBoundViaContract();
+            initIsBoundViaContract();
         }
 
-        if (registration.isVerifiedViaContract === false) {
-            // initIsVerifiedViaContract();
+        if (registration.isMintedViaContract === false) {
+            initIsMintedViaContract();
         }
     }
 
@@ -224,14 +225,14 @@ function BrightIDNftMint({
         }
     }
 
-    async function initIsVerifiedViaContract() {
+    async function initIsMintedViaContract() {
         try {
-            const isVerifiedViaContract =
-                await registration.initIsVerifiedViaContract();
+            const isMintedViaContract =
+                await registration.initIsMintedViaContract();
 
-            // console.log(isVerifiedViaContract);
+            // console.log(isMintedViaContract);
 
-            setIsVerifiedViaContract(isVerifiedViaContract);
+            setIsMintedViaContract(isMintedViaContract);
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -314,7 +315,8 @@ function BrightIDNftMint({
             contractAddr,
             mainnetRpcUrl,
             walletConnectInfuraId,
-            relayVerificationURL,
+            relayBindURL,
+            relayMintURL,
             appStoreAndroid,
             appStoreIos,
             brightIdMeetUrl,
@@ -419,7 +421,7 @@ function BrightIDNftMint({
                 throw new Error(body.errorMessage);
             }
 
-            await initIsVerifiedViaContract();
+            await initIsMintedViaContract();
 
             setStepMintViaRelayError("");
             setStepMintViaRelayStatus("");
@@ -427,7 +429,7 @@ function BrightIDNftMint({
             // console.error(e);
             // console.log(e);
 
-            await initIsVerifiedViaContract();
+            await initIsMintedViaContract();
 
             setStepMintViaRelayError(e.message);
             setStepMintViaRelayStatus("");
@@ -453,8 +455,8 @@ function BrightIDNftMint({
         return isBoundViaContract === true;
     }
 
-    function hasVerifiedViaContract() {
-        return isVerifiedViaContract === true;
+    function hasMintedViaContract() {
+        return isMintedViaContract === true;
     }
 
     /* Step Completion Flags */
@@ -481,7 +483,7 @@ function BrightIDNftMint({
     }
 
     function stepMintViaRelayComplete() {
-        return hasVerifiedViaContract();
+        return hasMintedViaContract();
     }
 
     /* Step Active Flags */
@@ -797,6 +799,9 @@ function BrightIDNftMint({
                                     app to scan the QR code below.
                                 </p>
                             </div>
+                            {/* <p className="brightid-nft-mint-step__description-qrcode-container">
+                                {qrCodeUrl}
+                            </p> */}
                             <p className="brightid-nft-mint-step__description-qrcode-container">
                                 <QRCode
                                     renderAs="svg"
@@ -850,6 +855,11 @@ function BrightIDNftMint({
                         </div>
                     </div>
                     <div className="brightid-nft-mint-step__description">
+                        <p className="brightid-nft-mint-step__description-p">
+                            In this step you will be asked to sign a message
+                            with your wallet. This will bind the UUID below to
+                            you.
+                        </p>
                         {registration && registration.uuidHex && (
                             <p className="brightid-nft-mint-step__description-p">
                                 <strong>UUID: </strong>
@@ -963,6 +973,9 @@ function BrightIDNftMint({
                                     app to scan the QR code below.
                                 </p>
                             </div>
+                            {/* <p className="brightid-nft-mint-step__description-qrcode-container">
+                                {qrCodeUUIDUrl}
+                            </p> */}
                             <p className="brightid-nft-mint-step__description-qrcode-container">
                                 <QRCode
                                     renderAs="svg"

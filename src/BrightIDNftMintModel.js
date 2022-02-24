@@ -305,7 +305,7 @@ class BrightIDNftMintModel {
 
     isBoundViaContract = false;
 
-    isVerifiedViaContract = false;
+    isMintedViaContract = false;
 
     context = "";
 
@@ -315,7 +315,9 @@ class BrightIDNftMintModel {
 
     walletConnectInfuraId = "";
 
-    relayVerificationURL = "";
+    relayBindURL = "";
+
+    relayMintURL = "";
 
     appStoreAndroid = "";
 
@@ -331,12 +333,15 @@ class BrightIDNftMintModel {
 
     uuidHex = "";
 
+    uuidByte32 = "";
+
     constructor(
         context = "",
         contractAddr = "",
         mainnetRpcUrl = "",
         walletConnectInfuraId = "",
-        relayVerificationURL = "",
+        relayBindURL = "",
+        relayMintURL = "",
         appStoreAndroid = "https://play.google.com/store/apps/details?id=org.brightid",
         appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
         brightIdMeetUrl = "https://meet.brightid.org",
@@ -348,7 +353,8 @@ class BrightIDNftMintModel {
         this.contractAddr = contractAddr;
         this.mainnetRpcUrl = mainnetRpcUrl;
         this.walletConnectInfuraId = walletConnectInfuraId;
-        this.relayVerificationURL = relayVerificationURL;
+        this.relayBindURL = relayBindURL;
+        this.relayMintURL = relayMintURL;
 
         this.appStoreAndroid = appStoreAndroid;
         this.appStoreIos = appStoreIos;
@@ -366,6 +372,12 @@ class BrightIDNftMintModel {
         this.uuidHex = this.uuid.replaceAll("-", "");
         // this.uuidHex = new Buffer(this.uuid).toString("hex");
         console.log(this.uuidHex);
+
+        this.uuidHex = "a5e502211e8b406b8877e68a01063cfe"; // DEBUG
+
+        console.log("UUID Bytes32");
+        this.uuidByte32 = "0x" + new Buffer(this.uuidHex).toString("hex");
+        console.log(this.uuidByte32);
     }
 
     resetWalletData() {
@@ -374,7 +386,7 @@ class BrightIDNftMintModel {
         this.isBrightIDLinked = false;
         this.isUUIDLinked = false;
         this.isBoundViaContract = false;
-        this.isVerifiedViaContract = false;
+        this.isMintedViaContract = false;
     }
 
     /* Web3 Modal & Instances */
@@ -653,19 +665,20 @@ class BrightIDNftMintModel {
         }
     }
 
-    async queryBrightIDVerification(contextId) {
+    async queryTokenBalance() {
         try {
-            console.log("queryBrightIDVerification");
+            console.log("queryTokenBalance");
 
             const addr = await this.getWalletAddress();
+            // const addr = "0xb9d52bbfa575fdf0b0dfee9fc09c5010feab98c9";
 
             const contract = await this.getRegistrationProviderContract();
 
-            const isVerified = await contract.isVerifiedUser(addr);
+            const balance = await contract.balanceOf(addr);
 
-            // console.log(isVerified);
+            // console.log(balance);
 
-            return isVerified;
+            return balance > 0;
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -747,7 +760,7 @@ class BrightIDNftMintModel {
         try {
             this.isUUIDLinked = await this.queryBrightIDLink(this.uuidHex);
 
-            // this.isUUIDLinked = false; // DEBUG
+            // this.isUUIDLinked = true; // DEBUG
 
             return this.isUUIDLinked;
         } catch (e) {
@@ -764,7 +777,7 @@ class BrightIDNftMintModel {
             //     addr
             // );
 
-            this.isBoundViaContract = false; // DEBUG
+            this.isBoundViaContract = true; // DEBUG
 
             return this.isBoundViaContract;
         } catch (e) {
@@ -773,17 +786,13 @@ class BrightIDNftMintModel {
         }
     }
 
-    async initIsVerifiedViaContract() {
+    async initIsMintedViaContract() {
         try {
-            // const addr = await this.getWalletAddress();
+            this.isMintedViaContract = await this.queryTokenBalance();
 
-            // this.isVerifiedViaContract = await this.queryBrightIDVerification(
-            //     addr
-            // );
+            // this.isMintedViaContract = false; // DEBUG
 
-            this.isVerifiedViaContract = false; // DEBUG
-
-            return this.isVerifiedViaContract;
+            return this.isMintedViaContract;
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -801,34 +810,26 @@ class BrightIDNftMintModel {
         await this.initFreshInstance();
     }
 
-    async mintViaRelay() {
+    async bindViaRelay() {
         const contract = await this.getRegistrationProviderContract();
-        const contractRw = await this.getRegistrationProviderContractRw();
+        const contractRw = await this.getContractRw();
         const provider = await this.getProvider();
 
         console.log("Wallet Address");
         const addr = await this.getWalletAddress();
-        // const addr = "0xe031628c95Df01073E95b411388deB48f09F33AA";
         console.log(addr);
-
-        console.log("UUID Bytes32");
-        const uuidByte32 = "0x" + new Buffer(this.uuidHex).toString("hex");
-        console.log(uuidByte32);
 
         console.log("UUID Hash");
         const uuidHash = await contract.hashUUID(uuidByte32);
         console.log(uuidHash);
 
         console.log("nonce");
-        // const nonce = 100;
         const nonce = ethers.utils.randomBytes(3);
-        // const nonceHex = "0x" + new Buffer(nonce).toString("hex");
         const nonceDecimal = new Buffer(nonce).readUIntBE(0, nonce.length);
         console.log(nonce);
-        // console.log(nonceHex);
         console.log(nonceDecimal);
 
-        // console.log("getUUIDHash");
+        console.log("getUUIDHash");
         const hashToSign = await contract.getUUIDHash(
             addr,
             uuidHash,
@@ -836,44 +837,44 @@ class BrightIDNftMintModel {
         );
         console.log(hashToSign);
 
+        console.log("signMessage");
         const bytesDataHash = ethers.utils.arrayify(hashToSign);
         const signature = await provider.getSigner().signMessage(bytesDataHash);
         console.log(signature);
-        // const signature = "0x05e6b7a62517ee73b44ef1fd5221210d7e746bf5af66378a173f4186e06df1884c51fdc3a354eb89a5c9f67a80302b753881899aa539457863063209f58efaef1b";
-
-        // const addr = "0xe031628c95Df01073E95b411388deB48f09F33AA"; // DEBUG
-        // const uuidHash =
-        //     "0x27d6dd660e7fb953dcccfbaf06bf63a8de568e9ad51af4e7e16f5532850d2850"; // DEBUG
-        // const nonceDecimal = 100;
-        // const signature =
-        //     "0xfa60fb3e479777d1064f4672cb2579b50b73cfd30820e185cb96104f85fed11f7cb39826fb65a1914ce25e6022392230766e8a5619d1cafd4b4061fea30fd2a41b";
 
         // console.log("done");
         console.log("pass to bind");
         console.log("--------------------------");
         console.log(addr);
         console.log(uuidHash);
-        // console.log(nonce);
-        // console.log(nonceHex);
         console.log(nonceDecimal);
         console.log(signature);
         console.log("--------------------------");
-        // // const tx = await contractRw.bind(addr, uuidHash, nonceDecimal, signature);
 
-        // // console.log(tx);
+        console.log("tx");
+        const tx = await contractRw.bind(
+            addr,
+            uuidHash,
+            nonceDecimal,
+            signature
+        );
+        console.log(tx);
+
+        console.log("receipt");
+        const receipt = await tx.wait();
+        console.log(receipt);
 
         return { ok: true };
 
-        // const request = new Request(this.relayVerificationURL, {
+        // const request = new Request(this.relayBindURL, {
         //     method: "POST",
         //     headers: {
         //         "Content-Type": "application/json; charset=utf-8",
         //     },
         //     body: JSON.stringify({
         //         addr: addr,
-        //         owner: addr,
         //         uuidHash: uuidHash,
-        //         nonce: nonce,
+        //         nonce: nonceDecimal,
         //         signature: signature,
         //     }),
         // });
@@ -881,43 +882,47 @@ class BrightIDNftMintModel {
         // return await fetch(request);
     }
 
-    async verifyViaRelay() {
-        return false;
+    async mintViaRelay() {
+        const verificationData = await this.queryBrightIDSignature(
+            this.uuidHex
+        );
 
-        // const addr = await this.getWalletAddress();
+        const contract = await this.getContractRw();
 
-        // const request = new Request(this.relayVerificationURL, {
+        // const addrs = [addr];
+        const addrs = verificationData.data.contextIds;
+        const timestamp = verificationData.data.timestamp;
+        const v = verificationData.data.sig.v;
+        const r = "0x" + verificationData.data.sig.r;
+        const s = "0x" + verificationData.data.sig.s;
+
+        console.log("-------------------------------");
+        console.log(addrs);
+        console.log(timestamp);
+        console.log(v);
+        console.log(r);
+        console.log(s);
+        console.log("-------------------------------");
+
+        const tx = await contract.mint(addrs, timestamp, v, r, s);
+
+        console.log(tx);
+
+        console.log("receipt");
+        const receipt = await tx.wait();
+        console.log(receipt);
+
+        return { ok: true };
+
+        // const request = new Request(this.relayMintURL, {
         //     method: "POST",
         //     headers: {
         //         "Content-Type": "application/json; charset=utf-8",
         //     },
-        //     body: JSON.stringify({ addr: addr }),
+        //     body: JSON.stringify({ uuid: this.uuidHex }),
         // });
 
         // return await fetch(request);
-    }
-
-    async signMessage() {
-        const encoded = utils.defaultAbiCoder.encode(
-            ["address", "uint256"],
-            [
-                "0xD0D801c1053555726bdCF188F4A55e690C440E74",
-                // 1000000000000000000000,
-                // 1000000000000000000
-                1000,
-            ]
-        );
-        console.log(encoded);
-
-        const hash = utils.keccak256(encoded);
-        console.log(hash);
-
-        const provider = await this.getProvider();
-        const signature = await provider.getSigner().signMessage(hash);
-
-        var sig = await ethers.utils.splitSignature(signature);
-
-        console.log(sig);
     }
 }
 

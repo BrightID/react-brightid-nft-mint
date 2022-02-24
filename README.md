@@ -22,7 +22,8 @@ import { BrightIDNftMint } from "react-brightid-nft-mint";
     contractAddr="__YOUR_REGISTRATION_CONTRACT_ADDRESS__"
     mainnetRpcUrl="https://mainnet.infura.io/v3/__YOUR_INFURA_ID__"
     walletConnectInfuraId="__YOUR_INFURA_ID__"
-    relayVerificationURL="__URL_OF_RELAY_REGISTRATION_ENDPOINT__"
+    relayBindURL="__URL_OF_RELAY_BIND_ENDPOINT__"
+    relayMintURL="__URL_OF_RELAY_MINT_ENDPOINT__"
 />
 ```
 
