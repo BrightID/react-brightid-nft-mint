@@ -36,11 +36,21 @@ function BrightIDNftMint({
 
     const [qrCodeUrl, setQrCodeUrl] = useState("");
 
+    const [qrCodeUUIDUrl, setQrCodeUUIDUrl] = useState("");
+
     const [isBrightIDLinked, setIsBrightIDLinked] = useState(false);
+
+    const [isUUIDLinked, setIsUUIDLinked] = useState(false);
+
+    const [isBindedViaContract, setIsBindedViaContract] = useState(false);
 
     const [isVerifiedViaContract, setIsVerifiedViaContract] = useState(false);
 
     const [stepConnectWalletError, setStepConnectWalletError] = useState("");
+
+    const [stepBindViaRelayStatus, setStepBindViaRelayStatus] = useState("");
+
+    const [stepBindViaRelayError, setStepBindViaRelayError] = useState("");
 
     const [stepMintViaRelayStatus, setStepMintViaRelayStatus] = useState("");
 
@@ -48,6 +58,8 @@ function BrightIDNftMint({
 
     const [linkAddressToBrightIDError, setLinkAddressToBrightIDError] =
         useState("");
+
+    const [linkUUIDToBrightIDError, setLinkUUIDToBrightIDError] = useState("");
 
     /* Web3 Data Init & Monitoring */
     /* ---------------------------------------------------------------------- */
@@ -57,7 +69,10 @@ function BrightIDNftMint({
         setWalletAddress("");
         setENSName("");
         setQrCodeUrl("");
+        setQrCodeUUIDUrl("");
         setIsBrightIDLinked("");
+        setIsUUIDLinked("");
+        setIsBindedViaContract("");
         setIsVerifiedViaContract("");
     }
 
@@ -66,13 +81,24 @@ function BrightIDNftMint({
         initWalletAddress();
         initENSName();
         initQrCodeUrl();
+        initQrCodeUUIDUrl();
         initIsBrightIDLinked();
+        initIsUUIDLinked();
+        initIsBindedViaContract();
         initIsVerifiedViaContract();
     }
 
     function onChangePolling() {
         if (registration.isBrightIDLinked === false) {
             initIsBrightIDLinked();
+        }
+
+        if (registration.isUUIDLinked === false) {
+            initIsUUIDLinked();
+        }
+
+        if (registration.isBindedViaContract === false) {
+            // initIsBindedViaContract();
         }
 
         if (registration.isVerifiedViaContract === false) {
@@ -151,11 +177,47 @@ function BrightIDNftMint({
         }
     }
 
+    async function initQrCodeUUIDUrl() {
+        try {
+            const qrCodeUUIDUrl = await registration.getQrCodeUUIDUrl();
+
+            setQrCodeUUIDUrl(qrCodeUUIDUrl);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
     async function initIsBrightIDLinked() {
         try {
             const isBrightIDLinked = await registration.initIsBrightIDLinked();
 
             setIsBrightIDLinked(isBrightIDLinked);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async function initIsUUIDLinked() {
+        try {
+            const isUUIDLinked = await registration.initIsUUIDLinked();
+
+            setIsUUIDLinked(isUUIDLinked);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async function initIsBindedViaContract() {
+        try {
+            const isBindedViaContract =
+                await registration.initIsBindedViaContract();
+
+            // console.log(isBindedViaContract);
+
+            setIsBindedViaContract(isBindedViaContract);
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -197,6 +259,34 @@ function BrightIDNftMint({
                 console.log("browser failed to respond to the deep link");
 
                 setLinkAddressToBrightIDError(
+                    "Couldn't open BrightID. Scan the QR code below with the device you have BrightID installed on."
+                );
+            },
+            onFallback: function () {
+                console.log("dialog hidden or user returned to tab");
+            },
+            onReturn: function () {
+                console.log("user returned to the page from the native app");
+            },
+        });
+
+        linker.openURL(url);
+    }
+
+    function linkUUIDToBrightID() {
+        // window.open(qrCodeUUIDUrl);
+
+        var url = qrCodeUUIDUrl;
+
+        if (url === "") {
+            return;
+        }
+
+        var linker = new DeepLinker({
+            onIgnored: function () {
+                console.log("browser failed to respond to the deep link");
+
+                setLinkUUIDToBrightIDError(
                     "Couldn't open BrightID. Scan the QR code below with the device you have BrightID installed on."
                 );
             },
@@ -286,6 +376,35 @@ function BrightIDNftMint({
         }
     }
 
+    async function bindViaRelay() {
+        try {
+            setStepBindViaRelayStatus(
+                "We're binding your UUID.  This could take a minute or two. Please wait."
+            );
+
+            const response = await registration.bindViaRelay();
+
+            if (response.ok === false) {
+                const body = await response.json();
+
+                throw new Error(body.errorMessage);
+            }
+
+            await initIsBindedViaContract();
+
+            setStepBindViaRelayError("");
+            setStepBindViaRelayStatus("");
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+
+            await initIsBindedViaContract();
+
+            setStepBindViaRelayError(e.message);
+            setStepBindViaRelayStatus("");
+        }
+    }
+
     async function mintViaRelay() {
         try {
             setStepMintViaRelayStatus(
@@ -326,6 +445,14 @@ function BrightIDNftMint({
         return isBrightIDLinked === true;
     }
 
+    function hasUUIDLinked() {
+        return isUUIDLinked === true;
+    }
+
+    function hasBindedViaContract() {
+        return isBindedViaContract === true;
+    }
+
     function hasVerifiedViaContract() {
         return isVerifiedViaContract === true;
     }
@@ -343,6 +470,14 @@ function BrightIDNftMint({
 
     function stepBrightIDLinkedComplete() {
         return hasBrightIDLinked();
+    }
+
+    function stepUUIDLinkedComplete() {
+        return hasUUIDLinked();
+    }
+
+    function stepBindViaRelayComplete() {
+        return hasBindedViaContract();
     }
 
     function stepMintViaRelayComplete() {
@@ -364,8 +499,16 @@ function BrightIDNftMint({
         return stepConnectWalletComplete() && stepConnectWalletActive();
     }
 
-    function stepMintViaRelayActive() {
+    function stepBindViaRelayActive() {
         return stepBrightIDLinkedComplete() && stepBrightIDLinkedActive();
+    }
+
+    function stepUUIDLinkedActive() {
+        return stepBindViaRelayComplete() && stepBindViaRelayActive();
+    }
+
+    function stepMintViaRelayActive() {
+        return stepUUIDLinkedComplete() && stepUUIDLinkedActive();
     }
 
     /* Bootstrap */
@@ -580,6 +723,7 @@ function BrightIDNftMint({
                         )}
                     </div>
                 </section>
+
                 <section
                     className={`
                         brightid-nft-mint-step
@@ -672,6 +816,165 @@ function BrightIDNftMint({
                     )}
                     <div className="brightid-nft-mint-step__feedback"></div>
                 </section>
+
+                <section
+                    className={`
+                        brightid-nft-mint-step
+                        brightid-nft-mint-step--${getStepCompleteString(
+                            stepBindViaRelayComplete()
+                        )}
+                        brightid-nft-mint-step--${getStepActiveString(
+                            stepBindViaRelayActive()
+                        )}
+                    `}
+                >
+                    <div className="brightid-nft-mint-step__main">
+                        <div className="brightid-nft-mint-step__status">
+                            <div className="brightid-nft-mint-step__status-icon"></div>
+                        </div>
+                        <div className="brightid-nft-mint-step__header">
+                            <h2 className="brightid-nft-mint-step__heading">
+                                Bind UUID
+                            </h2>
+                        </div>
+                        <div className="brightid-nft-mint-step__action">
+                            {stepConnectWalletComplete() &&
+                                stepBrightIDLinkedComplete() && (
+                                    <button
+                                        className="brightid-nft-mint-step__button"
+                                        onClick={() => bindViaRelay()}
+                                    >
+                                        Bind
+                                    </button>
+                                )}
+                        </div>
+                    </div>
+                    <div className="brightid-nft-mint-step__feedback">
+                        {stepBindViaRelayStatus && (
+                            <div className="brightid-nft-mint-step__response">
+                                <div className="brightid-nft-mint-step__response-loading-icon">
+                                    <div className="brightid-nft-mint-step__loading-icon">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                                <div className="brightid-nft-mint-step__response-message">
+                                    <div>{stepBindViaRelayStatus}</div>
+                                </div>
+                            </div>
+                        )}
+                        {stepBindViaRelayError && (
+                            <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
+                                {stepBindViaRelayError}
+                            </div>
+                        )}
+                        {stepBindViaRelayComplete() && (
+                            <div className="brightid-nft-mint-step__description">
+                                <p className="brightid-nft-mint-step__description-p">
+                                    <strong>
+                                        You're registered and ready to vote.
+                                    </strong>
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
+                <section
+                    className={`
+                        brightid-nft-mint-step
+                        brightid-nft-mint-step--brightid-link
+                        brightid-nft-mint-step--${getStepCompleteString(
+                            stepBrightIDLinkedComplete()
+                        )}
+                        brightid-nft-mint-step--${getStepActiveString(
+                            stepBrightIDLinkedActive()
+                        )}
+                    `}
+                >
+                    <div className="brightid-nft-mint-step__main">
+                        <div className="brightid-nft-mint-step__status">
+                            <div className="brightid-nft-mint-step__status-icon"></div>
+                        </div>
+                        <div className="brightid-nft-mint-step__header">
+                            <h2 className="brightid-nft-mint-step__heading">
+                                Link UUID to BrightID
+                            </h2>
+                        </div>
+                        {/* <div className="brightid-nft-mint-step__action">
+                            <button
+                                className="brightid-nft-mint-step__button"
+                                onClick={() => linkUUIDToBrightID()}
+                            >
+                                Link Address
+                            </button>
+                        </div> */}
+                    </div>
+                    {qrCodeUUIDUrl && (
+                        <div
+                            className="
+                            brightid-nft-mint-step__description
+                            brightid-nft-mint-step__description--action
+                        "
+                        >
+                            <div className="brightid-nft-mint-step--mobile">
+                                <p className="brightid-nft-mint-step__description-p">
+                                    If you're on your mobile device just use
+                                    this button to open BrightID and link your
+                                    wallet.
+                                </p>
+                                <p className="brightid-nft-mint-step__description-button-container">
+                                    <button
+                                        className="brightid-nft-mint-step__button"
+                                        onClick={() => linkUUIDToBrightID()}
+                                    >
+                                        Link Address
+                                    </button>
+                                </p>
+                                <div className="brightid-nft-mint-step__feedback">
+                                    {linkUUIDToBrightIDError && (
+                                        <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
+                                            {linkUUIDToBrightIDError}
+                                        </div>
+                                    )}
+                                </div>
+                                <p className="brightid-nft-mint-step--mobile">
+                                    <br />
+                                </p>
+                                <p className="brightid-nft-mint-step__description-p">
+                                    If BrightID is installed on another device
+                                    scan the QR code below with the "Scan a
+                                    Code" button in the BrightID mobile app.
+                                </p>
+                            </div>
+                            <div className="brightid-nft-mint-step--desktop">
+                                <p className="brightid-nft-mint-step__description-p">
+                                    Use the "Scan a Code" button in the BrightID
+                                    app to scan the QR code below.
+                                </p>
+                            </div>
+                            <p className="brightid-nft-mint-step__description-qrcode-container">
+                                <QRCode
+                                    renderAs="svg"
+                                    size={200}
+                                    value={qrCodeUrl}
+                                />
+                            </p>
+                            <div className="brightid-nft-mint-step--desktop">
+                                <p className="brightid-nft-mint-step__description-p">
+                                    After linking, you'll get a confirmation in
+                                    the BrightID app. Then just wait a few
+                                    seconds and this website will update to
+                                    allow continuing to the next step.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                    <div className="brightid-nft-mint-step__feedback"></div>
+                </section>
+
                 <section
                     className={`
                         brightid-nft-mint-step
