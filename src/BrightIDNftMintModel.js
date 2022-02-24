@@ -733,7 +733,7 @@ class BrightIDNftMintModel {
 
             // this.isBrightIDLinked = await this.queryBrightIDLink(addr);
 
-            this.isBrightIDLinked = true; // DEBUG
+            this.isBrightIDLinked = false; // DEBUG
 
             return this.isBrightIDLinked;
         } catch (e) {
@@ -746,7 +746,7 @@ class BrightIDNftMintModel {
         try {
             // this.isUUIDLinked = await this.queryBrightIDLink(this.uuidHex);
 
-            this.isUUIDLinked = true; // DEBUG
+            this.isUUIDLinked = false; // DEBUG
 
             return this.isUUIDLinked;
         } catch (e) {
@@ -763,7 +763,7 @@ class BrightIDNftMintModel {
             //     addr
             // );
 
-            this.isBoundViaContract = true; // DEBUG
+            this.isBoundViaContract = false; // DEBUG
 
             return this.isBoundViaContract;
         } catch (e) {
@@ -780,7 +780,7 @@ class BrightIDNftMintModel {
             //     addr
             // );
 
-            this.isVerifiedViaContract = true; // DEBUG
+            this.isVerifiedViaContract = false; // DEBUG
 
             return this.isVerifiedViaContract;
         } catch (e) {
