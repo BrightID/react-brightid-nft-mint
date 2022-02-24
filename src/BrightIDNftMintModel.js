@@ -609,6 +609,8 @@ class BrightIDNftMintModel {
                     responseJson.data.contextIds[0].toLowerCase() ===
                     contextId.toLowerCase()
                 );
+
+                // return true; // DEBUG
             }
 
             if (response.status === 403) {
@@ -733,7 +735,7 @@ class BrightIDNftMintModel {
 
             // this.isBrightIDLinked = await this.queryBrightIDLink(addr);
 
-            this.isBrightIDLinked = false; // DEBUG
+            this.isBrightIDLinked = true; // DEBUG
 
             return this.isBrightIDLinked;
         } catch (e) {
@@ -744,9 +746,9 @@ class BrightIDNftMintModel {
 
     async initIsUUIDLinked() {
         try {
-            // this.isUUIDLinked = await this.queryBrightIDLink(this.uuidHex);
+            this.isUUIDLinked = await this.queryBrightIDLink(this.uuidHex);
 
-            this.isUUIDLinked = false; // DEBUG
+            // this.isUUIDLinked = false; // DEBUG
 
             return this.isUUIDLinked;
         } catch (e) {
