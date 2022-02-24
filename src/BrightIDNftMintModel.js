@@ -547,7 +547,7 @@ class BrightIDNftMintModel {
     }
 
     async getQrCodeUUIDUrl() {
-        return `${this.deepLinkPrefix}/${this.context}/${this.uuidHex}`;
+        return `${this.deepLinkPrefix}/${this.context}/${this.uuidByte32}`;
     }
 
     async queryWalletAddress() {
@@ -758,7 +758,7 @@ class BrightIDNftMintModel {
 
     async initIsUUIDLinked() {
         try {
-            this.isUUIDLinked = await this.queryBrightIDLink(this.uuidHex);
+            this.isUUIDLinked = await this.queryBrightIDLink(this.uuidByte32);
 
             // this.isUUIDLinked = true; // DEBUG
 
@@ -820,7 +820,7 @@ class BrightIDNftMintModel {
         console.log(addr);
 
         console.log("UUID Hash");
-        const uuidHash = await contract.hashUUID(uuidByte32);
+        const uuidHash = await contract.hashUUID(this.uuidByte32);
         console.log(uuidHash);
 
         console.log("nonce");
@@ -884,7 +884,7 @@ class BrightIDNftMintModel {
 
     async mintViaRelay() {
         const verificationData = await this.queryBrightIDSignature(
-            this.uuidHex
+            this.uuidByte32
         );
 
         const contract = await this.getContractRw();
@@ -919,7 +919,7 @@ class BrightIDNftMintModel {
         //     headers: {
         //         "Content-Type": "application/json; charset=utf-8",
         //     },
-        //     body: JSON.stringify({ uuid: this.uuidHex }),
+        //     body: JSON.stringify({ uuid: this.uuidByte32 }),
         // });
 
         // return await fetch(request);
