@@ -1150,7 +1150,7 @@ function BrightIDNftMint({
                                         className="brightid-nft-mint-step__button"
                                         onClick={() => mintViaRelay()}
                                     >
-                                        Mint
+                                        Mint Via Relay
                                     </button>
                                 )}
                             {stepConnectWalletComplete() &&
@@ -1159,7 +1159,7 @@ function BrightIDNftMint({
                                         className="brightid-nft-mint-step__button"
                                         onClick={() => mintViaTransaction()}
                                     >
-                                        Mint
+                                        Mint Via Txn
                                     </button>
                                 )}
                         </div>
