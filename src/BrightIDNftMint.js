@@ -895,10 +895,10 @@ function BrightIDNftMint({
                         brightid-nft-mint-step
                         brightid-nft-mint-step--brightid-link
                         brightid-nft-mint-step--${getStepCompleteString(
-                            stepBrightIDLinkedComplete()
+                            stepUUIDLinkedComplete()
                         )}
                         brightid-nft-mint-step--${getStepActiveString(
-                            stepBrightIDLinkedActive()
+                            stepUUIDLinkedActive()
                         )}
                     `}
                 >
