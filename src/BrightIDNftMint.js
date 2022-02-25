@@ -930,7 +930,7 @@ function BrightIDNftMint({
                             </button>
                         </div> */}
                     </div>
-                    {qrCodeUUIDUrl && (
+                    {stepBindViaRelayComplete() && qrCodeUUIDUrl && (
                         <div
                             className="
                             brightid-nft-mint-step__description
