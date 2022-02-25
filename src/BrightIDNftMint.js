@@ -23,8 +23,10 @@ function BrightIDNftMint({
     appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
     brightIdMeetUrl = "https://meet.brightid.org",
     deepLinkPrefix = "brightid://link-verification/http:%2f%2fnode.brightid.org",
+    mintTokenFaucetUrl = "https://www.gimlu.com/faucet",
     mintChainId = 100,
     mintChainName = "Gnosis Chain",
+    mintTokenName = "xDai",
     mintBlockExplorerUrl = "https://blockscout.com/xdai/mainnet/",
     mintBlockExplorerTxnPath = "/tx/",
     mintRpcUrl = "https://rpc.gnosischain.com/",
@@ -40,6 +42,12 @@ function BrightIDNftMint({
     const [walletAddress, setWalletAddress] = useState("");
 
     const [ensName, setENSName] = useState("");
+
+    const [chainId, setChainId] = useState("");
+
+    const [gasBalance, setGasBalance] = useState(0.0);
+
+    const [canAutoSwitchNetworks, setCanAutoSwitchNetworks] = useState(false);
 
     const [qrCodeUUIDUrl, setQrCodeUUIDUrl] = useState("");
 
@@ -60,6 +68,9 @@ function BrightIDNftMint({
     const [stepMintViaRelayError, setStepMintViaRelayError] = useState("");
 
     const [linkUUIDToBrightIDError, setLinkUUIDToBrightIDError] = useState("");
+
+    const [stepSwitchToMintNetworkError, setStepSwitchToMintNetworkError] =
+        useState("");
 
     const [stepBoundViaContractError, setStepBoundViaContractError] =
         useState("");
@@ -90,6 +101,9 @@ function BrightIDNftMint({
         resetWalletData();
         setWalletAddress("");
         setENSName("");
+        setChainId("");
+        setGasBalance("");
+        setCanAutoSwitchNetworks("");
         setQrCodeUUIDUrl("");
         setIsUUIDLinked("");
         setIsBoundViaContract(false);
@@ -101,10 +115,17 @@ function BrightIDNftMint({
         initUUIDHex();
         initWalletAddress();
         initENSName();
+        initChainId("");
+        initGasBalance("");
+        initCanAutoSwitchNetworks();
         initQrCodeUUIDUrl();
         initIsUUIDLinked();
         // initIsBoundViaContract();
         initIsMintedViaContract();
+    }
+
+    function onChainChanged() {
+        initChainId();
     }
 
     function onChangePolling() {
@@ -129,6 +150,11 @@ function BrightIDNftMint({
                 "accountsChanged",
                 onAccountChange
             );
+
+            registration.web3Instance.removeListener(
+                "chainChanged",
+                onChainChanged
+            );
         }
 
         if (changePollingInterval) {
@@ -141,6 +167,8 @@ function BrightIDNftMint({
 
         if (typeof registration.web3Instance === "object") {
             registration.web3Instance.on("accountsChanged", onAccountChange);
+
+            registration.web3Instance.on("chainChanged", onChainChanged);
         }
 
         changePollingInterval = setInterval(onChangePolling, 5000);
@@ -201,6 +229,40 @@ function BrightIDNftMint({
             const ensName = await registration.initENSName();
 
             setENSName(ensName);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async function initChainId() {
+        try {
+            const chainId = await registration.initChainId();
+
+            setChainId(chainId);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async function initGasBalance() {
+        try {
+            const gasBalance = await registration.initGasBalance();
+
+            setGasBalance(gasBalance);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async function initCanAutoSwitchNetworks() {
+        try {
+            const canAutoSwitchNetworks =
+                await registration.canAutoSwitchNetworks();
+
+            setCanAutoSwitchNetworks(canAutoSwitchNetworks);
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -311,8 +373,10 @@ function BrightIDNftMint({
             appStoreIos,
             brightIdMeetUrl,
             deepLinkPrefix,
+            mintTokenFaucetUrl,
             mintChainId,
             mintChainName,
+            mintTokenName,
             mintBlockExplorerUrl,
             mintBlockExplorerTxnPath,
             mintRpcUrl,
@@ -369,6 +433,54 @@ function BrightIDNftMint({
             } else {
                 setStepConnectWalletError(e.message);
             }
+        }
+    }
+
+    async function faucetClaim() {
+        window.open(mintTokenFaucetUrl, "_blank");
+    }
+
+    async function switchToMintNetwork() {
+        try {
+            await registration.switchToMintNetwork();
+
+            setStepSwitchToMintNetworkError("");
+        } catch (switchError) {
+            // console.log(switchError);
+
+            // This error code indicates that the chain has not been added to MetaMask.
+            if (switchError.code === 4902) {
+                addMintNetwork();
+
+                return;
+            }
+
+            // console.error(switchError);
+            // console.log(switchError);
+
+            setStepSwitchToMintNetworkError(switchError.message);
+        }
+    }
+
+    async function switchToMainnetNetwork() {
+        try {
+            await registration.switchToMainnetNetwork();
+        } catch (switchError) {
+            // console.error(switchError);
+            // console.log(switchError);
+        }
+    }
+
+    async function addMintNetwork() {
+        try {
+            await registration.addMintNetwork();
+
+            setStepSwitchToMintNetworkError("");
+        } catch (addError) {
+            // console.error(addError);
+            // console.log(addError);
+
+            setStepSwitchToMintNetworkError(addError.message);
         }
     }
 
@@ -513,6 +625,14 @@ function BrightIDNftMint({
         return isMintedViaContract === true;
     }
 
+    function hasSwitchedToMintNetwork() {
+        return chainId === Number(mintChainId);
+    }
+
+    function hasObtainedGasTokens() {
+        return gasBalance > 0;
+    }
+
     /* Step Completion Flags */
     /* ---------------------------------------------------------------------- */
 
@@ -522,6 +642,14 @@ function BrightIDNftMint({
 
     function stepConnectWalletComplete() {
         return hasConnectedWallet();
+    }
+
+    function stepSwitchToMintNetworkComplete() {
+        return hasSwitchedToMintNetwork();
+    }
+
+    function stepObtainGasTokensComplete() {
+        return hasObtainedGasTokens();
     }
 
     function stepUUIDLinkedComplete() {
@@ -545,6 +673,16 @@ function BrightIDNftMint({
 
     function stepConnectWalletActive() {
         return true;
+    }
+
+    function stepSwitchToMintNetworkActive() {
+        return stepConnectWalletActive();
+    }
+
+    function stepObtainGasTokensActive() {
+        return (
+            stepSwitchToMintNetworkComplete() && stepSwitchToMintNetworkActive()
+        );
     }
 
     function stepBindViaRelayActive() {
@@ -771,6 +909,118 @@ function BrightIDNftMint({
                                 {stepConnectWalletError}
                             </div>
                         )}
+                    </div>
+                </section>
+
+                <section
+                    className={`
+                        brightid-nft-mint-step
+                        brightid-nft-mint-step--${getStepCompleteString(
+                            stepSwitchToMintNetworkComplete()
+                        )}
+                        brightid-nft-mint-step--${getStepActiveString(
+                            stepSwitchToMintNetworkActive()
+                        )}
+                    `}
+                >
+                    <div className="brightid-nft-mint-step__main">
+                        <div className="brightid-nft-mint-step__status">
+                            <div className="brightid-nft-mint-step__status-icon"></div>
+                        </div>
+                        <div className="brightid-nft-mint-step__header">
+                            <h2 className="brightid-nft-mint-step__heading">
+                                Switch Wallet to {mintChainName}
+                            </h2>
+                        </div>
+                        <div className="brightid-nft-mint-step__action">
+                            {canAutoSwitchNetworks && (
+                                <button
+                                    className="brightid-nft-mint-step__button"
+                                    onClick={() => switchToMintNetwork()}
+                                >
+                                    Switch
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    {!canAutoSwitchNetworks && (
+                        <div
+                            className="
+                                brightid-nft-mint-step__description
+                                brightid-nft-mint-step__description--action
+                                brightid-nft-mint-step__description--action-hide-on-complete
+                            "
+                        >
+                            <p className="brightid-nft-mint-step__description-p">
+                                In your wallet app create a new network with the
+                                following data and switch to that network.
+                            </p>
+                            <p className="brightid-nft-mint-step__description-p">
+                                <strong>Network Name: </strong>
+                                {mintChainName}
+                            </p>
+                            <p className="brightid-nft-mint-step__description-p">
+                                <strong>RPC URL: </strong>
+                                {mintRpcUrl}
+                            </p>
+                            <p className="brightid-nft-mint-step__description-p">
+                                <strong>Chain ID: </strong>
+                                {mintChainId}
+                            </p>
+                            <p className="brightid-nft-mint-step__description-p">
+                                <strong>Currency Symbol: </strong>
+                                {mintTokenName}
+                            </p>
+                            <p className="brightid-nft-mint-step__description-p">
+                                <strong>Block Explorer URL: </strong>
+                                {mintBlockExplorerUrl}
+                            </p>
+                        </div>
+                    )}
+                    <div className="brightid-nft-mint-step__feedback">
+                        {stepSwitchToMintNetworkError && (
+                            <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
+                                {stepSwitchToMintNetworkError}
+                            </div>
+                        )}
+                    </div>
+                </section>
+                <section
+                    className={`
+                        brightid-nft-mint-step
+                        brightid-nft-mint-step--${getStepCompleteString(
+                            stepObtainGasTokensComplete()
+                        )}
+                        brightid-nft-mint-step--${getStepActiveString(
+                            stepObtainGasTokensActive()
+                        )}
+                    `}
+                >
+                    <div className="brightid-nft-mint-step__main">
+                        <div className="brightid-nft-mint-step__status">
+                            <div className="brightid-nft-mint-step__status-icon"></div>
+                        </div>
+                        <div className="brightid-nft-mint-step__header">
+                            <h2 className="brightid-nft-mint-step__heading">
+                                Obtain {mintChainName} Gas Tokens
+                            </h2>
+                        </div>
+                        <div className="brightid-nft-mint-step__action">
+                            <button
+                                className="brightid-nft-mint-step__button"
+                                onClick={() => faucetClaim()}
+                            >
+                                Obtain
+                            </button>
+                        </div>
+                    </div>
+                    <div className="brightid-nft-mint-step__description">
+                        <p className="brightid-nft-mint-step__description-p">
+                            <strong>Balance: </strong>
+                            <span className="brightid-nft-mint-step__description-balance">
+                                {gasBalance} {mintTokenName}
+                            </span>
+                        </p>
                     </div>
                 </section>
 
@@ -1105,6 +1355,27 @@ function BrightIDNftMint({
                                         </a>
                                     )}
                                 </p>
+
+                                {hasSwitchedToMintNetwork() && (
+                                    <p className="brightid-nft-mint-step__description-p">
+                                        Before you leave you can use the button
+                                        below to switch your wallet back to the
+                                        Ethereum mainnet.
+                                    </p>
+                                )}
+                                {hasSwitchedToMintNetwork() &&
+                                    canAutoSwitchNetworks && (
+                                        <p className="brightid-nft-mint-step__description-p">
+                                            <button
+                                                className="brightid-nft-mint-step__button"
+                                                onClick={() =>
+                                                    switchToMainnetNetwork()
+                                                }
+                                            >
+                                                Switch back to Mainnet
+                                            </button>
+                                        </p>
+                                    )}
                             </div>
                         )}
                     </div>

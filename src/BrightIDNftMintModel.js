@@ -299,6 +299,8 @@ class BrightIDNftMintModel {
 
     chainId = 0;
 
+    gasBalance = 0.0;
+
     brightIDLinkedWallets = [];
 
     isBrightIDLinked = false;
@@ -329,9 +331,13 @@ class BrightIDNftMintModel {
 
     deepLinkPrefix = "";
 
+    mintTokenFaucetUrl = "";
+
     mintChainId = 0;
 
     mintChainName = "";
+
+    mintTokenName = "";
 
     mintBlockExplorerUrl = "";
 
@@ -356,8 +362,10 @@ class BrightIDNftMintModel {
         appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
         brightIdMeetUrl = "https://meet.brightid.org",
         deepLinkPrefix = "brightid://link-verification/http:%2f%2fnode.brightid.org",
+        mintTokenFaucetUrl = "https://www.gimlu.com/faucet",
         mintChainId = 100,
         mintChainName = "Gnosis Chain",
+        mintTokenName = "xDai",
         mintBlockExplorerUrl = "https://blockscout.com/xdai/mainnet",
         mintBlockExplorerTxnPath = "/tx/",
         mintRpcUrl = "https://rpc.gnosischain.com/",
@@ -374,8 +382,10 @@ class BrightIDNftMintModel {
         this.appStoreIos = appStoreIos;
         this.brightIdMeetUrl = brightIdMeetUrl;
         this.deepLinkPrefix = deepLinkPrefix;
+        this.mintTokenFaucetUrl = mintTokenFaucetUrl;
         this.mintChainId = Number(mintChainId);
         this.mintChainName = mintChainName;
+        this.mintTokenName = mintTokenName;
         this.mintBlockExplorerUrl = mintBlockExplorerUrl;
         this.mintBlockExplorerTxnPath = mintBlockExplorerTxnPath;
         this.mintRpcUrl = mintRpcUrl;
@@ -387,6 +397,8 @@ class BrightIDNftMintModel {
     resetWalletData() {
         this.walletAddress = "";
         this.ensName = "";
+        this.chainId = 0;
+        this.gasBalance = 0.0;
         this.isBrightIDLinked = false;
         this.isUUIDLinked = false;
         this.isBoundViaContract = false;
@@ -613,6 +625,27 @@ class BrightIDNftMintModel {
         }
     }
 
+    async queryGasBalance() {
+        try {
+            console.log("checkGas");
+
+            const addr = await this.getWalletAddress();
+
+            const provider = await this.getRegistrationProvider();
+
+            const balanceRaw = await provider.getBalance(addr);
+
+            const balanceFormatted = await ethers.utils.formatEther(balanceRaw);
+
+            return parseFloat(balanceFormatted);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+
+            return 0.0;
+        }
+    }
+
     async queryBrightIDLink(contextId) {
         try {
             console.log("queryBrightIDLink");
@@ -691,7 +724,6 @@ class BrightIDNftMintModel {
             console.log("queryTokenBalance");
 
             const addr = await this.getWalletAddress();
-            // const addr = "0xb9d52bbfa575fdf0b0dfee9fc09c5010feab98c9";
 
             const contract = await this.getRegistrationProviderContract();
 
@@ -767,6 +799,17 @@ class BrightIDNftMintModel {
             this.chainId = await this.queryChainId();
 
             return this.chainId;
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async initGasBalance() {
+        try {
+            this.gasBalance = await this.queryGasBalance();
+
+            return this.gasBalance;
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -853,6 +896,50 @@ class BrightIDNftMintModel {
 
     async chooseWallet() {
         await this.initFreshInstance();
+    }
+
+    async switchToMainnetNetwork() {
+        const provider = await this.getProvider();
+
+        return await provider.provider.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: "0x1" }],
+        });
+    }
+
+    async switchToMintNetwork() {
+        const mintHexChainId = ethers.utils.hexlify(Number(this.mintChainId));
+
+        const provider = await this.getProvider();
+
+        return await provider.provider.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: mintHexChainId }],
+        });
+    }
+
+    async addMintNetwork() {
+        const mintHexChainId = ethers.utils.hexlify(Number(this.mintChainId));
+
+        const provider = await this.getProvider();
+
+        return await provider.provider.request({
+            method: "wallet_addEthereumChain",
+            params: [
+                {
+                    chainId: mintHexChainId,
+                    chainName: this.mintChainName,
+                    nativeCurrency: {
+                        name: this.mintTokenName,
+                        symbol: this.mintTokenName,
+                        decimals: Number(this.mintTokenDecimal),
+                    },
+                    rpcUrls: [this.mintRpcUrl],
+                    blockExplorerUrls: [this.mintBlockExplorerUrl],
+                    iconUrls: [this.mintIconUrl],
+                },
+            ],
+        });
     }
 
     async getBindParams() {
