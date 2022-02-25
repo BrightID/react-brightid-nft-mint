@@ -6,7 +6,7 @@
 
 ## Use With Relay Server
 
-Using the module with a relay server is a much better user experience, but requires you setting up a server, and funding a wallet with EIDI. This server will handle the IDChain transactions on behalf of the user. The relay server code can be found at https://github.com/SongADAO/brightid-nft-mint-relay.
+Using the module with a relay server is a much better user experience, but requires you setting up a server, and funding a wallet with EIDI. This server will handle the IDChain transactions on behalf of the user. The relay server code can be found at https://github.com/BrightID/brightid-nft-mint-relay.
 
 ### Import
 

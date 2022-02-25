@@ -10,14 +10,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/SongADAO/react-brightid-nft-mint.git"
+    "url": "https://github.com/BrightID/react-brightid-nft-mint.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf build",
     "build": "npm run clean && cross-env NODE_ENV=production babel ./src --out-dir ./build --copy-files --ignore __tests__,spec.js,test.js,stories.js,__snapshots__"
   },
-  "author": "SongADAO LCA",
+  "author": "BrightID",
   "license": "MIT",
   "peerDependencies": {
     "@walletconnect/web3-provider": "^1.7.0",
