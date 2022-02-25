@@ -68,6 +68,10 @@
     background: var(--stepButtonBackgroundColorHover);
 }
 
+.brightid-nft-mint-step__button + .brightid-nft-mint-step__button {
+    margin-top: 2px;
+}
+
 /* Step */
 /* -------------------------------------------------------------------------- */
 
