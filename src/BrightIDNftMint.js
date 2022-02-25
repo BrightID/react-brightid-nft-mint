@@ -158,6 +158,8 @@ function BrightIDNftMint({
 
             // await initIsBoundViaContract();
             setIsBoundViaContract(false);
+
+            initIsUUIDLinked();
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -504,7 +506,7 @@ function BrightIDNftMint({
     }
 
     function hasBoundViaContract() {
-        return isBoundViaContract === true;
+        return isBoundViaContract === true || isUUIDLinked === true;
     }
 
     function hasMintedViaContract() {
