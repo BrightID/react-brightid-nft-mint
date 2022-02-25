@@ -950,7 +950,7 @@ function BrightIDNftMint({
                                         className="brightid-nft-mint-step__button"
                                         onClick={() => bindViaTransaction()}
                                     >
-                                        Bind Via Contract
+                                        Bind Via Txn
                                     </button>
                                 )}
                         </div>

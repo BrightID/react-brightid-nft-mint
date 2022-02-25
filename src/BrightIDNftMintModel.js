@@ -834,9 +834,9 @@ class BrightIDNftMintModel {
 
     async initIsMintedViaContract() {
         try {
-            this.isMintedViaContract = await this.queryTokenBalance();
+            // this.isMintedViaContract = await this.queryTokenBalance();
 
-            // this.isMintedViaContract = false; // DEBUG
+            this.isMintedViaContract = false; // DEBUG
 
             return this.isMintedViaContract;
         } catch (e) {
@@ -860,30 +860,29 @@ class BrightIDNftMintModel {
         const contract = await this.getRegistrationProviderContract();
         const provider = await this.getProvider();
 
-        console.log("Wallet Address");
         const addr = await this.getWalletAddress();
-        console.log(addr);
+        // console.log("Wallet Address");
+        // console.log(addr);
 
-        console.log("UUID Hash");
         const uuidHash = await contract.hashUUID(this.uuidByte32);
-        console.log(uuidHash);
+        // console.log("UUID Hash");
+        // console.log(uuidHash);
 
-        console.log("nonce");
         const nonceBytes = ethers.utils.randomBytes(3);
         const nonce = new Buffer(nonceBytes).readUIntBE(0, nonceBytes.length);
-        console.log(nonceBytes);
-        console.log(nonce);
+        // console.log("nonce");
+        // console.log(nonceBytes);
+        // console.log(nonce);
 
-        console.log("getUUIDHash");
         const hashToSign = await contract.getUUIDHash(addr, uuidHash, nonce);
-        console.log(hashToSign);
+        // console.log("getUUIDHash");
+        // console.log(hashToSign);
 
-        console.log("signMessage");
         const bytesDataHash = ethers.utils.arrayify(hashToSign);
         const signature = await provider.getSigner().signMessage(bytesDataHash);
-        console.log(signature);
+        // console.log("signMessage");
+        // console.log(signature);
 
-        // console.log("done");
         console.log("pass to bind");
         console.log("--------------------------");
         console.log(addr);
@@ -911,8 +910,14 @@ class BrightIDNftMintModel {
         const r = "0x" + verificationData.data.sig.r;
         const s = "0x" + verificationData.data.sig.s;
 
+        const contextIdsByte32 = contextIds.map((contextId) => {
+            return "0x" + new Buffer(contextId).toString("hex");
+        });
+
+        console.log("pass to mint");
         console.log("-------------------------------");
         console.log(contextIds);
+        console.log(contextIdsByte32);
         console.log(timestamp);
         console.log(v);
         console.log(r);
@@ -921,10 +926,27 @@ class BrightIDNftMintModel {
 
         return {
             contextIds,
+            contextIdsByte32,
             timestamp,
             v,
             r,
             s,
+        };
+    }
+
+    async getMintRelayParams() {
+        const addr = await this.getWalletAddress();
+        const uuid = this.uuidHex;
+
+        console.log("pass to mint relay");
+        console.log("-------------------------------");
+        console.log(addr);
+        console.log(uuid);
+        console.log("-------------------------------");
+
+        return {
+            addr,
+            uuid,
         };
     }
 
@@ -941,7 +963,6 @@ class BrightIDNftMintModel {
 
         const contract = await this.getContractRw();
 
-        console.log("tx");
         return await contract.bind(
             bindParams.addr,
             bindParams.uuidHash,
@@ -959,12 +980,12 @@ class BrightIDNftMintModel {
             );
         }
 
-        const mintParams = this.getMintParams();
+        const mintParams = await this.getMintParams();
 
         const contract = await this.getContractRw();
 
         return await contract.mint(
-            mintParams.contextIds,
+            mintParams.contextIdsByte32,
             mintParams.timestamp,
             mintParams.v,
             mintParams.r,
@@ -987,7 +1008,7 @@ class BrightIDNftMintModel {
     }
 
     async mintViaRelay() {
-        const mintParams = this.getMintParams();
+        const mintParams = await this.getMintRelayParams();
 
         const request = new Request(this.relayMintURL, {
             method: "POST",
@@ -995,7 +1016,6 @@ class BrightIDNftMintModel {
                 "Content-Type": "application/json; charset=utf-8",
             },
             body: JSON.stringify(mintParams),
-            // body: JSON.stringify({ uuid: this.uuidByte32 }),
         });
 
         return await fetch(request);
