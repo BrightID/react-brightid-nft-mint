@@ -893,7 +893,7 @@ function BrightIDNftMint({
                         {stepBindViaRelayComplete() && (
                             <div className="brightid-nft-mint-step__description">
                                 <p className="brightid-nft-mint-step__description-p">
-                                    <strong>You're UUID has been bound.</strong>
+                                    <strong>Your UUID has been bound.</strong>
                                 </p>
                             </div>
                         )}
@@ -1091,7 +1091,7 @@ function BrightIDNftMint({
                         {stepMintViaRelayComplete() && (
                             <div className="brightid-nft-mint-step__description">
                                 <p className="brightid-nft-mint-step__description-p">
-                                    <strong>You're NFT has been minted.</strong>
+                                    <strong>Your NFT has been minted.</strong>
                                 </p>
                             </div>
                         )}
