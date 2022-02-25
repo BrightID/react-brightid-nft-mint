@@ -64,8 +64,6 @@ function BrightIDNftMint({
 
     const [linkUUIDToBrightIDError, setLinkUUIDToBrightIDError] = useState("");
 
-    // ---
-
     const [stepBoundViaContractError, setStepBoundViaContractError] =
         useState("");
 
@@ -76,8 +74,6 @@ function BrightIDNftMint({
 
     const [isBoundViaContractTxnId, setIsBoundViaContractTxnId] =
         useState(null);
-
-    // ---
 
     const [stepMintedViaContractError, setStepMintedViaContractError] =
         useState("");
