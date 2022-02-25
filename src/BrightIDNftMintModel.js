@@ -381,21 +381,19 @@ class BrightIDNftMintModel {
         this.mintRpcUrl = mintRpcUrl;
         this.verificationUrl = verificationUrl;
 
-        console.log("UUID");
         this.uuid = crypto.randomUUID();
-        // this.uuid = ethers.utils.randomBytes(16);
-        console.log(this.uuid);
+        // console.log("UUID");
+        // console.log(this.uuid);
 
-        console.log("UUID Hex");
         this.uuidHex = this.uuid.replaceAll("-", "");
-        // this.uuidHex = new Buffer(this.uuid).toString("hex");
-        console.log(this.uuidHex);
+        // console.log("UUID Hex");
+        // console.log(this.uuidHex);
 
-        this.uuidHex = "a5e502211e8b406b8877e68a01063cfe"; // DEBUG
+        // this.uuidHex = "a5e502211e8b406b8877e68a01063cfe"; // DEBUG
 
-        console.log("UUID Bytes32");
         this.uuidByte32 = "0x" + new Buffer(this.uuidHex).toString("hex");
-        console.log(this.uuidByte32);
+        // console.log("UUID Bytes32");
+        // console.log(this.uuidByte32);
     }
 
     resetWalletData() {
