@@ -1096,15 +1096,13 @@ function BrightIDNftMint({
                                 </p>
                                 <p className="brightid-nft-mint-step__description-p">
                                     {walletAddress && (
-                                        <div>
-                                            <a
-                                                className="brightid-nft-mint-step__description-link"
-                                                href={`https://epor.io/${walletAddress}`}
-                                                rel="noreferrer"
-                                            >
-                                                View Your NFT Here
-                                            </a>
-                                        </div>
+                                        <a
+                                            className="brightid-nft-mint-step__description-link"
+                                            href={`https://epor.io/${walletAddress}`}
+                                            rel="noreferrer"
+                                        >
+                                            View Your NFT Here
+                                        </a>
                                     )}
                                 </p>
                             </div>
