@@ -100,8 +100,8 @@ function BrightIDNftMint({
         setQrCodeUrl("");
         setQrCodeUUIDUrl("");
         setIsUUIDLinked("");
-        setIsBoundViaContract("");
-        setIsMintedViaContract("");
+        setIsBoundViaContract(false);
+        setIsMintedViaContract(false);
     }
 
     async function onAccountChange() {
@@ -111,7 +111,7 @@ function BrightIDNftMint({
         initQrCodeUrl();
         initQrCodeUUIDUrl();
         initIsUUIDLinked();
-        initIsBoundViaContract();
+        // initIsBoundViaContract();
         initIsMintedViaContract();
     }
 
@@ -120,9 +120,9 @@ function BrightIDNftMint({
             initIsUUIDLinked();
         }
 
-        if (registration.isBoundViaContract === false) {
-            initIsBoundViaContract();
-        }
+        // if (registration.isBoundViaContract === false) {
+        //     initIsBoundViaContract();
+        // }
 
         if (registration.isMintedViaContract === false) {
             initIsMintedViaContract();
@@ -222,19 +222,19 @@ function BrightIDNftMint({
         }
     }
 
-    async function initIsBoundViaContract() {
-        try {
-            const isBoundViaContract =
-                await registration.initIsBoundViaContract();
+    // async function initIsBoundViaContract() {
+    //     try {
+    //         const isBoundViaContract =
+    //             await registration.initIsBoundViaContract();
 
-            // console.log(isBoundViaContract);
+    //         // console.log(isBoundViaContract);
 
-            setIsBoundViaContract(isBoundViaContract);
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
+    //         setIsBoundViaContract(isBoundViaContract);
+    //     } catch (e) {
+    //         // console.error(e);
+    //         // console.log(e);
+    //     }
+    // }
 
     async function initIsMintedViaContract() {
         try {
@@ -406,7 +406,8 @@ function BrightIDNftMint({
             // const receipt = await tx.wait();
             // // console.log(receipt);
 
-            await initIsBoundViaContract();
+            // await initIsBoundViaContract();
+            setIsBoundViaContract(true);
 
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
@@ -414,6 +415,9 @@ function BrightIDNftMint({
         } catch (e) {
             // console.error(e);
             // console.log(e);
+
+            // await initIsBoundViaContract();
+            setIsBoundViaContract(false);
 
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
@@ -443,6 +447,8 @@ function BrightIDNftMint({
             // console.error(e);
             // console.log(e);
 
+            await initIsMintedViaContract();
+
             setIsMintedViaContractTxnProcessing(false);
             setIsMintedViaContractTxnId(null);
             setStepMintedViaContractError(e.message);
@@ -463,7 +469,8 @@ function BrightIDNftMint({
                 throw new Error(body.errorMessage);
             }
 
-            await initIsBoundViaContract();
+            // await initIsBoundViaContract();
+            setIsBoundViaContract(true);
 
             setStepBindViaRelayError("");
             setStepBindViaRelayStatus("");
@@ -471,7 +478,8 @@ function BrightIDNftMint({
             // console.error(e);
             // console.log(e);
 
-            await initIsBoundViaContract();
+            // await initIsBoundViaContract();
+            setIsBoundViaContract(false);
 
             setStepBindViaRelayError(e.message);
             setStepBindViaRelayStatus("");

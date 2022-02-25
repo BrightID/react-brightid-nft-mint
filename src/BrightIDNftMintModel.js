@@ -802,22 +802,22 @@ class BrightIDNftMintModel {
         }
     }
 
-    async initIsBoundViaContract() {
-        try {
-            const addr = await this.getWalletAddress();
+    // async initIsBoundViaContract() {
+    //     try {
+    //         const addr = await this.getWalletAddress();
 
-            this.isBoundViaContract = await this.queryBrightIDVerification(
-                addr
-            );
+    //         this.isBoundViaContract = await this.queryBrightIDVerification(
+    //             addr
+    //         );
 
-            // this.isBoundViaContract = true; // DEBUG
+    //         // this.isBoundViaContract = true; // DEBUG
 
-            return this.isBoundViaContract;
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
+    //         return this.isBoundViaContract;
+    //     } catch (e) {
+    //         // console.error(e);
+    //         // console.log(e);
+    //     }
+    // }
 
     async initIsMintedViaContract() {
         try {
