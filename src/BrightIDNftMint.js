@@ -1003,7 +1003,8 @@ function BrightIDNftMint({
                             stepMintViaRelayComplete()
                         )}
                         brightid-nft-mint-step--${getStepActiveString(
-                            stepMintViaRelayActive()
+                            stepMintViaRelayComplete() ||
+                                stepMintViaRelayActive()
                         )}
                     `}
                 >
