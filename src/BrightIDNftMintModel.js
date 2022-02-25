@@ -789,11 +789,11 @@ class BrightIDNftMintModel {
 
     async initIsBrightIDLinked() {
         try {
-            // const addr = await this.getWalletAddress();
+            const addr = await this.getWalletAddress();
 
-            // this.isBrightIDLinked = await this.queryBrightIDLink(addr);
+            this.isBrightIDLinked = await this.queryBrightIDLink(addr);
 
-            this.isBrightIDLinked = true; // DEBUG
+            // this.isBrightIDLinked = true; // DEBUG
 
             return this.isBrightIDLinked;
         } catch (e) {
@@ -817,13 +817,13 @@ class BrightIDNftMintModel {
 
     async initIsBoundViaContract() {
         try {
-            // const addr = await this.getWalletAddress();
+            const addr = await this.getWalletAddress();
 
-            // this.isBoundViaContract = await this.queryBrightIDVerification(
-            //     addr
-            // );
+            this.isBoundViaContract = await this.queryBrightIDVerification(
+                addr
+            );
 
-            this.isBoundViaContract = true; // DEBUG
+            // this.isBoundViaContract = true; // DEBUG
 
             return this.isBoundViaContract;
         } catch (e) {
@@ -834,9 +834,9 @@ class BrightIDNftMintModel {
 
     async initIsMintedViaContract() {
         try {
-            // this.isMintedViaContract = await this.queryTokenBalance();
+            this.isMintedViaContract = await this.queryTokenBalance();
 
-            this.isMintedViaContract = false; // DEBUG
+            // this.isMintedViaContract = false; // DEBUG
 
             return this.isMintedViaContract;
         } catch (e) {
