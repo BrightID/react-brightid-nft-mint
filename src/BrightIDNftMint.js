@@ -43,8 +43,6 @@ function BrightIDNftMint({
 
     const [qrCodeUUIDUrl, setQrCodeUUIDUrl] = useState("");
 
-    const [isBrightIDLinked, setIsBrightIDLinked] = useState(false);
-
     const [isUUIDLinked, setIsUUIDLinked] = useState(false);
 
     const [isBoundViaContract, setIsBoundViaContract] = useState(false);
@@ -101,7 +99,6 @@ function BrightIDNftMint({
         setENSName("");
         setQrCodeUrl("");
         setQrCodeUUIDUrl("");
-        setIsBrightIDLinked("");
         setIsUUIDLinked("");
         setIsBoundViaContract("");
         setIsMintedViaContract("");
@@ -113,17 +110,12 @@ function BrightIDNftMint({
         initENSName();
         initQrCodeUrl();
         initQrCodeUUIDUrl();
-        initIsBrightIDLinked();
         initIsUUIDLinked();
         initIsBoundViaContract();
         initIsMintedViaContract();
     }
 
     function onChangePolling() {
-        if (registration.isBrightIDLinked === false) {
-            initIsBrightIDLinked();
-        }
-
         if (registration.isUUIDLinked === false) {
             initIsUUIDLinked();
         }
@@ -213,17 +205,6 @@ function BrightIDNftMint({
             const qrCodeUUIDUrl = await registration.getQrCodeUUIDUrl();
 
             setQrCodeUUIDUrl(qrCodeUUIDUrl);
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
-
-    async function initIsBrightIDLinked() {
-        try {
-            const isBrightIDLinked = await registration.initIsBrightIDLinked();
-
-            setIsBrightIDLinked(isBrightIDLinked);
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -533,10 +514,6 @@ function BrightIDNftMint({
         return walletAddress !== "";
     }
 
-    function hasBrightIDLinked() {
-        return isBrightIDLinked === true;
-    }
-
     function hasUUIDLinked() {
         return isUUIDLinked === true;
     }
@@ -558,10 +535,6 @@ function BrightIDNftMint({
 
     function stepConnectWalletComplete() {
         return hasConnectedWallet();
-    }
-
-    function stepBrightIDLinkedComplete() {
-        return hasBrightIDLinked();
     }
 
     function stepUUIDLinkedComplete() {
@@ -587,12 +560,8 @@ function BrightIDNftMint({
         return true;
     }
 
-    function stepBrightIDLinkedActive() {
-        return stepConnectWalletComplete() && stepConnectWalletActive();
-    }
-
     function stepBindViaRelayActive() {
-        return stepBrightIDLinkedComplete() && stepBrightIDLinkedActive();
+        return stepConnectWalletComplete() && stepConnectWalletActive();
     }
 
     function stepUUIDLinkedActive() {
@@ -821,102 +790,6 @@ function BrightIDNftMint({
                 <section
                     className={`
                         brightid-nft-mint-step
-                        brightid-nft-mint-step--brightid-link
-                        brightid-nft-mint-step--${getStepCompleteString(
-                            stepBrightIDLinkedComplete()
-                        )}
-                        brightid-nft-mint-step--${getStepActiveString(
-                            stepBrightIDLinkedActive()
-                        )}
-                    `}
-                >
-                    <div className="brightid-nft-mint-step__main">
-                        <div className="brightid-nft-mint-step__status">
-                            <div className="brightid-nft-mint-step__status-icon"></div>
-                        </div>
-                        <div className="brightid-nft-mint-step__header">
-                            <h2 className="brightid-nft-mint-step__heading">
-                                Link Wallet to BrightID
-                            </h2>
-                        </div>
-                        {/* <div className="brightid-nft-mint-step__action">
-                            <button
-                                className="brightid-nft-mint-step__button"
-                                onClick={() => linkAddressToBrightID()}
-                            >
-                                Link Address
-                            </button>
-                        </div> */}
-                    </div>
-                    {qrCodeUrl && (
-                        <div
-                            className="
-                            brightid-nft-mint-step__description
-                            brightid-nft-mint-step__description--action
-                        "
-                        >
-                            <div className="brightid-nft-mint-step--mobile">
-                                <p className="brightid-nft-mint-step__description-p">
-                                    If you're on your mobile device just use
-                                    this button to open BrightID and link your
-                                    wallet.
-                                </p>
-                                <p className="brightid-nft-mint-step__description-button-container">
-                                    <button
-                                        className="brightid-nft-mint-step__button"
-                                        onClick={() => linkAddressToBrightID()}
-                                    >
-                                        Link Address
-                                    </button>
-                                </p>
-                                <div className="brightid-nft-mint-step__feedback">
-                                    {linkAddressToBrightIDError && (
-                                        <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
-                                            {linkAddressToBrightIDError}
-                                        </div>
-                                    )}
-                                </div>
-                                <p className="brightid-nft-mint-step--mobile">
-                                    <br />
-                                </p>
-                                <p className="brightid-nft-mint-step__description-p">
-                                    If BrightID is installed on another device
-                                    scan the QR code below with the "Scan a
-                                    Code" button in the BrightID mobile app.
-                                </p>
-                            </div>
-                            <div className="brightid-nft-mint-step--desktop">
-                                <p className="brightid-nft-mint-step__description-p">
-                                    Use the "Scan a Code" button in the BrightID
-                                    app to scan the QR code below.
-                                </p>
-                            </div>
-                            {/* <p className="brightid-nft-mint-step__description-qrcode-container">
-                                {qrCodeUrl}
-                            </p> */}
-                            <p className="brightid-nft-mint-step__description-qrcode-container">
-                                <QRCode
-                                    renderAs="svg"
-                                    size={200}
-                                    value={qrCodeUrl}
-                                />
-                            </p>
-                            <div className="brightid-nft-mint-step--desktop">
-                                <p className="brightid-nft-mint-step__description-p">
-                                    After linking, you'll get a confirmation in
-                                    the BrightID app. Then just wait a few
-                                    seconds and this website will update to
-                                    allow continuing to the next step.
-                                </p>
-                            </div>
-                        </div>
-                    )}
-                    <div className="brightid-nft-mint-step__feedback"></div>
-                </section>
-
-                <section
-                    className={`
-                        brightid-nft-mint-step
                         brightid-nft-mint-step--${getStepCompleteString(
                             stepBindViaRelayComplete()
                         )}
@@ -935,24 +808,22 @@ function BrightIDNftMint({
                             </h2>
                         </div>
                         <div className="brightid-nft-mint-step__action">
-                            {stepConnectWalletComplete() &&
-                                stepBrightIDLinkedComplete() && (
-                                    <button
-                                        className="brightid-nft-mint-step__button"
-                                        onClick={() => bindViaRelay()}
-                                    >
-                                        Bind Via Relay
-                                    </button>
-                                )}
-                            {stepConnectWalletComplete() &&
-                                stepBrightIDLinkedComplete() && (
-                                    <button
-                                        className="brightid-nft-mint-step__button"
-                                        onClick={() => bindViaTransaction()}
-                                    >
-                                        Bind Via Txn
-                                    </button>
-                                )}
+                            {stepConnectWalletComplete() && (
+                                <button
+                                    className="brightid-nft-mint-step__button"
+                                    onClick={() => bindViaRelay()}
+                                >
+                                    Bind Via Relay
+                                </button>
+                            )}
+                            {stepConnectWalletComplete() && (
+                                <button
+                                    className="brightid-nft-mint-step__button"
+                                    onClick={() => bindViaTransaction()}
+                                >
+                                    Bind Via Txn
+                                </button>
+                            )}
                         </div>
                     </div>
                     <div className="brightid-nft-mint-step__description">

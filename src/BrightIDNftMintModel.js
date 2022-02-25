@@ -773,21 +773,6 @@ class BrightIDNftMintModel {
         }
     }
 
-    async initIsBrightIDLinked() {
-        try {
-            const addr = await this.getWalletAddress();
-
-            this.isBrightIDLinked = await this.queryBrightIDLink(addr);
-
-            // this.isBrightIDLinked = true; // DEBUG
-
-            return this.isBrightIDLinked;
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
-
     initUUID() {
         this.uuid = crypto.randomUUID();
         // console.log("UUID");
