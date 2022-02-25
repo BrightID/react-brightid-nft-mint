@@ -859,6 +859,10 @@ class BrightIDNftMintModel {
         const contract = await this.getRegistrationProviderContract();
         const provider = await this.getProvider();
 
+        // console.log(this.uuid);
+        // console.log(this.uuidHex);
+        // console.log(this.uuidByte32);
+
         const addr = await this.getWalletAddress();
         // console.log("Wallet Address");
         // console.log(addr);
