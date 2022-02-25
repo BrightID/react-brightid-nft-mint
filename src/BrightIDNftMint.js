@@ -992,20 +992,20 @@ function BrightIDNftMint({
                             </div>
                         )}
                         {isBoundViaContractTxnProcessing && (
-                            <div className="brightid-registration-step__response">
-                                <div className="brightid-registration-step__response-loading-icon">
-                                    <div className="brightid-registration-step__loading-icon">
+                            <div className="brightid-nft-mint-step__response">
+                                <div className="brightid-nft-mint-step__response-loading-icon">
+                                    <div className="brightid-nft-mint-step__loading-icon">
                                         <div></div>
                                         <div></div>
                                         <div></div>
                                         <div></div>
                                     </div>
                                 </div>
-                                <div className="brightid-registration-step__response-message">
+                                <div className="brightid-nft-mint-step__response-message">
                                     <div>Transaction is being processed...</div>
                                     <div>
                                         <a
-                                            className="brightid-registration-step__response-link"
+                                            className="brightid-nft-mint-step__response-link"
                                             href={`${mintBlockExplorerUrl}${mintBlockExplorerTxnPath}${isBoundViaContractTxnId}`}
                                             target="_blank"
                                             rel="noreferrer"
@@ -1017,7 +1017,7 @@ function BrightIDNftMint({
                             </div>
                         )}
                         {stepBoundViaContractError && (
-                            <div className="brightid-registration-step__response brightid-registration-step__response--error">
+                            <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
                                 {stepBoundViaContractError}
                             </div>
                         )}
@@ -1190,20 +1190,20 @@ function BrightIDNftMint({
                             </div>
                         )}
                         {isMintedViaContractTxnProcessing && (
-                            <div className="brightid-registration-step__response">
-                                <div className="brightid-registration-step__response-loading-icon">
-                                    <div className="brightid-registration-step__loading-icon">
+                            <div className="brightid-nft-mint-step__response">
+                                <div className="brightid-nft-mint-step__response-loading-icon">
+                                    <div className="brightid-nft-mint-step__loading-icon">
                                         <div></div>
                                         <div></div>
                                         <div></div>
                                         <div></div>
                                     </div>
                                 </div>
-                                <div className="brightid-registration-step__response-message">
+                                <div className="brightid-nft-mint-step__response-message">
                                     <div>Transaction is being processed...</div>
                                     <div>
                                         <a
-                                            className="brightid-registration-step__response-link"
+                                            className="brightid-nft-mint-step__response-link"
                                             href={`${mintBlockExplorerUrl}${mintBlockExplorerTxnPath}${isMintedViaContractTxnId}`}
                                             target="_blank"
                                             rel="noreferrer"
@@ -1215,7 +1215,7 @@ function BrightIDNftMint({
                             </div>
                         )}
                         {stepMintedViaContractError && (
-                            <div className="brightid-registration-step__response brightid-registration-step__response--error">
+                            <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
                                 {stepMintedViaContractError}
                             </div>
                         )}
