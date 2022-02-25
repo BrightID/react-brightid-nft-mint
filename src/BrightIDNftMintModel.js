@@ -773,8 +773,20 @@ class BrightIDNftMintModel {
         }
     }
 
+    resetUUID() {
+        localStorage.removeItem("brightid-nft-mint-uuid");
+
+        this.initUUID();
+    }
+
     initUUID() {
-        this.uuid = crypto.randomUUID();
+        if (localStorage.getItem("brightid-nft-mint-uuid") === null) {
+            const newUUID = crypto.randomUUID();
+
+            localStorage.setItem("brightid-nft-mint-uuid", newUUID);
+        }
+
+        this.uuid = localStorage.getItem("brightid-nft-mint-uuid");
         // console.log("UUID");
         // console.log(this.uuid);
 

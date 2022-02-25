@@ -72,6 +72,12 @@
     margin-top: 2px;
 }
 
+.brightid-nft-mint-step__button--small {
+    padding: 6px 10px;
+    min-width: 0;
+    margin: 2px 0;
+}
+
 /* Step */
 /* -------------------------------------------------------------------------- */
 
@@ -185,6 +191,14 @@
 .brightid-nft-mint-step__description-wallet-address {
     display: block;
     font-size: 12px;
+}
+
+.brightid-nft-mint-step__description-reset {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    margin-top: 10px;
 }
 
 .brightid-nft-mint-step--mobile {

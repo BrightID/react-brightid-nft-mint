@@ -35,6 +35,8 @@ function BrightIDNftMint({
 
     const firstUpdate = useRef(true);
 
+    const [uuidHex, setUUIDHex] = useState("");
+
     const [walletAddress, setWalletAddress] = useState("");
 
     const [ensName, setENSName] = useState("");
@@ -96,6 +98,7 @@ function BrightIDNftMint({
 
     async function onAccountChange() {
         resetWalletData();
+        initUUIDHex();
         initWalletAddress();
         initENSName();
         initQrCodeUUIDUrl();
@@ -146,6 +149,21 @@ function BrightIDNftMint({
     /* State Data Query */
     /* ---------------------------------------------------------------------- */
 
+    async function resetUUID() {
+        try {
+            console.log("reset");
+            await registration.resetUUID();
+
+            setUUIDHex(registration.uuidHex);
+
+            // await initIsBoundViaContract();
+            setIsBoundViaContract(false);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
     async function resetWalletData() {
         try {
             await registration.resetWalletData();
@@ -161,6 +179,15 @@ function BrightIDNftMint({
 
             setWalletAddress(walletAddress);
             setStepConnectWalletError("");
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async function initUUIDHex() {
+        try {
+            setUUIDHex(registration.uuidHex);
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -790,12 +817,23 @@ function BrightIDNftMint({
                             with your wallet. This will bind the UUID below to
                             you.
                         </p>
-                        {registration && registration.uuidHex && (
+                        {uuidHex && (
                             <p className="brightid-nft-mint-step__description-p">
                                 <strong>UUID: </strong>
                                 <span className="brightid-nft-mint-step__description-wallet-address">
-                                    {registration.uuidHex}
+                                    {uuidHex}
                                 </span>
+
+                                <span className="brightid-nft-mint-step__description-reset">
+                                    If you have issues with this UUID you can
+                                    reset it.
+                                </span>
+                                <button
+                                    className="brightid-nft-mint-step__button brightid-nft-mint-step__button--small"
+                                    onClick={() => resetUUID()}
+                                >
+                                    Reset
+                                </button>
                             </p>
                         )}
                     </div>
