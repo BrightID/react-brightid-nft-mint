@@ -39,8 +39,6 @@ function BrightIDNftMint({
 
     const [ensName, setENSName] = useState("");
 
-    const [qrCodeUrl, setQrCodeUrl] = useState("");
-
     const [qrCodeUUIDUrl, setQrCodeUUIDUrl] = useState("");
 
     const [isUUIDLinked, setIsUUIDLinked] = useState(false);
@@ -58,9 +56,6 @@ function BrightIDNftMint({
     const [stepMintViaRelayStatus, setStepMintViaRelayStatus] = useState("");
 
     const [stepMintViaRelayError, setStepMintViaRelayError] = useState("");
-
-    const [linkAddressToBrightIDError, setLinkAddressToBrightIDError] =
-        useState("");
 
     const [linkUUIDToBrightIDError, setLinkUUIDToBrightIDError] = useState("");
 
@@ -93,7 +88,6 @@ function BrightIDNftMint({
         resetWalletData();
         setWalletAddress("");
         setENSName("");
-        setQrCodeUrl("");
         setQrCodeUUIDUrl("");
         setIsUUIDLinked("");
         setIsBoundViaContract(false);
@@ -104,7 +98,6 @@ function BrightIDNftMint({
         resetWalletData();
         initWalletAddress();
         initENSName();
-        initQrCodeUrl();
         initQrCodeUUIDUrl();
         initIsUUIDLinked();
         // initIsBoundViaContract();
@@ -185,17 +178,6 @@ function BrightIDNftMint({
         }
     }
 
-    async function initQrCodeUrl() {
-        try {
-            const qrCodeUrl = await registration.getQrCodeUrl();
-
-            setQrCodeUrl(qrCodeUrl);
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
-
     async function initQrCodeUUIDUrl() {
         try {
             const qrCodeUUIDUrl = await registration.getQrCodeUUIDUrl();
@@ -251,34 +233,6 @@ function BrightIDNftMint({
 
     function verifyWithBrightID() {
         window.open(brightIdMeetUrl, "_blank");
-    }
-
-    function linkAddressToBrightID() {
-        // window.open(qrCodeUrl);
-
-        var url = qrCodeUrl;
-
-        if (url === "") {
-            return;
-        }
-
-        var linker = new DeepLinker({
-            onIgnored: function () {
-                console.log("browser failed to respond to the deep link");
-
-                setLinkAddressToBrightIDError(
-                    "Couldn't open BrightID. Scan the QR code below with the device you have BrightID installed on."
-                );
-            },
-            onFallback: function () {
-                console.log("dialog hidden or user returned to tab");
-            },
-            onReturn: function () {
-                console.log("user returned to the page from the native app");
-            },
-        });
-
-        linker.openURL(url);
     }
 
     function linkUUIDToBrightID() {
