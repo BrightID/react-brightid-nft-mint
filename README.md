@@ -1,4 +1,4 @@
-# React BrightID 10K NFT Mint
+# React BrightID NFT Mint
 
 ## Install
 
