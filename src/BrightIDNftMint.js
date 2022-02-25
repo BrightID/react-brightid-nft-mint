@@ -28,9 +28,10 @@ function BrightIDNftMint({
     mintChainId = 100,
     mintChainName = "Gnosis Chain",
     mintTokenName = "xDai",
-    mintBlockExplorerUrl = "https://blockscout.com/xdai/mainnet/",
+    mintTokenDecimal = 18,
+    mintBlockExplorerUrl = "https://blockscout.com/xdai/mainnet",
     mintBlockExplorerTxnPath = "/tx/",
-    mintRpcUrl = "https://rpc.gnosischain.com/",
+    mintRpcUrl = "https://rpc.gnosischain.com",
     verificationUrl = "https://app.brightid.org/node/v5/verifications",
 }) {
     /* State */
@@ -378,6 +379,7 @@ function BrightIDNftMint({
             mintChainId,
             mintChainName,
             mintTokenName,
+            mintTokenDecimal,
             mintBlockExplorerUrl,
             mintBlockExplorerTxnPath,
             mintRpcUrl,

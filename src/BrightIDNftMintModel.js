@@ -337,11 +337,15 @@ class BrightIDNftMintModel {
 
     mintChainName = "";
 
+    mintTokenDecimal = 0;
+
     mintTokenName = "";
 
     mintBlockExplorerUrl = "";
 
     mintBlockExplorerTxnPath = "";
+
+    mintRpcUrl = "";
 
     verificationUrl = "";
 
@@ -366,9 +370,10 @@ class BrightIDNftMintModel {
         mintChainId = 100,
         mintChainName = "Gnosis Chain",
         mintTokenName = "xDai",
+        mintTokenDecimal = 18,
         mintBlockExplorerUrl = "https://blockscout.com/xdai/mainnet",
         mintBlockExplorerTxnPath = "/tx/",
-        mintRpcUrl = "https://rpc.gnosischain.com/",
+        mintRpcUrl = "https://rpc.gnosischain.com",
         verificationUrl = "https://app.brightid.org/node/v5/verifications"
     ) {
         this.context = context;
@@ -385,6 +390,7 @@ class BrightIDNftMintModel {
         this.mintTokenFaucetUrl = mintTokenFaucetUrl;
         this.mintChainId = Number(mintChainId);
         this.mintChainName = mintChainName;
+        this.mintTokenDecimal = Number(mintTokenDecimal);
         this.mintTokenName = mintTokenName;
         this.mintBlockExplorerUrl = mintBlockExplorerUrl;
         this.mintBlockExplorerTxnPath = mintBlockExplorerTxnPath;
@@ -932,11 +938,11 @@ class BrightIDNftMintModel {
                     nativeCurrency: {
                         name: this.mintTokenName,
                         symbol: this.mintTokenName,
-                        decimals: Number(this.mintTokenDecimal),
+                        decimals: this.mintTokenDecimal,
                     },
                     rpcUrls: [this.mintRpcUrl],
                     blockExplorerUrls: [this.mintBlockExplorerUrl],
-                    iconUrls: [this.mintIconUrl],
+                    // iconUrls: [this.mintIconUrl],
                 },
             ],
         });
