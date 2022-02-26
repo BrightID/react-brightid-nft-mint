@@ -740,52 +740,6 @@ function BrightIDNftMint({
                     <div className="brightid-nft-mint-step__main">
                         <div className="brightid-nft-mint-step__header">
                             <h2 className="brightid-nft-mint-step__heading">
-                                Select the type of experience.
-                            </h2>
-                        </div>
-                        <div className="brightid-nft-mint-step__action">
-                            <button
-                                className="brightid-nft-mint-step__button"
-                                onClick={() => setModeGas()}
-                            >
-                                Gas
-                            </button>
-                            <button
-                                className="brightid-nft-mint-step__button"
-                                onClick={() => setModeGasless()}
-                            >
-                                Gasless
-                            </button>
-                        </div>
-                    </div>
-                    <div className="brightid-nft-mint-step__description">
-                        <p className="brightid-nft-mint-step__description-p">
-                            <strong>gas:</strong> more complex, but
-                            decentralized.
-                        </p>
-                        <p className="brightid-nft-mint-step__description-p">
-                            <strong>gasless:</strong> simpler, but requires
-                            centralization.
-                        </p>
-                    </div>
-                    {mode && (
-                        <div className="brightid-nft-mint-step__description">
-                            <p className="brightid-nft-mint-step__description-p">
-                                <strong>
-                                    Current Mode:{" "}
-                                    <span className="brightid-nft-mint-step__important">
-                                        {mode}
-                                    </span>
-                                </strong>
-                            </p>
-                        </div>
-                    )}
-                </section>
-
-                <section className={`brightid-nft-mint-step`}>
-                    <div className="brightid-nft-mint-step__main">
-                        <div className="brightid-nft-mint-step__header">
-                            <h2 className="brightid-nft-mint-step__heading">
                                 Install BrightID
                             </h2>
                         </div>
@@ -910,6 +864,52 @@ function BrightIDNftMint({
                             />
                         </p>
                     </div>
+                </section>
+
+                <section className={`brightid-nft-mint-step`}>
+                    <div className="brightid-nft-mint-step__main">
+                        <div className="brightid-nft-mint-step__header">
+                            <h2 className="brightid-nft-mint-step__heading">
+                                Select the type of experience.
+                            </h2>
+                        </div>
+                        <div className="brightid-nft-mint-step__action">
+                            <button
+                                className="brightid-nft-mint-step__button"
+                                onClick={() => setModeGas()}
+                            >
+                                Gas
+                            </button>
+                            <button
+                                className="brightid-nft-mint-step__button"
+                                onClick={() => setModeGasless()}
+                            >
+                                Gasless
+                            </button>
+                        </div>
+                    </div>
+                    <div className="brightid-nft-mint-step__description">
+                        <p className="brightid-nft-mint-step__description-p">
+                            <strong>gas:</strong> more complex, but
+                            decentralized.
+                        </p>
+                        <p className="brightid-nft-mint-step__description-p">
+                            <strong>gasless:</strong> simpler, but requires
+                            centralization.
+                        </p>
+                    </div>
+                    {mode && (
+                        <div className="brightid-nft-mint-step__description">
+                            <p className="brightid-nft-mint-step__description-p">
+                                <strong>
+                                    Current Mode:{" "}
+                                    <span className="brightid-nft-mint-step__important">
+                                        {mode}
+                                    </span>
+                                </strong>
+                            </p>
+                        </div>
+                    )}
                 </section>
 
                 <section
