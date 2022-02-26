@@ -1119,7 +1119,7 @@ function BrightIDNftMint({
                                     className="brightid-nft-mint-step__button"
                                     onClick={() => bindViaRelay()}
                                 >
-                                    Bind Via Relay
+                                    Bind
                                 </button>
                             )}
                             {!hasRelay() && stepConnectWalletComplete() && (
@@ -1127,7 +1127,7 @@ function BrightIDNftMint({
                                     className="brightid-nft-mint-step__button"
                                     onClick={() => bindViaTransaction()}
                                 >
-                                    Bind Via Txn
+                                    Bind
                                 </button>
                             )}
                         </div>
@@ -1344,7 +1344,7 @@ function BrightIDNftMint({
                                         className="brightid-nft-mint-step__button"
                                         onClick={() => mintViaRelay()}
                                     >
-                                        Mint Via Relay
+                                        Mint
                                     </button>
                                 )}
                             {!hasRelay() &&
@@ -1354,7 +1354,7 @@ function BrightIDNftMint({
                                         className="brightid-nft-mint-step__button"
                                         onClick={() => mintViaTransaction()}
                                     >
-                                        Mint Via Txn
+                                        Mint
                                     </button>
                                 )}
                         </div>
