@@ -193,6 +193,10 @@
     font-size: 12px;
 }
 
+.brightid-nft-mint-step__important {
+    color: var(--statusCompleteIconColor);
+}
+
 .brightid-nft-mint-step__description-reset {
     display: block;
     font-size: 12px;
