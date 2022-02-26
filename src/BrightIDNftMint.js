@@ -391,11 +391,7 @@ function BrightIDNftMint({
 
     async function init() {
         // Restore mode
-        if (localStorage.getItem("brightid-nft-mint-mode") !== null) {
-            const mode = localStorage.getItem("brightid-nft-mint-mode");
-
-            setMode(mode);
-        }
+        restoreMode();
 
         // Reconnect on Load
         reconnectWallet();
@@ -625,6 +621,14 @@ function BrightIDNftMint({
 
     /* Step State Checks */
     /* ---------------------------------------------------------------------- */
+
+    function restoreMode() {
+        if (localStorage.getItem("brightid-nft-mint-mode") !== null) {
+            const mode = localStorage.getItem("brightid-nft-mint-mode");
+
+            setMode(mode);
+        }
+    }
 
     function changeMode(mode) {
         localStorage.setItem("brightid-nft-mint-mode", mode);
