@@ -389,6 +389,18 @@ function BrightIDNftMint({
         );
     }
 
+    async function init() {
+        // Restore mode
+        if (localStorage.getItem("brightid-nft-mint-mode") !== null) {
+            const mode = localStorage.getItem("brightid-nft-mint-mode");
+
+            setMode(mode);
+        }
+
+        // Reconnect on Load
+        reconnectWallet();
+    }
+
     async function reconnectWallet() {
         await initRegistration();
 
@@ -614,12 +626,18 @@ function BrightIDNftMint({
     /* Step State Checks */
     /* ---------------------------------------------------------------------- */
 
+    function changeMode(mode) {
+        localStorage.setItem("brightid-nft-mint-mode", mode);
+
+        setMode(mode);
+    }
+
     function setModeGas() {
-        setMode("gas");
+        changeMode("gas");
     }
 
     function setModeGasless() {
-        setMode("gasless");
+        changeMode("gasless");
     }
 
     function hasRelay() {
@@ -726,8 +744,7 @@ function BrightIDNftMint({
             firstUpdate.current = false;
         }
 
-        // Reconnect on Load
-        reconnectWallet();
+        init();
     });
 
     /* Template */
@@ -1070,7 +1087,7 @@ function BrightIDNftMint({
                             </div>
                             <div className="brightid-nft-mint-step__header">
                                 <h2 className="brightid-nft-mint-step__heading">
-                                    Obtain {mintChainName} Gas Tokens
+                                    Obtain {mintTokenName} Gas Tokens
                                 </h2>
                             </div>
                             <div className="brightid-nft-mint-step__action">
