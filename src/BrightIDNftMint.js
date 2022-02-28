@@ -119,8 +119,8 @@ function BrightIDNftMint({
         initUUIDHex();
         initWalletAddress();
         initENSName();
-        initChainId("");
-        initGasBalance("");
+        initChainId();
+        initGasBalance();
         initCanAutoSwitchNetworks();
         initQrCodeUUIDUrl();
         initIsUUIDLinked();
@@ -133,6 +133,10 @@ function BrightIDNftMint({
     }
 
     function onChangePolling() {
+        if (registration.gasBalance === 0 || registration.gasBalance === 0.0) {
+            initGasBalance();
+        }
+
         if (registration.isUUIDLinked === false) {
             initIsUUIDLinked();
         }
