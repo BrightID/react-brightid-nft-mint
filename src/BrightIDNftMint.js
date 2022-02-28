@@ -124,7 +124,7 @@ function BrightIDNftMint({
         initCanAutoSwitchNetworks();
         initQrCodeUUIDUrl();
         initIsUUIDLinked();
-        // initIsBoundViaContract();
+        initIsBoundViaContract();
         initIsMintedViaContract();
     }
 
@@ -137,9 +137,9 @@ function BrightIDNftMint({
             initIsUUIDLinked();
         }
 
-        // if (registration.isBoundViaContract === false) {
-        //     initIsBoundViaContract();
-        // }
+        if (registration.isBoundViaContract === false) {
+            initIsBoundViaContract();
+        }
 
         if (registration.isMintedViaContract === false) {
             initIsMintedViaContract();
@@ -188,8 +188,7 @@ function BrightIDNftMint({
 
             setUUIDHex(registration.uuidHex);
 
-            // await initIsBoundViaContract();
-            setIsBoundViaContract(false);
+            await initIsBoundViaContract();
 
             initIsUUIDLinked();
         } catch (e) {
@@ -295,19 +294,19 @@ function BrightIDNftMint({
         }
     }
 
-    // async function initIsBoundViaContract() {
-    //     try {
-    //         const isBoundViaContract =
-    //             await registration.initIsBoundViaContract();
+    async function initIsBoundViaContract() {
+        try {
+            const isBoundViaContract =
+                await registration.initIsBoundViaContract();
 
-    //         // console.log(isBoundViaContract);
+            // console.log(isBoundViaContract);
 
-    //         setIsBoundViaContract(isBoundViaContract);
-    //     } catch (e) {
-    //         // console.error(e);
-    //         // console.log(e);
-    //     }
-    // }
+            setIsBoundViaContract(isBoundViaContract);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
 
     async function initIsMintedViaContract() {
         try {
@@ -510,8 +509,8 @@ function BrightIDNftMint({
             // const receipt = await tx.wait();
             // // console.log(receipt);
 
-            // await initIsBoundViaContract();
-            setIsBoundViaContract(true);
+            await registration.setBoundUUID();
+            await initIsBoundViaContract();
 
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
@@ -520,8 +519,8 @@ function BrightIDNftMint({
             // console.error(e);
             // console.log(e);
 
-            // await initIsBoundViaContract();
-            setIsBoundViaContract(false);
+            await registration.resetBoundUUID();
+            await initIsBoundViaContract();
 
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
@@ -573,8 +572,8 @@ function BrightIDNftMint({
                 throw new Error(body.errorMessage);
             }
 
-            // await initIsBoundViaContract();
-            setIsBoundViaContract(true);
+            await registration.setBoundUUID();
+            await initIsBoundViaContract();
 
             setStepBindViaRelayError("");
             setStepBindViaRelayStatus("");
@@ -582,8 +581,8 @@ function BrightIDNftMint({
             // console.error(e);
             // console.log(e);
 
-            // await initIsBoundViaContract();
-            setIsBoundViaContract(false);
+            await registration.resetBoundUUID();
+            await initIsBoundViaContract();
 
             setStepBindViaRelayError(e.message);
             setStepBindViaRelayStatus("");
@@ -915,8 +914,8 @@ function BrightIDNftMint({
                             decentralized.
                         </p>
                         <p className="brightid-nft-mint-step__description-p">
-                            <strong>gasless:</strong> simpler, but requires
-                            centralization.
+                            <strong>gasless:</strong> We'll cover the gas fees
+                            for you, but you may experience rate limits.
                         </p>
                     </div>
                     {mode && (
@@ -1028,7 +1027,7 @@ function BrightIDNftMint({
                                 )}
                             </div>
                         </div>
-                        {!canAutoSwitchNetworks && (
+                        {stepConnectWalletComplete() && !canAutoSwitchNetworks && (
                             <div
                                 className="
                                 brightid-nft-mint-step__description
@@ -1095,12 +1094,14 @@ function BrightIDNftMint({
                                 </h2>
                             </div>
                             <div className="brightid-nft-mint-step__action">
-                                <button
-                                    className="brightid-nft-mint-step__button"
-                                    onClick={() => faucetClaim()}
-                                >
-                                    Obtain
-                                </button>
+                                {stepSwitchToMintNetworkComplete() && (
+                                    <button
+                                        className="brightid-nft-mint-step__button"
+                                        onClick={() => faucetClaim()}
+                                    >
+                                        Obtain
+                                    </button>
+                                )}
                             </div>
                         </div>
                         <div className="brightid-nft-mint-step__description">

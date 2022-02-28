@@ -822,9 +822,24 @@ class BrightIDNftMintModel {
         }
     }
 
+    resetBoundUUID() {
+        localStorage.removeItem("brightid-nft-mint-uuid-bound");
+    }
+
+    setBoundUUID() {
+        localStorage.setItem("brightid-nft-mint-uuid-bound", this.uuid);
+    }
+
+    hasBoundUUID() {
+        return (
+            localStorage.getItem("brightid-nft-mint-uuid") ===
+            localStorage.getItem("brightid-nft-mint-uuid-bound")
+        );
+    }
+
     resetUUID() {
         localStorage.removeItem("brightid-nft-mint-uuid");
-
+        this.resetBoundUUID();
         this.initUUID();
     }
 
@@ -863,22 +878,18 @@ class BrightIDNftMintModel {
         }
     }
 
-    // async initIsBoundViaContract() {
-    //     try {
-    //         const addr = await this.getWalletAddress();
+    async initIsBoundViaContract() {
+        try {
+            this.isBoundViaContract = this.hasBoundUUID();
 
-    //         this.isBoundViaContract = await this.queryBrightIDVerification(
-    //             addr
-    //         );
+            // this.isBoundViaContract = true; // DEBUG
 
-    //         // this.isBoundViaContract = true; // DEBUG
-
-    //         return this.isBoundViaContract;
-    //     } catch (e) {
-    //         // console.error(e);
-    //         // console.log(e);
-    //     }
-    // }
+            return this.isBoundViaContract;
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
 
     async initIsMintedViaContract() {
         try {
