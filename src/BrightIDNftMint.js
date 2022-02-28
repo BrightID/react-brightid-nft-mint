@@ -724,7 +724,14 @@ function BrightIDNftMint({
     }
 
     function stepBindViaRelayActive() {
-        return stepConnectWalletComplete() && stepConnectWalletActive();
+        return (
+            (hasRelay() &&
+                stepConnectWalletComplete() &&
+                stepConnectWalletActive()) ||
+            (!hasRelay() &&
+                stepObtainGasTokensComplete() &&
+                stepObtainGasTokensActive())
+        );
     }
 
     function stepUUIDLinkedActive() {
