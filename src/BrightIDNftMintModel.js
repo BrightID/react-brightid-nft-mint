@@ -426,9 +426,13 @@ class BrightIDNftMintModel {
                 package: WalletConnectProvider,
                 options: {
                     infuraId: this.walletConnectInfuraId, // required
+                    rpc: {},
                 },
             },
         };
+
+        providerOptions.walletconnect.options.rpc[this.mintChainId] =
+            this.mintRpcUrl;
 
         this.web3Modal = new Web3Modal({
             network: "mainnet", // optional
