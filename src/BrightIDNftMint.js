@@ -576,7 +576,11 @@ function BrightIDNftMint({
             if (response.ok === false) {
                 const body = await response.json();
 
-                throw new Error(body.errorMessage);
+                // console.log(body);
+                // console.log(body.error);
+                // console.log(body.error.message);
+
+                throw new Error(body.error.message);
             }
 
             await registration.setBoundUUID();
@@ -607,7 +611,11 @@ function BrightIDNftMint({
             if (response.ok === false) {
                 const body = await response.json();
 
-                throw new Error(body.errorMessage);
+                // console.log(body);
+                // console.log(body.error);
+                // console.log(body.error.message);
+
+                throw new Error(body.error.message);
             }
 
             await initIsMintedViaContract();
