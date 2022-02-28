@@ -1131,6 +1131,28 @@ class BrightIDNftMintModel {
 
         return await fetch(request);
     }
+
+    getBindErrorMessage(code) {
+        if (
+            code ===
+            "Reverted 0x4272696768744944536f756c626f756e6453696e676c654d696e744175746f49643a205468697320427269676874494420686164206d696e746564"
+        ) {
+            return "The relay could not bind your UUID";
+        }
+
+        return code;
+    }
+
+    getMintErrorMessage(code) {
+        if (
+            code ===
+            "Reverted 0x4272696768744944536f756c626f756e6453696e676c654d696e744175746f49643a205468697320427269676874494420686164206d696e746564"
+        ) {
+            return "The relay could not mint you NFT";
+        }
+
+        return code;
+    }
 }
 
 export default BrightIDNftMintModel;

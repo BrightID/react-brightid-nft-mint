@@ -519,19 +519,20 @@ function BrightIDNftMint({
             await registration.setBoundUUID();
             await initIsBoundViaContract();
 
+            setStepBoundViaContractError("");
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
-            setStepBoundViaContractError("");
         } catch (e) {
-            // console.error(e);
+            console.error(e);
             // console.log(e);
 
             await registration.resetBoundUUID();
             await initIsBoundViaContract();
 
+            const errorMessage = registration.getBindErrorMessage(e.message);
+            setStepBoundViaContractError(errorMessage);
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
-            setStepBoundViaContractError(e.message);
         }
     }
 
@@ -550,18 +551,19 @@ function BrightIDNftMint({
 
             await initIsMintedViaContract();
 
+            setStepMintedViaContractError("");
             setIsMintedViaContractTxnProcessing(false);
             setIsMintedViaContractTxnId(null);
-            setStepMintedViaContractError("");
         } catch (e) {
-            // console.error(e);
+            console.error(e);
             // console.log(e);
 
             await initIsMintedViaContract();
 
+            const errorMessage = registration.getMintErrorMessage(e.message);
+            setStepMintedViaContractError(errorMessage);
             setIsMintedViaContractTxnProcessing(false);
             setIsMintedViaContractTxnId(null);
-            setStepMintedViaContractError(e.message);
         }
     }
 
@@ -589,13 +591,14 @@ function BrightIDNftMint({
             setStepBindViaRelayError("");
             setStepBindViaRelayStatus("");
         } catch (e) {
-            // console.error(e);
+            console.error(e);
             // console.log(e);
 
             await registration.resetBoundUUID();
             await initIsBoundViaContract();
 
-            setStepBindViaRelayError(e.message);
+            const errorMessage = registration.getBindErrorMessage(e.message);
+            setStepBindViaRelayError(errorMessage);
             setStepBindViaRelayStatus("");
         }
     }
@@ -623,12 +626,13 @@ function BrightIDNftMint({
             setStepMintViaRelayError("");
             setStepMintViaRelayStatus("");
         } catch (e) {
-            // console.error(e);
+            console.error(e);
             // console.log(e);
 
             await initIsMintedViaContract();
 
-            setStepMintViaRelayError(e.message);
+            const errorMessage = registration.getMintErrorMessage(e.message);
+            setStepMintViaRelayError(errorMessage);
             setStepMintViaRelayStatus("");
         }
     }
