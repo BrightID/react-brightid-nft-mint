@@ -1341,7 +1341,7 @@ function BrightIDNftMint({
                             <div className="brightid-nft-mint-step--desktop">
                                 <p className="brightid-nft-mint-step__description-p">
                                     After linking, you'll get a confirmation in
-                                    the BrightID app. Then just wait a few
+                                    the BrightID app. Then just wait about 20-30
                                     seconds and this website will update to
                                     allow continuing to the next step.
                                 </p>
