@@ -181,21 +181,21 @@ function BrightIDNftMint({
     /* State Data Query */
     /* ---------------------------------------------------------------------- */
 
-    async function resetUUID() {
-        try {
-            console.log("reset");
-            await registration.resetUUID();
+    // async function resetUUID() {
+    //     try {
+    //         console.log("reset");
+    //         await registration.resetUUID();
 
-            setUUIDHex(registration.uuidHex);
+    //         setUUIDHex(registration.uuidHex);
 
-            await initIsBoundViaContract();
+    //         await initIsBoundViaContract();
 
-            initIsUUIDLinked();
-        } catch (e) {
-            // console.error(e);
-            // console.log(e);
-        }
-    }
+    //         initIsUUIDLinked();
+    //     } catch (e) {
+    //         // console.error(e);
+    //         // console.log(e);
+    //     }
+    // }
 
     async function resetWalletData() {
         try {
