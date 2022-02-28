@@ -137,12 +137,15 @@ function BrightIDNftMint({
             initGasBalance();
         }
 
-        if (registration.isUUIDLinked === false) {
-            initIsUUIDLinked();
-        }
-
         if (registration.isBoundViaContract === false) {
             initIsBoundViaContract();
+        }
+
+        if (
+            registration.isBoundViaContract === true &&
+            registration.isUUIDLinked === false
+        ) {
+            initIsUUIDLinked();
         }
 
         if (registration.isMintedViaContract === false) {
