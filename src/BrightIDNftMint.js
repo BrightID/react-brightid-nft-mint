@@ -1166,7 +1166,7 @@ function BrightIDNftMint({
                                     {uuidHex}
                                 </span>
 
-                                <span className="brightid-nft-mint-step__description-reset">
+                                {/* <span className="brightid-nft-mint-step__description-reset">
                                     If you have issues with this UUID you can
                                     reset it.
                                 </span>
@@ -1175,7 +1175,7 @@ function BrightIDNftMint({
                                     onClick={() => resetUUID()}
                                 >
                                     Reset
-                                </button>
+                                </button> */}
                             </p>
                         )}
                     </div>
