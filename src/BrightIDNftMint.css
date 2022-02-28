@@ -277,7 +277,6 @@
     font-size: var(--stepResponseFontSize);
     margin-top: var(--paddingSize);
     padding: var(--paddingSize);
-    word-break: break-all;
 }
 
 .brightid-nft-mint-step__response-loading-icon {
@@ -296,6 +295,7 @@
 .brightid-nft-mint-step__response--error {
     background: var(--stepResponseErrorBackgroundColor);
     color: var(--stepResponseErrorTextColor);
+    word-break: break-all;
 }
 
 .brightid-nft-mint-step__response-link {
