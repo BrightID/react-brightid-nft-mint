@@ -706,8 +706,12 @@ function BrightIDNftMint({
         return gasBalance > 0;
     }
 
-    function hasMode() {
+    function hasModeSelection() {
         return stepConnectWalletComplete() && allowMode;
+    }
+
+    function hasModeSelected() {
+        return stepConnectWalletComplete() && mode !== "";
     }
 
     /* Step Completion Flags */
@@ -995,7 +999,7 @@ function BrightIDNftMint({
                     </div>
                 </section>
 
-                {hasMode() && (
+                {hasModeSelection() && (
                     <section className={`brightid-nft-mint-step`}>
                         <div className="brightid-nft-mint-step__main">
                             <div className="brightid-nft-mint-step__header">
@@ -1044,7 +1048,7 @@ function BrightIDNftMint({
                     </section>
                 )}
 
-                {mode && !hasRelay() && (
+                {hasModeSelected() && !hasRelay() && (
                     <section
                         className={`
                         brightid-nft-mint-step
@@ -1121,7 +1125,7 @@ function BrightIDNftMint({
                     </section>
                 )}
 
-                {mode && !hasRelay() && (
+                {hasModeSelected() && !hasRelay() && (
                     <section
                         className={`
                         brightid-nft-mint-step
@@ -1164,7 +1168,7 @@ function BrightIDNftMint({
                     </section>
                 )}
 
-                {mode && (
+                {hasModeSelected() && (
                     <section
                         className={`
                         brightid-nft-mint-step
@@ -1296,7 +1300,7 @@ function BrightIDNftMint({
                     </section>
                 )}
 
-                {mode && (
+                {hasModeSelected() && (
                     <section
                         className={`
                         brightid-nft-mint-step
@@ -1396,7 +1400,7 @@ function BrightIDNftMint({
                     </section>
                 )}
 
-                {mode && (
+                {hasModeSelected() && (
                     <section
                         className={`
                         brightid-nft-mint-step
