@@ -16,6 +16,19 @@ class BrightIDNftMintModel {
         },
         {
             type: "event",
+            name: "AddressBound",
+            inputs: [
+                {
+                    type: "address",
+                    name: "addr",
+                    internalType: "address",
+                    indexed: true,
+                },
+            ],
+            anonymous: false,
+        },
+        {
+            type: "event",
             name: "ContextSet",
             inputs: [
                 {
