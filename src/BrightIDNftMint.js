@@ -119,7 +119,6 @@ function BrightIDNftMint({
 
     async function onAccountChange() {
         resetWalletData();
-        setMode("");
         initAllowMode();
         initUUIDHex();
         initWalletAddress();
