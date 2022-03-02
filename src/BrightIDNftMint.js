@@ -99,6 +99,12 @@ function BrightIDNftMint({
     const [isMintedViaContractTxnId, setIsMintedViaContractTxnId] =
         useState(null);
 
+    const [stepBindViaRelayProcessing, setStepBindViaRelayProcessing] =
+        useState("");
+
+    const [stepMintViaRelayProcessing, setStepMintViaRelayProcessing] =
+        useState("");
+
     /* Web3 Data Init & Monitoring */
     /* ---------------------------------------------------------------------- */
 
@@ -584,6 +590,8 @@ function BrightIDNftMint({
 
     async function bindViaRelay() {
         try {
+            setStepBindViaRelayProcessing(true);
+
             setStepBindViaRelayStatus(
                 "We're binding your UUID.  This could take a minute or two. Please wait."
             );
@@ -605,6 +613,7 @@ function BrightIDNftMint({
 
             setStepBindViaRelayError("");
             setStepBindViaRelayStatus("");
+            setStepBindViaRelayProcessing(false);
         } catch (e) {
             console.error(e);
             // console.log(e);
@@ -615,11 +624,14 @@ function BrightIDNftMint({
             const errorMessage = registration.getBindErrorMessage(e.message);
             setStepBindViaRelayError(errorMessage);
             setStepBindViaRelayStatus("");
+            setStepBindViaRelayProcessing(false);
         }
     }
 
     async function mintViaRelay() {
         try {
+            setStepMintViaRelayProcessing(true);
+
             setStepMintViaRelayStatus(
                 "We're minting your NFT.  This could take a minute or two. Please wait."
             );
@@ -640,6 +652,7 @@ function BrightIDNftMint({
 
             setStepMintViaRelayError("");
             setStepMintViaRelayStatus("");
+            setStepMintViaRelayProcessing(false);
         } catch (e) {
             console.error(e);
             // console.log(e);
@@ -649,6 +662,7 @@ function BrightIDNftMint({
             const errorMessage = registration.getMintErrorMessage(e.message);
             setStepMintViaRelayError(errorMessage);
             setStepMintViaRelayStatus("");
+            setStepMintViaRelayProcessing(false);
         }
     }
 
@@ -1193,6 +1207,11 @@ function BrightIDNftMint({
                                     <button
                                         className="brightid-nft-mint-step__button"
                                         onClick={() => bindViaRelay()}
+                                        disabled={
+                                            stepBindViaRelayProcessing
+                                                ? true
+                                                : null
+                                        }
                                     >
                                         Bind
                                     </button>
@@ -1428,6 +1447,11 @@ function BrightIDNftMint({
                                         <button
                                             className="brightid-nft-mint-step__button"
                                             onClick={() => mintViaRelay()}
+                                            disabled={
+                                                stepMintViaRelayProcessing
+                                                    ? true
+                                                    : null
+                                            }
                                         >
                                             Mint
                                         </button>

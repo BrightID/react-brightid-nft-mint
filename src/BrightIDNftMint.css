@@ -78,6 +78,11 @@
     margin: 2px 0;
 }
 
+.brightid-nft-mint-step__button[disabled] {
+    opacity: 0.3;
+    cursor: default;
+}
+
 /* Step */
 /* -------------------------------------------------------------------------- */
 
