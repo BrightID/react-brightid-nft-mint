@@ -754,12 +754,12 @@ class BrightIDNftMintModel {
 
             // console.log(balance);
 
-            return balance > 0;
+            return balance;
         } catch (e) {
             // console.error(e);
             // console.log(e);
 
-            return false;
+            return 0;
         }
     }
 
@@ -910,7 +910,9 @@ class BrightIDNftMintModel {
 
     async initIsMintedViaContract() {
         try {
-            this.isMintedViaContract = await this.queryTokenBalance();
+            const balance = await this.queryTokenBalance();
+
+            this.isMintedViaContract = balance > 0;
 
             // this.isMintedViaContract = false; // DEBUG
 
