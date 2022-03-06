@@ -314,6 +314,8 @@ class BrightIDNftMintModel {
 
     gasBalance = 0.0;
 
+    totalSupply = 0;
+
     brightIDLinkedWallets = [];
 
     isBrightIDLinked = false;
@@ -669,6 +671,25 @@ class BrightIDNftMintModel {
         }
     }
 
+    async queryTotalSupply() {
+        try {
+            console.log("queryTotalSupply");
+
+            const contract = await this.getRegistrationProviderContract();
+
+            const totalSupply = await contract.totalSupply();
+
+            // console.log(totalSupply);
+
+            return totalSupply;
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+
+            return 0;
+        }
+    }
+
     async queryBrightIDLink(contextId) {
         try {
             console.log("queryBrightIDLink");
@@ -833,6 +854,19 @@ class BrightIDNftMintModel {
             this.gasBalance = await this.queryGasBalance();
 
             return this.gasBalance;
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async initTotalSupply() {
+        try {
+            this.totalSupply = await this.queryTotalSupply();
+
+            // this.totalSupply = 0; // DEBUG
+
+            return this.totalSupply;
         } catch (e) {
             // console.error(e);
             // console.log(e);
