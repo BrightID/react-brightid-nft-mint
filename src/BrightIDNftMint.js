@@ -865,8 +865,8 @@ function BrightIDNftMint({
                         </div> */}
                         <div className="brightid-nft-mint-step__description brightid-nft-mint-step__description--no-header">
                             <p className="brightid-nft-mint-step__description-p">
-                                <strong>Mints Remaining:</strong> The mint has
-                                sold out.
+                                <strong>Mints Remaining:</strong> No more mints
+                                remaining
                             </p>
                         </div>
 
