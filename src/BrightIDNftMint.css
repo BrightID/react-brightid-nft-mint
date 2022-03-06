@@ -412,7 +412,7 @@
     border-radius: 0 0 var(--borderRadius) var(--borderRadius);
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
     z-index: 1;
-    margin: 0 -5px;
+    margin: 0 calc(-1 * (var(--paddingSize) / 2));
 }
 
 .brightid-nft-mint-supply--sold-out {

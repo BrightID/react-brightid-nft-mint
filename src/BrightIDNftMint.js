@@ -866,6 +866,13 @@ function BrightIDNftMint({
                                 sold out.
                             </p>
                         </div>
+
+                        <div className="brightid-nft-mint-step__description">
+                            <p className="brightid-nft-mint-step__description-p">
+                                Thanks to everyone who minted, and sorry to
+                                those who were unable to get one.
+                            </p>
+                        </div>
                     </section>
                 </div>
             )}
