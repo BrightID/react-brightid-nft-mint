@@ -24,6 +24,7 @@ import { BrightIDNftMint } from "react-brightid-nft-mint";
     walletConnectInfuraId="__YOUR_INFURA_ID__"
     relayBindURL="__URL_OF_RELAY_BIND_ENDPOINT__"
     relayMintURL="__URL_OF_RELAY_MINT_ENDPOINT__"
+    maxSupply="10000"
 />
 ```
 

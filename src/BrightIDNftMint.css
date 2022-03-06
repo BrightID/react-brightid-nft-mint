@@ -198,6 +198,10 @@
     font-size: 12px;
 }
 
+.brightid-nft-mint-step__description--no-header {
+    margin-top: 0;
+}
+
 .brightid-nft-mint-step__important {
     color: var(--statusCompleteIconColor);
 }
@@ -396,4 +400,20 @@
 
 .brightid-nft-mint-step--inactive {
     opacity: 0.5;
+}
+
+/* Supply */
+/* -------------------------------------------------------------------------- */
+
+.brightid-nft-mint-supply {
+    background: #282c34;
+    position: sticky;
+    top: 0;
+    border-radius: 0 0 var(--borderRadius) var(--borderRadius);
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    margin: 0 -5px;
+}
+
+.brightid-nft-mint-supply--sold-out {
 }

@@ -316,6 +316,8 @@ class BrightIDNftMintModel {
 
     totalSupply = 0;
 
+    maxSupply = 0;
+
     brightIDLinkedWallets = [];
 
     isBrightIDLinked = false;
@@ -377,6 +379,7 @@ class BrightIDNftMintModel {
         walletConnectInfuraId = "",
         relayBindURL = "",
         relayMintURL = "",
+        maxSupply = 0,
         appStoreAndroid = "https://play.google.com/store/apps/details?id=org.brightid",
         appStoreIos = "https://apps.apple.com/us/app/brightid/id1428946820",
         brightIdMeetUrl = "https://meet.brightid.org",
@@ -397,6 +400,7 @@ class BrightIDNftMintModel {
         this.walletConnectInfuraId = walletConnectInfuraId;
         this.relayBindURL = relayBindURL;
         this.relayMintURL = relayMintURL;
+        this.maxSupply = maxSupply;
 
         this.appStoreAndroid = appStoreAndroid;
         this.appStoreIos = appStoreIos;
@@ -679,9 +683,12 @@ class BrightIDNftMintModel {
 
             const totalSupply = await contract.totalSupply();
 
-            // console.log(totalSupply);
+            const totalSupplyDecimal = totalSupply.toString();
 
-            return totalSupply;
+            // console.log(totalSupply);
+            // console.log(totalSupplyDecimal);
+
+            return totalSupplyDecimal;
         } catch (e) {
             // console.error(e);
             // console.log(e);
