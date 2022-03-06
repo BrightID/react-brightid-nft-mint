@@ -51,7 +51,7 @@ function BrightIDNftMint({
 
     const [chainId, setChainId] = useState("");
 
-    const [totalSupply, setTotalSupply] = useState(0);
+    // const [totalSupply, setTotalSupply] = useState(0);
 
     const [remainingSupply, setRemainingSupply] = useState(0);
 
@@ -281,7 +281,7 @@ function BrightIDNftMint({
 
             const remainingSupply = Number(maxSupply) - Number(totalSupply);
 
-            setTotalSupply(totalSupply);
+            // setTotalSupply(totalSupply);
             setRemainingSupply(remainingSupply);
         } catch (e) {
             // console.error(e);
