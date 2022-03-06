@@ -55,6 +55,8 @@ function BrightIDNftMint({
 
     const [remainingSupply, setRemainingSupply] = useState(0);
 
+    const [remainingSupplyChecked, setRemainingSupplyChecked] = useState(false);
+
     const [gasBalance, setGasBalance] = useState(0.0);
 
     const [canAutoSwitchNetworks, setCanAutoSwitchNetworks] = useState(false);
@@ -283,6 +285,7 @@ function BrightIDNftMint({
 
             // setTotalSupply(totalSupply);
             setRemainingSupply(remainingSupply);
+            setRemainingSupplyChecked(true);
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -850,8 +853,8 @@ function BrightIDNftMint({
 
     return (
         <div className="brightid-nft-mint">
-            {hasReachedMaxSupply() && (
-                <div class="brightid-nft-mint-supply brightid-nft-mint-supply--sold-out">
+            {remainingSupplyChecked && hasReachedMaxSupply() && (
+                <div className="brightid-nft-mint-supply brightid-nft-mint-supply--sold-out">
                     <section className={`brightid-nft-mint-step`}>
                         {/* <div className="brightid-nft-mint-step__main">
                             <div className="brightid-nft-mint-step__header">
@@ -877,8 +880,8 @@ function BrightIDNftMint({
                 </div>
             )}
 
-            {!hasReachedMaxSupply() && (
-                <div class="brightid-nft-mint-supply">
+            {remainingSupplyChecked && !hasReachedMaxSupply() && (
+                <div className="brightid-nft-mint-supply">
                     <section className={`brightid-nft-mint-step`}>
                         {/* <div className="brightid-nft-mint-step__main">
                             <div className="brightid-nft-mint-step__header">
@@ -897,7 +900,8 @@ function BrightIDNftMint({
                 </div>
             )}
 
-            {(!hasReachedMaxSupply() || stepConnectWalletComplete()) && (
+            {((remainingSupplyChecked && !hasReachedMaxSupply()) ||
+                stepConnectWalletComplete()) && (
                 <div>
                     <section className={`brightid-nft-mint-step`}>
                         <div className="brightid-nft-mint-step__main">
