@@ -903,7 +903,7 @@ class BrightIDNftMintModel {
 
     initUUID() {
         if (localStorage.getItem("brightid-nft-mint-uuid") === null) {
-            const newUUID = crypto.randomUUID();
+            const newUUID = this.generateUUID();
 
             localStorage.setItem("brightid-nft-mint-uuid", newUUID);
         }
@@ -921,6 +921,18 @@ class BrightIDNftMintModel {
         this.uuidByte32 = "0x" + new Buffer(this.uuidHex).toString("hex");
         // console.log("UUID Bytes32");
         // console.log(this.uuidByte32);
+    }
+
+    generateUUID() {
+        // if (typeof crypto !== "undefined") {
+        //     console.log("crypto.randomUUID");
+        //     return crypto.randomUUID();
+        // }
+
+        const number = ethers.BigNumber.from(ethers.utils.randomBytes(16));
+        const uuid = number.toHexString().replaceAll("0x", "");
+
+        return uuid;
     }
 
     async initIsUUIDLinked() {
