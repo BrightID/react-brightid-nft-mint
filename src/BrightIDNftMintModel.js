@@ -1037,8 +1037,12 @@ class BrightIDNftMintModel {
         // console.log(hashToSign);
 
         const bytesDataHash = ethers.utils.arrayify(hashToSign);
-        const signature = await provider.getSigner().signMessage(bytesDataHash);
+        const rawSignature = await provider
+            .getSigner()
+            .signMessage(bytesDataHash);
+        const signature = this.standardizeSignature(rawSignature);
         // console.log("signMessage");
+        // console.log(rawSignature);
         // console.log(signature);
 
         console.log("pass to bind");
@@ -1055,6 +1059,18 @@ class BrightIDNftMintModel {
             nonce,
             signature,
         };
+    }
+
+    standardizeSignature(signature) {
+        if (signature.slice(-2) === "00") {
+            return signature.slice(0, -2) + "1b";
+        }
+
+        if (signature.slice(-2) === "01") {
+            return signature.slice(0, -2) + "1c";
+        }
+
+        return signature;
     }
 
     async getMintParams() {
