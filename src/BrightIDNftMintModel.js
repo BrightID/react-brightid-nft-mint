@@ -258,31 +258,10 @@ class BrightIDNftMintModel {
         },
         {
             type: "function",
-            stateMutability: "view",
-            outputs: [{ type: "uint256", name: "", internalType: "uint256" }],
-            name: "tokenByIndex",
-            inputs: [
-                { type: "uint256", name: "index", internalType: "uint256" },
-            ],
-        },
-        {
-            type: "function",
-            stateMutability: "view",
-            outputs: [{ type: "uint256", name: "", internalType: "uint256" }],
-            name: "tokenOfOwnerByIndex",
-            inputs: [
-                { type: "address", name: "owner", internalType: "address" },
-                { type: "uint256", name: "index", internalType: "uint256" },
-            ],
-        },
-        {
-            type: "function",
-            stateMutability: "view",
+            stateMutability: "pure",
             outputs: [{ type: "string", name: "", internalType: "string" }],
             name: "tokenURI",
-            inputs: [
-                { type: "uint256", name: "tokenId", internalType: "uint256" },
-            ],
+            inputs: [{ type: "uint256", name: "", internalType: "uint256" }],
         },
         {
             type: "function",
