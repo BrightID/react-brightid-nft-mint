@@ -1221,6 +1221,7 @@ class BrightIDNftMintModel {
 
     getErrorMessage(error) {
         if (
+            typeof error.data !== "undefined" &&
             typeof error.data.message !== "undefined" &&
             error.data.message.slice(0, 9) === "Reverted "
         ) {
