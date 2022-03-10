@@ -583,7 +583,7 @@ class BrightIDNftMintModel {
             const accounts = await provider.listAccounts();
 
             if (accounts.length === 0) {
-                throw new Error("No WalAddress Found");
+                throw new Error("No Wallet Address Found");
             }
 
             return accounts[0];
