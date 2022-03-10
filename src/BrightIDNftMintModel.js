@@ -1196,20 +1196,39 @@ class BrightIDNftMintModel {
     }
 
     getBindErrorMessage(error) {
-        return this.decodeErrorMessage(error);
+        const errorMessage = this.getErrorMessage(error);
+
+        return this.decodeErrorMessage(errorMessage);
     }
 
     getMintErrorMessage(error) {
-        return this.decodeErrorMessage(error);
+        const errorMessage = this.getErrorMessage(error);
+
+        return this.decodeErrorMessage(errorMessage);
     }
 
-    decodeErrorMessage(error) {
-        if (error.slice(0, 9) === "Reverted ") {
-            const errorCode = error.slice(9);
+    decodeErrorMessage(errorMessage) {
+        if (errorMessage.slice(0, 9) === "Reverted ") {
+            const errorCode = errorMessage.slice(9);
 
-            const errorMsg = ethers.utils.toUtf8String(errorCode);
+            const decodedMessage = ethers.utils.toUtf8String(errorCode);
 
-            return errorMsg;
+            return decodedMessage;
+        }
+
+        return errorMessage;
+    }
+
+    getErrorMessage(error) {
+        if (
+            typeof error.data.message !== "undefined" &&
+            error.data.message.slice(0, 9) === "Reverted "
+        ) {
+            return error.data.message;
+        }
+
+        if (typeof error.message !== "undefined") {
+            return error.message;
         }
 
         return error;

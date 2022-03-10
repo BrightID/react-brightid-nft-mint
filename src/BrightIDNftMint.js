@@ -581,7 +581,7 @@ function BrightIDNftMint({
             await registration.resetBoundUUID();
             await initIsBoundViaContract();
 
-            const errorMessage = registration.getBindErrorMessage(e.message);
+            const errorMessage = registration.getBindErrorMessage(e);
             setStepBoundViaContractError(errorMessage);
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
@@ -612,7 +612,7 @@ function BrightIDNftMint({
 
             await initIsMintedViaContract();
 
-            const errorMessage = registration.getMintErrorMessage(e.message);
+            const errorMessage = registration.getMintErrorMessage(e);
             setStepMintedViaContractError(errorMessage);
             setIsMintedViaContractTxnProcessing(false);
             setIsMintedViaContractTxnId(null);
@@ -652,7 +652,7 @@ function BrightIDNftMint({
             await registration.resetBoundUUID();
             await initIsBoundViaContract();
 
-            const errorMessage = registration.getBindErrorMessage(e.message);
+            const errorMessage = registration.getBindErrorMessage(e);
             setStepBindViaRelayError(errorMessage);
             setStepBindViaRelayStatus("");
             setStepBindViaRelayProcessing(false);
@@ -690,7 +690,7 @@ function BrightIDNftMint({
 
             await initIsMintedViaContract();
 
-            const errorMessage = registration.getMintErrorMessage(e.message);
+            const errorMessage = registration.getMintErrorMessage(e);
             setStepMintViaRelayError(errorMessage);
             setStepMintViaRelayStatus("");
             setStepMintViaRelayProcessing(false);
