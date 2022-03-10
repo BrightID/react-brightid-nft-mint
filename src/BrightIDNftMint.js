@@ -735,7 +735,7 @@ function BrightIDNftMint({
     }
 
     function hasBoundViaContract() {
-        return isBoundViaContract === true || isUUIDLinked === true;
+        return isBoundViaContract === true;
     }
 
     function hasMintedViaContract() {
