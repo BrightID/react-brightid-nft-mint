@@ -581,6 +581,18 @@ function BrightIDNftMint({
             console.error(e);
             // console.log(e);
 
+            if (registration.getIsUUIDAlreadyBoundError(e)) {
+                await registration.setBoundUUID();
+                await initIsBoundViaContract();
+
+                setStepBoundViaContractError("");
+                setIsBoundViaContractTxnProcessing(false);
+                setIsBoundViaContractTxnId(null);
+                setStepBindViaRelayProcessing(false);
+
+                return;
+            }
+
             await registration.resetBoundUUID();
             await initIsBoundViaContract();
 
@@ -656,6 +668,18 @@ function BrightIDNftMint({
         } catch (e) {
             console.error(e);
             // console.log(e);
+
+            if (registration.getIsUUIDAlreadyBoundError(e)) {
+                await registration.setBoundUUID();
+                await initIsBoundViaContract();
+
+                setStepBoundViaContractError("");
+                setIsBoundViaContractTxnProcessing(false);
+                setIsBoundViaContractTxnId(null);
+                setStepBindViaRelayProcessing(false);
+
+                return;
+            }
 
             await registration.resetBoundUUID();
             await initIsBoundViaContract();

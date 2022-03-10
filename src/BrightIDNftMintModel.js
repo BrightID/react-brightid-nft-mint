@@ -1234,6 +1234,12 @@ class BrightIDNftMintModel {
 
         return error;
     }
+
+    getIsUUIDAlreadyBoundError(error) {
+        const errorMessage = this.getBindErrorMessage(error);
+
+        return errorMessage.includes("UUID already bound");
+    }
 }
 
 export default BrightIDNftMintModel;
