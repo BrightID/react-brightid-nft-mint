@@ -557,6 +557,8 @@ function BrightIDNftMint({
 
     async function bindViaTransaction() {
         try {
+            setStepBindViaRelayProcessing(true);
+
             const tx = await registration.bindViaTransaction();
 
             setIsBoundViaContractTxnProcessing(true);
@@ -574,6 +576,7 @@ function BrightIDNftMint({
             setStepBoundViaContractError("");
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
+            setStepBindViaRelayProcessing(false);
         } catch (e) {
             console.error(e);
             // console.log(e);
@@ -585,11 +588,14 @@ function BrightIDNftMint({
             setStepBoundViaContractError(errorMessage);
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
+            setStepBindViaRelayProcessing(false);
         }
     }
 
     async function mintViaTransaction() {
         try {
+            setStepMintViaRelayProcessing(true);
+
             const tx = await registration.mintViaTransaction();
 
             setIsMintedViaContractTxnProcessing(true);
@@ -606,6 +612,7 @@ function BrightIDNftMint({
             setStepMintedViaContractError("");
             setIsMintedViaContractTxnProcessing(false);
             setIsMintedViaContractTxnId(null);
+            setStepMintViaRelayProcessing(false);
         } catch (e) {
             console.error(e);
             // console.log(e);
@@ -616,6 +623,7 @@ function BrightIDNftMint({
             setStepMintedViaContractError(errorMessage);
             setIsMintedViaContractTxnProcessing(false);
             setIsMintedViaContractTxnId(null);
+            setStepMintViaRelayProcessing(false);
         }
     }
 
@@ -1317,6 +1325,11 @@ function BrightIDNftMint({
                                                 onClick={() =>
                                                     bindViaTransaction()
                                                 }
+                                                disabled={
+                                                    stepBindViaRelayProcessing
+                                                        ? true
+                                                        : null
+                                                }
                                             >
                                                 Bind
                                             </button>
@@ -1569,6 +1582,11 @@ function BrightIDNftMint({
                                                 className="brightid-nft-mint-step__button"
                                                 onClick={() =>
                                                     mintViaTransaction()
+                                                }
+                                                disabled={
+                                                    stepMintViaRelayProcessing
+                                                        ? true
+                                                        : null
                                                 }
                                             >
                                                 Mint
