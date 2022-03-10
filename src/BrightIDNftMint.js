@@ -1362,11 +1362,24 @@ function BrightIDNftMint({
                                 </div>
                             </div>
                             <div className="brightid-nft-mint-step__description">
-                                <p className="brightid-nft-mint-step__description-p">
-                                    In this step you will be asked to sign a
-                                    message with your wallet. This will bind the
-                                    UUID below to you.
-                                </p>
+                                {hasRelay() && (
+                                    <p className="brightid-nft-mint-step__description-p">
+                                        In this step you will be asked to sign a
+                                        hash of the UUID below with your wallet.
+                                        This will bind the UUID to you.
+                                    </p>
+                                )}
+                                {!hasRelay() && (
+                                    <p className="brightid-nft-mint-step__description-p">
+                                        In this step you will be presented with
+                                        two prompts by your wallet. The first
+                                        will ask you to sign a hash of the UUID
+                                        below. The second will ask you to
+                                        process the bind transaction. You must
+                                        complete both. This will bind the UUID
+                                        to you.
+                                    </p>
+                                )}
                                 {uuidHex && (
                                     <p className="brightid-nft-mint-step__description-p">
                                         <strong>UUID: </strong>
