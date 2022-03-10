@@ -1195,24 +1195,24 @@ class BrightIDNftMintModel {
         return await fetch(request);
     }
 
-    getBindErrorMessage(code) {
-        return this.decodeErrorMessage(code);
+    getBindErrorMessage(error) {
+        return this.decodeErrorMessage(error);
     }
 
-    getMintErrorMessage(code) {
-        return this.decodeErrorMessage(code);
+    getMintErrorMessage(error) {
+        return this.decodeErrorMessage(error);
     }
 
-    decodeErrorMessage(code) {
-        if (code.slice(0, 9) === "Reverted ") {
-            const errorCode = code.slice(9);
+    decodeErrorMessage(error) {
+        if (error.slice(0, 9) === "Reverted ") {
+            const errorCode = error.slice(9);
 
             const errorMsg = ethers.utils.toUtf8String(errorCode);
 
             return errorMsg;
         }
 
-        return code;
+        return error;
     }
 }
 
