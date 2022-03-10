@@ -1546,6 +1546,7 @@ function BrightIDNftMint({
                                     {!hasReachedMaxSupply() &&
                                         hasRelay() &&
                                         stepConnectWalletComplete() &&
+                                        stepBindViaRelayComplete() &&
                                         stepUUIDLinkedComplete() && (
                                             <button
                                                 className="brightid-nft-mint-step__button"
@@ -1562,6 +1563,7 @@ function BrightIDNftMint({
                                     {!hasReachedMaxSupply() &&
                                         !hasRelay() &&
                                         stepConnectWalletComplete() &&
+                                        stepBindViaRelayComplete() &&
                                         stepUUIDLinkedComplete() && (
                                             <button
                                                 className="brightid-nft-mint-step__button"
