@@ -120,7 +120,8 @@ function BrightIDNftMint({
     async function onAccountDisconnect() {
         resetWalletData();
         setMode("");
-        setAllowMode("");
+        // setAllowMode(""); // TEMP DISABLE GAS CHOICE
+        setAllowMode(false); // TEMP DISABLE GAS CHOICE
         setWalletAddress("");
         setENSName("");
         setChainId("");
@@ -134,7 +135,9 @@ function BrightIDNftMint({
 
     async function onAccountChange() {
         resetWalletData();
-        initAllowMode();
+        // initAllowMode(); // TEMP DISABLE GAS CHOICE
+        setAllowMode(false); // TEMP DISABLE GAS CHOICE
+        setModeGas(); // TEMP FORCE GAS MODE
         initUUIDHex();
         initWalletAddress();
         initENSName();
@@ -440,7 +443,8 @@ function BrightIDNftMint({
         initTotalSupply();
 
         // Restore mode
-        restoreMode();
+        // restoreMode(); // TEMP DISABLE GAS CHOICE
+        setModeGas(); // TEMP FORCE GAS MODE
 
         // Reconnect on Load
         reconnectWallet();
