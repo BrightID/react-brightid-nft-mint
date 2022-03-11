@@ -451,7 +451,7 @@ function BrightIDNftMint({
 
         if (gasBalance) {
             setAllowMode(false);
-            setModeGas(true);
+            setModeGas();
         } else {
             setAllowMode(true);
         }
