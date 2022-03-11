@@ -41,7 +41,7 @@ function BrightIDNftMint({
 
     const [allowBindRetry, setAllowBindRetry] = useState(false);
 
-    const [allowMode, setAllowMode] = useState(true);
+    const [allowMode, setAllowMode] = useState(false);
 
     const [mode, setMode] = useState("");
 
@@ -120,8 +120,7 @@ function BrightIDNftMint({
     async function onAccountDisconnect() {
         resetWalletData();
         setMode("");
-        // setAllowMode(""); // TEMP DISABLE GAS CHOICE
-        setAllowMode(false); // TEMP DISABLE GAS CHOICE
+        setAllowMode(false);
         setWalletAddress("");
         setENSName("");
         setChainId("");
@@ -135,10 +134,7 @@ function BrightIDNftMint({
 
     async function onAccountChange() {
         resetWalletData();
-        // initAllowMode(); // TEMP DISABLE GAS CHOICE
-        setAllowMode(false); // TEMP DISABLE GAS CHOICE
-        setModeGas(); // TEMP FORCE GAS MODE
-        // setModeGasless(); // TEMP FORCE GASLESS MODE
+        initAllowMode();
         initUUIDHex();
         initWalletAddress();
         initENSName();
@@ -445,22 +441,23 @@ function BrightIDNftMint({
 
         // Restore mode
         // restoreMode(); // TEMP DISABLE GAS CHOICE
-        setModeGas(); // TEMP FORCE GAS MODE
-        // setModeGasless(); // TEMP FORCE GASLESS MODE
 
         // Reconnect on Load
         reconnectWallet();
     }
 
     async function initAllowMode() {
-        const gasBalance = await registration.initGasBalance();
+        // const gasBalance = await registration.initGasBalance();
 
-        if (gasBalance) {
-            setAllowMode(false);
-            setModeGas();
-        } else {
-            setAllowMode(true);
-        }
+        // if (gasBalance) {
+        //     setAllowMode(false);
+        //     setModeGas();
+        // } else {
+        //     setAllowMode(true);
+        // }
+
+        setAllowMode(false); // TEMP DISABLE GAS CHOICE
+        setModeGas(); // TEMP DISABLE GAS CHOICE
     }
 
     async function reconnectWallet() {
