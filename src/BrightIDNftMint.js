@@ -1023,14 +1023,14 @@ function BrightIDNftMint({
                             <p className="brightid-nft-mint-step__description-p">
                                 Once you have BrightID installed you need to
                                 become verified in their system by participating
-                                in a "Verification Party".
+                                in a "Connection Party".
                             </p>
                             <p className="brightid-nft-mint-step__description-button-container">
                                 <button
                                     className="brightid-nft-mint-step__button"
                                     onClick={() => verifyWithBrightID()}
                                 >
-                                    Find Verification Party
+                                    Find Connection Party
                                 </button>
                             </p>
                             <h3 className="brightid-nft-mint-step__description-p">
