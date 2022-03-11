@@ -1240,6 +1240,14 @@ class BrightIDNftMintModel {
 
         return errorMessage.includes("UUID already bound");
     }
+
+    getIsUUIDUnboundError(error) {
+        const errorMessage = this.getMintErrorMessage(error);
+
+        // return errorMessage.includes("This BrightID had minted"); // DEBUG
+
+        return errorMessage.includes("balance query for the zero address");
+    }
 }
 
 export default BrightIDNftMintModel;

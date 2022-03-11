@@ -39,6 +39,8 @@ function BrightIDNftMint({
 
     const firstUpdate = useRef(true);
 
+    const [allowBindRetry, setAllowBindRetry] = useState(false);
+
     const [allowMode, setAllowMode] = useState(true);
 
     const [mode, setMode] = useState("");
@@ -555,7 +557,7 @@ function BrightIDNftMint({
         }
     }
 
-    async function bindViaTransaction() {
+    async function bindViaTransaction(isRetry = false) {
         try {
             setStepBindViaRelayProcessing(true);
 
@@ -581,7 +583,10 @@ function BrightIDNftMint({
             console.error(e);
             // console.log(e);
 
-            if (registration.getIsUUIDAlreadyBoundError(e)) {
+            if (
+                isRetry === false &&
+                registration.getIsUUIDAlreadyBoundError(e)
+            ) {
                 await registration.setBoundUUID();
                 await initIsBoundViaContract();
 
@@ -601,6 +606,7 @@ function BrightIDNftMint({
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
             setStepBindViaRelayProcessing(false);
+            setAllowBindRetry(false);
         }
     }
 
@@ -636,10 +642,14 @@ function BrightIDNftMint({
             setIsMintedViaContractTxnProcessing(false);
             setIsMintedViaContractTxnId(null);
             setStepMintViaRelayProcessing(false);
+
+            if (registration.getIsUUIDUnboundError(e)) {
+                setAllowBindRetry(true);
+            }
         }
     }
 
-    async function bindViaRelay() {
+    async function bindViaRelay(isRetry = false) {
         try {
             setStepBindViaRelayProcessing(true);
 
@@ -665,11 +675,16 @@ function BrightIDNftMint({
             setStepBindViaRelayError("");
             setStepBindViaRelayStatus("");
             setStepBindViaRelayProcessing(false);
+
+            setAllowBindRetry(false);
         } catch (e) {
             console.error(e);
             // console.log(e);
 
-            if (registration.getIsUUIDAlreadyBoundError(e)) {
+            if (
+                isRetry === false &&
+                registration.getIsUUIDAlreadyBoundError(e)
+            ) {
                 await registration.setBoundUUID();
                 await initIsBoundViaContract();
 
@@ -688,6 +703,7 @@ function BrightIDNftMint({
             setStepBindViaRelayError(errorMessage);
             setStepBindViaRelayStatus("");
             setStepBindViaRelayProcessing(false);
+            setAllowBindRetry(false);
         }
     }
 
@@ -726,6 +742,10 @@ function BrightIDNftMint({
             setStepMintViaRelayError(errorMessage);
             setStepMintViaRelayStatus("");
             setStepMintViaRelayProcessing(false);
+
+            if (registration.getIsUUIDUnboundError(e)) {
+                setAllowBindRetry(true);
+            }
         }
     }
 
@@ -1331,7 +1351,9 @@ function BrightIDNftMint({
                                         stepConnectWalletComplete() && (
                                             <button
                                                 className="brightid-nft-mint-step__button"
-                                                onClick={() => bindViaRelay()}
+                                                onClick={() =>
+                                                    bindViaRelay(false)
+                                                }
                                                 disabled={
                                                     stepBindViaRelayProcessing
                                                         ? true
@@ -1347,7 +1369,7 @@ function BrightIDNftMint({
                                             <button
                                                 className="brightid-nft-mint-step__button"
                                                 onClick={() =>
-                                                    bindViaTransaction()
+                                                    bindViaTransaction(false)
                                                 }
                                                 disabled={
                                                     stepBindViaRelayProcessing
@@ -1602,7 +1624,8 @@ function BrightIDNftMint({
                                                 className="brightid-nft-mint-step__button"
                                                 onClick={() => mintViaRelay()}
                                                 disabled={
-                                                    stepMintViaRelayProcessing
+                                                    stepMintViaRelayProcessing ||
+                                                    allowBindRetry
                                                         ? true
                                                         : null
                                                 }
@@ -1621,7 +1644,8 @@ function BrightIDNftMint({
                                                     mintViaTransaction()
                                                 }
                                                 disabled={
-                                                    stepMintViaRelayProcessing
+                                                    stepMintViaRelayProcessing ||
+                                                    allowBindRetry
                                                         ? true
                                                         : null
                                                 }
@@ -1684,6 +1708,59 @@ function BrightIDNftMint({
                                 {stepMintedViaContractError && (
                                     <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
                                         {stepMintedViaContractError}
+                                    </div>
+                                )}
+                                {allowBindRetry && (
+                                    <div className="brightid-nft-mint-step__description">
+                                        <p className="brightid-nft-mint-step__description-p">
+                                            <strong>
+                                                Sorry it looks like your UUID
+                                                failed to bind properly. Please
+                                                use this retry button to rebind
+                                                it and then try minting again.
+                                            </strong>
+                                        </p>
+                                        <p className="brightid-nft-mint-step__description-p">
+                                            {!hasReachedMaxSupply() &&
+                                                hasRelay() &&
+                                                stepConnectWalletComplete() && (
+                                                    <button
+                                                        className="brightid-nft-mint-step__button"
+                                                        onClick={() =>
+                                                            bindViaRelay(true)
+                                                        }
+                                                        disabled={
+                                                            stepBindViaRelayProcessing
+                                                                ? true
+                                                                : null
+                                                        }
+                                                    >
+                                                        Retry Bind
+                                                    </button>
+                                                )}
+                                            {!hasReachedMaxSupply() &&
+                                                !hasRelay() &&
+                                                stepConnectWalletComplete() && (
+                                                    <button
+                                                        className="brightid-nft-mint-step__button"
+                                                        onClick={() =>
+                                                            bindViaTransaction(
+                                                                true
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            stepBindViaRelayProcessing
+                                                                ? true
+                                                                : null
+                                                        }
+                                                    >
+                                                        Retry Bind
+                                                    </button>
+                                                )}
+                                            {hasReachedMaxSupply() && (
+                                                <em>Sold Out</em>
+                                            )}
+                                        </p>
                                     </div>
                                 )}
                                 {stepMintViaRelayComplete() && (
