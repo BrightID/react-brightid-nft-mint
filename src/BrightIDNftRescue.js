@@ -71,9 +71,10 @@ function BrightIDNftRescue({
 
     const [stepBindViaRelayError, setStepBindViaRelayError] = useState("");
 
-    const [stepMintViaRelayStatus, setStepMintViaRelayStatus] = useState("");
+    const [stepRescueViaRelayStatus, setStepRescueViaRelayStatus] =
+        useState("");
 
-    const [stepMintViaRelayError, setStepMintViaRelayError] = useState("");
+    const [stepRescueViaRelayError, setStepRescueViaRelayError] = useState("");
 
     const [linkUUIDToBrightIDError, setLinkUUIDToBrightIDError] = useState("");
 
@@ -105,7 +106,7 @@ function BrightIDNftRescue({
     const [stepBindViaRelayProcessing, setStepBindViaRelayProcessing] =
         useState("");
 
-    const [stepMintViaRelayProcessing, setStepMintViaRelayProcessing] =
+    const [stepRescueViaRelayProcessing, setStepRescueViaRelayProcessing] =
         useState("");
 
     /* Web3 Data Init & Monitoring */
@@ -587,11 +588,11 @@ function BrightIDNftRescue({
         }
     }
 
-    async function mintViaTransaction() {
+    async function rescueViaTransaction() {
         try {
-            setStepMintViaRelayProcessing(true);
+            setStepRescueViaRelayProcessing(true);
 
-            const tx = await registration.mintViaTransaction();
+            const tx = await registration.rescueViaTransaction();
 
             setIsMintedViaContractTxnProcessing(true);
             setIsMintedViaContractTxnId(tx.hash);
@@ -607,7 +608,7 @@ function BrightIDNftRescue({
             setStepMintedViaContractError("");
             setIsMintedViaContractTxnProcessing(false);
             setIsMintedViaContractTxnId(null);
-            setStepMintViaRelayProcessing(false);
+            setStepRescueViaRelayProcessing(false);
         } catch (e) {
             console.error(e);
             // console.log(e);
@@ -618,7 +619,7 @@ function BrightIDNftRescue({
             setStepMintedViaContractError(errorMessage);
             setIsMintedViaContractTxnProcessing(false);
             setIsMintedViaContractTxnId(null);
-            setStepMintViaRelayProcessing(false);
+            setStepRescueViaRelayProcessing(false);
 
             if (registration.getIsUUIDUnboundError(e)) {
                 setAllowBindRetry(true);
@@ -684,15 +685,15 @@ function BrightIDNftRescue({
         }
     }
 
-    async function mintViaRelay() {
+    async function rescueViaRelay() {
         try {
-            setStepMintViaRelayProcessing(true);
+            setStepRescueViaRelayProcessing(true);
 
-            setStepMintViaRelayStatus(
+            setStepRescueViaRelayStatus(
                 "We're minting your NFT.  This could take a minute or two. Please wait."
             );
 
-            const response = await registration.mintViaRelay();
+            const response = await registration.rescueViaRelay();
 
             if (response.ok === false) {
                 const body = await response.json();
@@ -706,9 +707,9 @@ function BrightIDNftRescue({
 
             await initIsMintedViaContract();
 
-            setStepMintViaRelayError("");
-            setStepMintViaRelayStatus("");
-            setStepMintViaRelayProcessing(false);
+            setStepRescueViaRelayError("");
+            setStepRescueViaRelayStatus("");
+            setStepRescueViaRelayProcessing(false);
         } catch (e) {
             console.error(e);
             // console.log(e);
@@ -716,9 +717,9 @@ function BrightIDNftRescue({
             await initIsMintedViaContract();
 
             const errorMessage = registration.getMintErrorMessage(e);
-            setStepMintViaRelayError(errorMessage);
-            setStepMintViaRelayStatus("");
-            setStepMintViaRelayProcessing(false);
+            setStepRescueViaRelayError(errorMessage);
+            setStepRescueViaRelayStatus("");
+            setStepRescueViaRelayProcessing(false);
 
             if (registration.getIsUUIDUnboundError(e)) {
                 setAllowBindRetry(true);
@@ -814,7 +815,7 @@ function BrightIDNftRescue({
         return hasBoundViaContract();
     }
 
-    function stepMintViaRelayComplete() {
+    function stepRescueViaRelayComplete() {
         return hasMintedViaContract();
     }
 
@@ -854,7 +855,7 @@ function BrightIDNftRescue({
         return stepBindViaRelayComplete() && stepBindViaRelayActive();
     }
 
-    function stepMintViaRelayActive() {
+    function stepRescueViaRelayActive() {
         return stepUUIDLinkedComplete() && stepUUIDLinkedActive();
     }
 
@@ -1502,11 +1503,11 @@ function BrightIDNftRescue({
                         className={`
                         brightid-nft-mint-step
                         brightid-nft-mint-step--${getStepCompleteString(
-                            stepMintViaRelayComplete()
+                            stepRescueViaRelayComplete()
                         )}
                         brightid-nft-mint-step--${getStepActiveString(
-                            stepMintViaRelayComplete() ||
-                                stepMintViaRelayActive()
+                            stepRescueViaRelayComplete() ||
+                                stepRescueViaRelayActive()
                         )}
                     `}
                     >
@@ -1516,7 +1517,7 @@ function BrightIDNftRescue({
                             </div>
                             <div className="brightid-nft-mint-step__header">
                                 <h2 className="brightid-nft-mint-step__heading">
-                                    Mint NFT
+                                    Rescue NFT
                                 </h2>
                             </div>
                             <div className="brightid-nft-mint-step__action">
@@ -1526,15 +1527,15 @@ function BrightIDNftRescue({
                                     stepUUIDLinkedComplete() && (
                                         <button
                                             className="brightid-nft-mint-step__button"
-                                            onClick={() => mintViaRelay()}
+                                            onClick={() => rescueViaRelay()}
                                             disabled={
-                                                stepMintViaRelayProcessing ||
+                                                stepRescueViaRelayProcessing ||
                                                 allowBindRetry
                                                     ? true
                                                     : null
                                             }
                                         >
-                                            Mint
+                                            Rescue
                                         </button>
                                     )}
                                 {!hasRelay() &&
@@ -1543,21 +1544,23 @@ function BrightIDNftRescue({
                                     stepUUIDLinkedComplete() && (
                                         <button
                                             className="brightid-nft-mint-step__button"
-                                            onClick={() => mintViaTransaction()}
+                                            onClick={() =>
+                                                rescueViaTransaction()
+                                            }
                                             disabled={
-                                                stepMintViaRelayProcessing ||
+                                                stepRescueViaRelayProcessing ||
                                                 allowBindRetry
                                                     ? true
                                                     : null
                                             }
                                         >
-                                            Mint
+                                            Rescue
                                         </button>
                                     )}
                             </div>
                         </div>
                         <div className="brightid-nft-mint-step__feedback">
-                            {stepMintViaRelayStatus && (
+                            {stepRescueViaRelayStatus && (
                                 <div className="brightid-nft-mint-step__response">
                                     <div className="brightid-nft-mint-step__response-loading-icon">
                                         <div className="brightid-nft-mint-step__loading-icon">
@@ -1568,13 +1571,13 @@ function BrightIDNftRescue({
                                         </div>
                                     </div>
                                     <div className="brightid-nft-mint-step__response-message">
-                                        <div>{stepMintViaRelayStatus}</div>
+                                        <div>{stepRescueViaRelayStatus}</div>
                                     </div>
                                 </div>
                             )}
-                            {stepMintViaRelayError && (
+                            {stepRescueViaRelayError && (
                                 <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
-                                    {stepMintViaRelayError}
+                                    {stepRescueViaRelayError}
                                 </div>
                             )}
                             {isMintedViaContractTxnProcessing && (
@@ -1655,11 +1658,11 @@ function BrightIDNftRescue({
                                     </p>
                                 </div>
                             )}
-                            {stepMintViaRelayComplete() && (
+                            {stepRescueViaRelayComplete() && (
                                 <div className="brightid-nft-mint-step__description">
                                     <p className="brightid-nft-mint-step__description-p">
                                         <strong>
-                                            Your NFT has been minted.
+                                            Your NFT has been rescued.
                                         </strong>
                                     </p>
                                     <p className="brightid-nft-mint-step__description-p">
