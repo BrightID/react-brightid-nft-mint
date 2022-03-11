@@ -138,6 +138,7 @@ function BrightIDNftMint({
         // initAllowMode(); // TEMP DISABLE GAS CHOICE
         setAllowMode(false); // TEMP DISABLE GAS CHOICE
         setModeGas(); // TEMP FORCE GAS MODE
+        // setModeGasless(); // TEMP FORCE GASLESS MODE
         initUUIDHex();
         initWalletAddress();
         initENSName();
@@ -445,6 +446,7 @@ function BrightIDNftMint({
         // Restore mode
         // restoreMode(); // TEMP DISABLE GAS CHOICE
         setModeGas(); // TEMP FORCE GAS MODE
+        // setModeGasless(); // TEMP FORCE GAS MODE
 
         // Reconnect on Load
         reconnectWallet();
