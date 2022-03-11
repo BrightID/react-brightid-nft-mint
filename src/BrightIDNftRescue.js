@@ -43,7 +43,7 @@ function BrightIDNftRescue({
 
     const [allowMode, setAllowMode] = useState(false);
 
-    const [mode, setMode] = useState("gas");
+    const [mode, setMode] = useState("");
 
     const [uuidHex, setUUIDHex] = useState("");
 
@@ -413,19 +413,25 @@ function BrightIDNftRescue({
     async function init() {
         await initRegistration();
 
+        // Restore mode
+        // restoreMode(); // TEMP DISABLE GAS CHOICE
+
         // Reconnect on Load
         reconnectWallet();
     }
 
     async function initAllowMode() {
-        const gasBalance = await registration.initGasBalance();
+        // const gasBalance = await registration.initGasBalance();
 
-        if (gasBalance) {
-            setAllowMode(false);
-            setModeGas();
-        } else {
-            setAllowMode(true);
-        }
+        // if (gasBalance) {
+        //     setAllowMode(false);
+        //     setModeGas();
+        // } else {
+        //     setAllowMode(true);
+        // }
+
+        setAllowMode(false); // TEMP DISABLE GAS CHOICE
+        setModeGas(); // TEMP DISABLE GAS CHOICE
     }
 
     async function reconnectWallet() {
