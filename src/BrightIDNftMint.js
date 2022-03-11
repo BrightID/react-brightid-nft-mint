@@ -446,7 +446,7 @@ function BrightIDNftMint({
         // Restore mode
         // restoreMode(); // TEMP DISABLE GAS CHOICE
         setModeGas(); // TEMP FORCE GAS MODE
-        // setModeGasless(); // TEMP FORCE GAS MODE
+        // setModeGasless(); // TEMP FORCE GASLESS MODE
 
         // Reconnect on Load
         reconnectWallet();
