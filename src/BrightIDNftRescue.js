@@ -1557,33 +1557,33 @@ function BrightIDNftRescue({
                             <div className="brightid-nft-mint-step__action"></div>
                         </div>
 
-                        {!stepRescueViaRelayComplete() && (
-                            <div
-                                className="
+                        {stepConnectWalletComplete() &&
+                            stepBindViaRelayComplete() &&
+                            stepUUIDLinkedComplete() &&
+                            !stepRescueViaRelayComplete() && (
+                                <div
+                                    className="
                                     brightid-nft-mint-step__description
                                     brightid-nft-mint-step__description--action
                                 "
-                            >
-                                <p className="brightid-nft-mint-step__description-p">
-                                    Enter the wallet address that contains the
-                                    NFT you are rescuing.
-                                </p>
-                                <p className="brightid-nft-mint-step__description-button-container">
-                                    <input
-                                        autoComplete="off"
-                                        className="brightid-nft-mint-step__input"
-                                        type="text"
-                                        onChange={(e) =>
-                                            handleRescueAddressChange(e)
-                                        }
-                                        placeholder="Enter wallet address to rescue from"
-                                    />
-                                </p>
-                                <p className="brightid-nft-mint-step__description-button-container">
-                                    {hasRelay() &&
-                                        stepConnectWalletComplete() &&
-                                        stepBindViaRelayComplete() &&
-                                        stepUUIDLinkedComplete() && (
+                                >
+                                    <p className="brightid-nft-mint-step__description-p">
+                                        Enter the wallet address that contains
+                                        the NFT you are rescuing.
+                                    </p>
+                                    <p className="brightid-nft-mint-step__description-button-container">
+                                        <input
+                                            autoComplete="off"
+                                            className="brightid-nft-mint-step__input"
+                                            type="text"
+                                            onChange={(e) =>
+                                                handleRescueAddressChange(e)
+                                            }
+                                            placeholder="Enter wallet address to rescue from"
+                                        />
+                                    </p>
+                                    <p className="brightid-nft-mint-step__description-button-container">
+                                        {hasRelay() && (
                                             <button
                                                 className="brightid-nft-mint-step__button"
                                                 onClick={() => rescueViaRelay()}
@@ -1597,10 +1597,7 @@ function BrightIDNftRescue({
                                                 Rescue
                                             </button>
                                         )}
-                                    {!hasRelay() &&
-                                        stepConnectWalletComplete() &&
-                                        stepBindViaRelayComplete() &&
-                                        stepUUIDLinkedComplete() && (
+                                        {!hasRelay() && (
                                             <button
                                                 className="brightid-nft-mint-step__button"
                                                 onClick={() =>
@@ -1616,9 +1613,9 @@ function BrightIDNftRescue({
                                                 Rescue
                                             </button>
                                         )}
-                                </p>
-                            </div>
-                        )}
+                                    </p>
+                                </div>
+                            )}
 
                         <div className="brightid-nft-mint-step__feedback">
                             {stepRescueViaRelayStatus && (
