@@ -761,15 +761,15 @@ function BrightIDNftMint({
     /* ---------------------------------------------------------------------- */
 
     function restoreMode() {
-        if (localStorage.getItem(`${statePrefix}-mode`) !== null) {
-            const mode = localStorage.getItem(`${statePrefix}-mode`);
+        if (sessionStorage.getItem(`${statePrefix}-mode`) !== null) {
+            const mode = sessionStorage.getItem(`${statePrefix}-mode`);
 
             setMode(mode);
         }
     }
 
     function changeMode(mode) {
-        localStorage.setItem(`${statePrefix}-mode`, mode);
+        sessionStorage.setItem(`${statePrefix}-mode`, mode);
 
         setMode(mode);
     }

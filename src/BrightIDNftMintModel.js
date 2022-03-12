@@ -860,22 +860,22 @@ class BrightIDNftMintModel {
     }
 
     resetBoundUUID() {
-        localStorage.removeItem(`${this.statePrefix}-uuid-bound`);
+        sessionStorage.removeItem(`${this.statePrefix}-uuid-bound`);
     }
 
     setBoundUUID() {
-        localStorage.setItem(`${this.statePrefix}-uuid-bound`, this.uuid);
+        sessionStorage.setItem(`${this.statePrefix}-uuid-bound`, this.uuid);
     }
 
     hasBoundUUID() {
         return (
-            localStorage.getItem(`${this.statePrefix}-uuid`) ===
-            localStorage.getItem(`${this.statePrefix}-uuid-bound`)
+            sessionStorage.getItem(`${this.statePrefix}-uuid`) ===
+            sessionStorage.getItem(`${this.statePrefix}-uuid-bound`)
         );
     }
 
     async resetUUID() {
-        localStorage.removeItem(`${this.statePrefix}-uuid`);
+        sessionStorage.removeItem(`${this.statePrefix}-uuid`);
         this.resetBoundUUID();
         await this.initUUID();
     }
@@ -884,18 +884,18 @@ class BrightIDNftMintModel {
         try {
             const walletAddress = await this.queryWalletAddress();
 
-            if (localStorage.getItem(`${this.statePrefix}-wallet`) === null) {
-                localStorage.setItem(
+            if (sessionStorage.getItem(`${this.statePrefix}-wallet`) === null) {
+                sessionStorage.setItem(
                     `${this.statePrefix}-wallet`,
                     walletAddress
                 );
             }
 
             if (
-                localStorage.getItem(`${this.statePrefix}-wallet`) !==
+                sessionStorage.getItem(`${this.statePrefix}-wallet`) !==
                 walletAddress
             ) {
-                localStorage.setItem(
+                sessionStorage.setItem(
                     `${this.statePrefix}-wallet`,
                     walletAddress
                 );
@@ -908,19 +908,19 @@ class BrightIDNftMintModel {
             return await this.resetUUID();
         }
 
-        if (localStorage.getItem(`${this.statePrefix}-uuid`) === null) {
+        if (sessionStorage.getItem(`${this.statePrefix}-uuid`) === null) {
             const newUUID = this.generateUUID();
 
-            localStorage.setItem(`${this.statePrefix}-uuid`, newUUID);
+            sessionStorage.setItem(`${this.statePrefix}-uuid`, newUUID);
         }
 
-        if (localStorage.getItem(`${this.statePrefix}-uuid`) === null) {
+        if (sessionStorage.getItem(`${this.statePrefix}-uuid`) === null) {
             const newUUID = this.generateUUID();
 
-            localStorage.setItem(`${this.statePrefix}-uuid`, newUUID);
+            sessionStorage.setItem(`${this.statePrefix}-uuid`, newUUID);
         }
 
-        this.uuid = localStorage.getItem(`${this.statePrefix}-uuid`);
+        this.uuid = sessionStorage.getItem(`${this.statePrefix}-uuid`);
         // console.log("UUID");
         // console.log(this.uuid);
 
