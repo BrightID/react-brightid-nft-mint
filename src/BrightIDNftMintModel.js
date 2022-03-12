@@ -1111,10 +1111,29 @@ class BrightIDNftMintModel {
     }
 
     async getTokenId(addr) {
+        const provider = await this.getRegistrationProvider();
         const contract = await this.getContract();
 
-        const tokenId = await contract.tokenOfOwnerByIndex(addr, 0);
+        let filter = contract.filters.Transfer(null, addr);
+        // filter.fromBlock = 0;
+        filter.fromBlock = 21019766;
 
+        const logs = await provider.getLogs(filter);
+
+        if (logs.length === 0) {
+            throw new Error(
+                "No NFTs could be found at the provided rescue address."
+            );
+        }
+
+        const lastLog = logs.pop();
+
+        const tokenIdHex = lastLog.topics[3];
+
+        const tokenId = parseInt(tokenIdHex, 16);
+
+        console.log(lastLog);
+        console.log(tokenIdHex);
         console.log(tokenId);
 
         return tokenId;
@@ -1122,7 +1141,6 @@ class BrightIDNftMintModel {
 
     async getRescueParams(rescueFrom) {
         const tokenId = await this.getTokenId(rescueFrom);
-        // const tokenId = rescueFrom;
 
         const verificationData = await this.queryBrightIDSignature(
             this.uuidHex
