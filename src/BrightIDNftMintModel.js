@@ -1110,6 +1110,55 @@ class BrightIDNftMintModel {
         };
     }
 
+    async getTokenId(addr) {
+        const contract = await this.getContract();
+
+        const tokenId = await contract.tokenOfOwnerByIndex(addr, 0);
+
+        console.log(tokenId);
+
+        return tokenId;
+    }
+
+    async getRescueParams(rescueFrom) {
+        const tokenId = await this.getTokenId(rescueFrom);
+        // const tokenId = rescueFrom;
+
+        const verificationData = await this.queryBrightIDSignature(
+            this.uuidHex
+        );
+
+        const contextIds = verificationData.data.contextIds;
+        const timestamp = verificationData.data.timestamp;
+        const v = verificationData.data.sig.v;
+        const r = "0x" + verificationData.data.sig.r;
+        const s = "0x" + verificationData.data.sig.s;
+
+        const contextIdsByte32 = contextIds.map((contextId) => {
+            return "0x" + new Buffer(contextId).toString("hex");
+        });
+
+        console.log("pass to mint");
+        console.log("-------------------------------");
+        console.log(contextIds);
+        console.log(contextIdsByte32);
+        console.log(timestamp);
+        console.log(v);
+        console.log(r);
+        console.log(s);
+        console.log("-------------------------------");
+
+        return {
+            contextIds,
+            contextIdsByte32,
+            timestamp,
+            tokenId,
+            v,
+            r,
+            s,
+        };
+    }
+
     async getMintRelayParams() {
         const addr = await this.getWalletAddress();
         const uuid = this.uuidHex;
@@ -1169,6 +1218,31 @@ class BrightIDNftMintModel {
         );
     }
 
+    async rescueViaTransaction(rescueFrom) {
+        const chainId = await this.initChainId();
+
+        if (chainId !== Number(this.mintChainId)) {
+            throw new Error(
+                `Please switch to the ${this.mintChainName} network (chainId: ${this.mintChainId}) first.`
+            );
+        }
+
+        const rescueParams = await this.getRescueParams(rescueFrom);
+
+        const contract = await this.getContractRw();
+
+        return await contract[
+            "rescue(bytes32[],uint256,uint256,uint8,bytes32,bytes32)"
+        ](
+            rescueParams.contextIdsByte32,
+            rescueParams.timestamp,
+            rescueParams.tokenId,
+            rescueParams.v,
+            rescueParams.r,
+            rescueParams.s
+        );
+    }
+
     async bindViaRelay() {
         const bindParams = await this.getBindParams();
 
@@ -1195,6 +1269,10 @@ class BrightIDNftMintModel {
         });
 
         return await fetch(request);
+    }
+
+    async rescueViaRelay(rescueFrom) {
+        throw new Error("Not implemented");
     }
 
     getBindErrorMessage(error) {

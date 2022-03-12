@@ -111,6 +111,8 @@ function BrightIDNftRescue({
     const [stepRescueViaRelayProcessing, setStepRescueViaRelayProcessing] =
         useState("");
 
+    const [rescueAddress, setRescueAddress] = useState("");
+
     /* Web3 Data Init & Monitoring */
     /* ---------------------------------------------------------------------- */
 
@@ -490,6 +492,14 @@ function BrightIDNftRescue({
         }
     }
 
+    async function handleRescueAddressChange(event) {
+        setRescueAddress(event.target.value);
+    }
+
+    async function getRescueAddress() {
+        return rescueAddress;
+    }
+
     async function faucetClaim() {
         window.open(mintTokenFaucetUrl, "_blank");
     }
@@ -595,7 +605,15 @@ function BrightIDNftRescue({
         try {
             setStepRescueViaRelayProcessing(true);
 
-            const tx = await registration.rescueViaTransaction();
+            const rescueFrom = await getRescueAddress();
+
+            if (!rescueFrom) {
+                throw new Error(
+                    "Please enter a wallet address to rescue from."
+                );
+            }
+
+            const tx = await registration.rescueViaTransaction(rescueFrom);
 
             setIsMintedViaContractTxnProcessing(true);
             setIsMintedViaContractTxnId(tx.hash);
@@ -693,10 +711,18 @@ function BrightIDNftRescue({
             setStepRescueViaRelayProcessing(true);
 
             setStepRescueViaRelayStatus(
-                "We're minting your NFT.  This could take a minute or two. Please wait."
+                "We're rescuing your NFT.  This could take a minute or two. Please wait."
             );
 
-            const response = await registration.rescueViaRelay();
+            const rescueFrom = await getRescueAddress();
+
+            if (!rescueFrom) {
+                throw new Error(
+                    "Please enter a wallet address to rescue from."
+                );
+            }
+
+            const response = await registration.rescueViaRelay(rescueFrom);
 
             if (response.ok === false) {
                 const body = await response.json();
@@ -1523,7 +1549,31 @@ function BrightIDNftRescue({
                                     Rescue NFT
                                 </h2>
                             </div>
-                            <div className="brightid-nft-mint-step__action">
+                            <div className="brightid-nft-mint-step__action"></div>
+                        </div>
+
+                        <div
+                            className="
+                                brightid-nft-mint-step__description
+                                brightid-nft-mint-step__description--action
+                            "
+                        >
+                            <p className="brightid-nft-mint-step__description-p">
+                                Enter the wallet address that contains the NFT
+                                you are rescuing.
+                            </p>
+                            <p className="brightid-nft-mint-step__description-button-container">
+                                <input
+                                    autoComplete="off"
+                                    className="brightid-nft-mint-step__input"
+                                    type="text"
+                                    onChange={(e) =>
+                                        handleRescueAddressChange(e)
+                                    }
+                                    placeholder="Enter wallet address to rescue from"
+                                />
+                            </p>
+                            <p className="brightid-nft-mint-step__description-button-container">
                                 {hasRelay() &&
                                     stepConnectWalletComplete() &&
                                     stepBindViaRelayComplete() &&
@@ -1560,8 +1610,9 @@ function BrightIDNftRescue({
                                             Rescue
                                         </button>
                                     )}
-                            </div>
+                            </p>
                         </div>
+
                         <div className="brightid-nft-mint-step__feedback">
                             {stepRescueViaRelayStatus && (
                                 <div className="brightid-nft-mint-step__response">
