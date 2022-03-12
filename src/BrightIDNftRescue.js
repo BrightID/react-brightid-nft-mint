@@ -37,6 +37,8 @@ function BrightIDNftRescue({
     /* State */
     /* ---------------------------------------------------------------------- */
 
+    const statePrefix = "brightid-nft-rescue";
+
     const firstUpdate = useRef(true);
 
     const [allowBindRetry, setAllowBindRetry] = useState(false);
@@ -388,6 +390,7 @@ function BrightIDNftRescue({
 
         // Initialize registration class.
         registration = new BrightIDNftMintModel(
+            statePrefix,
             context,
             contractAddr,
             mainnetRpcUrl,
@@ -731,15 +734,15 @@ function BrightIDNftRescue({
     /* ---------------------------------------------------------------------- */
 
     function restoreMode() {
-        if (localStorage.getItem("brightid-nft-mint-mode") !== null) {
-            const mode = localStorage.getItem("brightid-nft-mint-mode");
+        if (localStorage.getItem(`${statePrefix}-mode`) !== null) {
+            const mode = localStorage.getItem(`${statePrefix}-mode`);
 
             setMode(mode);
         }
     }
 
     function changeMode(mode) {
-        localStorage.setItem("brightid-nft-mint-mode", mode);
+        localStorage.setItem(`${statePrefix}-mode`, mode);
 
         setMode(mode);
     }

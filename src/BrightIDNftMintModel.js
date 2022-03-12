@@ -352,6 +352,7 @@ class BrightIDNftMintModel {
     uuidByte32 = "";
 
     constructor(
+        statePrefix = "",
         context = "",
         contractAddr = "",
         mainnetRpcUrl = "",
@@ -373,6 +374,7 @@ class BrightIDNftMintModel {
         mintRpcUrl = "https://rpc.gnosischain.com",
         verificationUrl = "https://app.brightid.org/node/v5/verifications"
     ) {
+        this.statePrefix = statePrefix;
         this.context = context;
         this.contractAddr = contractAddr;
         this.mainnetRpcUrl = mainnetRpcUrl;
@@ -860,34 +862,34 @@ class BrightIDNftMintModel {
     }
 
     resetBoundUUID() {
-        localStorage.removeItem("brightid-nft-mint-uuid-bound");
+        localStorage.removeItem(`${this.statePrefix}-uuid-bound`);
     }
 
     setBoundUUID() {
-        localStorage.setItem("brightid-nft-mint-uuid-bound", this.uuid);
+        localStorage.setItem(`${this.statePrefix}-uuid-bound`, this.uuid);
     }
 
     hasBoundUUID() {
         return (
-            localStorage.getItem("brightid-nft-mint-uuid") ===
-            localStorage.getItem("brightid-nft-mint-uuid-bound")
+            localStorage.getItem(`${this.statePrefix}-uuid`) ===
+            localStorage.getItem(`${this.statePrefix}-uuid-bound`)
         );
     }
 
     resetUUID() {
-        localStorage.removeItem("brightid-nft-mint-uuid");
+        localStorage.removeItem(`${this.statePrefix}-uuid`);
         this.resetBoundUUID();
         this.initUUID();
     }
 
     initUUID() {
-        if (localStorage.getItem("brightid-nft-mint-uuid") === null) {
+        if (localStorage.getItem(`${this.statePrefix}-uuid`) === null) {
             const newUUID = this.generateUUID();
 
-            localStorage.setItem("brightid-nft-mint-uuid", newUUID);
+            localStorage.setItem(`${this.statePrefix}-uuid`, newUUID);
         }
 
-        this.uuid = localStorage.getItem("brightid-nft-mint-uuid");
+        this.uuid = localStorage.getItem(`${this.statePrefix}-uuid`);
         // console.log("UUID");
         // console.log(this.uuid);
 
