@@ -396,8 +396,6 @@ class BrightIDNftMintModel {
         this.mintBlockExplorerTxnPath = mintBlockExplorerTxnPath;
         this.mintRpcUrl = mintRpcUrl;
         this.verificationUrl = verificationUrl;
-
-        this.initUUID();
     }
 
     resetWalletData() {
@@ -876,13 +874,46 @@ class BrightIDNftMintModel {
         );
     }
 
-    resetUUID() {
+    async resetUUID() {
         localStorage.removeItem(`${this.statePrefix}-uuid`);
         this.resetBoundUUID();
-        this.initUUID();
+        await this.initUUID();
     }
 
-    initUUID() {
+    async initUUID() {
+        try {
+            const walletAddress = await this.queryWalletAddress();
+
+            if (localStorage.getItem(`${this.statePrefix}-wallet`) === null) {
+                localStorage.setItem(
+                    `${this.statePrefix}-wallet`,
+                    walletAddress
+                );
+            }
+
+            if (
+                localStorage.getItem(`${this.statePrefix}-wallet`) !==
+                walletAddress
+            ) {
+                localStorage.setItem(
+                    `${this.statePrefix}-wallet`,
+                    walletAddress
+                );
+
+                return await this.resetUUID();
+            }
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+            return await this.resetUUID();
+        }
+
+        if (localStorage.getItem(`${this.statePrefix}-uuid`) === null) {
+            const newUUID = this.generateUUID();
+
+            localStorage.setItem(`${this.statePrefix}-uuid`, newUUID);
+        }
+
         if (localStorage.getItem(`${this.statePrefix}-uuid`) === null) {
             const newUUID = this.generateUUID();
 

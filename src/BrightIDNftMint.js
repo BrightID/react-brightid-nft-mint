@@ -123,6 +123,7 @@ function BrightIDNftMint({
         resetWalletData();
         setMode("");
         setAllowMode(false);
+        setUUIDHex("");
         setWalletAddress("");
         setENSName("");
         setChainId("");
@@ -137,6 +138,7 @@ function BrightIDNftMint({
     async function onAccountChange() {
         resetWalletData();
         initAllowMode();
+        await registration.initUUID();
         initUUIDHex();
         initWalletAddress();
         initENSName();

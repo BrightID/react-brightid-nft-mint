@@ -118,8 +118,9 @@ function BrightIDNftRescue({
 
     async function onAccountDisconnect() {
         resetWalletData();
+        setMode("");
         setAllowMode(false);
-        setModeGas();
+        setUUIDHex("");
         setWalletAddress("");
         setENSName("");
         setChainId("");
@@ -133,8 +134,8 @@ function BrightIDNftRescue({
 
     async function onAccountChange() {
         resetWalletData();
-        setAllowMode(false); // TEMP DISABLE GAS CHOICE
-        setModeGas();
+        initAllowMode();
+        await registration.initUUID();
         initUUIDHex();
         initWalletAddress();
         initENSName();
