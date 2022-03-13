@@ -109,6 +109,8 @@ function BrightIDNftRescue({
 
     const [rescueAddress, setRescueAddress] = useState("");
 
+    const [alreadyHoldsToken, setAlreadyHoldsToken] = useState(false);
+
     /* Web3 Data Init & Monitoring */
     /* ---------------------------------------------------------------------- */
 
@@ -131,6 +133,7 @@ function BrightIDNftRescue({
     async function onAccountChange() {
         resetWalletData();
         initAllowMode();
+        await checkIfAlreadyHoldsNFT();
         await registration.initUUID();
         initUUIDHex();
         initWalletAddress();
@@ -219,6 +222,16 @@ function BrightIDNftRescue({
     //         // console.log(e);
     //     }
     // }
+
+    async function checkIfAlreadyHoldsNFT() {
+        const tokenBalance = await registration.queryTokenBalance();
+
+        const holdsToken = tokenBalance > 0;
+        console.log(tokenBalance);
+        console.log(holdsToken);
+
+        setAlreadyHoldsToken(holdsToken);
+    }
 
     async function resetWalletData() {
         try {
@@ -999,7 +1012,27 @@ function BrightIDNftRescue({
                     </div>
                 </section>
 
-                {hasModeSelection() && (
+                {alreadyHoldsToken && (
+                    <section className={`brightid-nft-mint-step`}>
+                        <div className="brightid-nft-mint-step__main">
+                            <div className="brightid-nft-mint-step__header">
+                                <h2 className="brightid-nft-mint-step__heading">
+                                    Wallet Already Holds NFT
+                                </h2>
+                            </div>
+                        </div>
+                        <div className="brightid-nft-mint-step__description">
+                            <p className="brightid-nft-mint-step__description-p">
+                                It looks like this wallet already holds a
+                                BrightID Soulbound NFT. You need to connect a
+                                wallet which does not already hold one to rescue
+                                your lost wallet's NFT too.
+                            </p>
+                        </div>
+                    </section>
+                )}
+
+                {!alreadyHoldsToken && hasModeSelection() && (
                     <section className={`brightid-nft-mint-step`}>
                         <div className="brightid-nft-mint-step__main">
                             <div className="brightid-nft-mint-step__header">
@@ -1048,7 +1081,7 @@ function BrightIDNftRescue({
                     </section>
                 )}
 
-                {hasModeSelected() && !hasRelay() && (
+                {!alreadyHoldsToken && hasModeSelected() && !hasRelay() && (
                     <section
                         className={`
                             brightid-nft-mint-step
@@ -1125,7 +1158,7 @@ function BrightIDNftRescue({
                     </section>
                 )}
 
-                {hasModeSelected() && !hasRelay() && (
+                {!alreadyHoldsToken && hasModeSelected() && !hasRelay() && (
                     <section
                         className={`
                             brightid-nft-mint-step
@@ -1168,7 +1201,7 @@ function BrightIDNftRescue({
                     </section>
                 )}
 
-                {hasModeSelected() && (
+                {!alreadyHoldsToken && hasModeSelected() && (
                     <section
                         className={`
                             brightid-nft-mint-step
@@ -1324,7 +1357,7 @@ function BrightIDNftRescue({
                     </section>
                 )}
 
-                {hasModeSelected() && (
+                {!alreadyHoldsToken && hasModeSelected() && (
                     <section
                         className={`
                             brightid-nft-mint-step
@@ -1424,7 +1457,7 @@ function BrightIDNftRescue({
                     </section>
                 )}
 
-                {hasModeSelected() && (
+                {!alreadyHoldsToken && hasModeSelected() && (
                     <section
                         className={`
                         brightid-nft-mint-step
