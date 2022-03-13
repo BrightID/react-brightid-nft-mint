@@ -577,6 +577,11 @@ function BrightIDNftMint({
             await tx.wait();
             // const receipt = await tx.wait();
             // // console.log(receipt);
+            const receipt = await tx.wait();
+
+            if (!receipt.blockNumber || Number(receipt.status) !== 1) {
+                throw new Error("Transaction failed. Please try again.");
+            }
 
             await registration.setBoundUUID();
             await initIsBoundViaContract();
@@ -630,6 +635,11 @@ function BrightIDNftMint({
             await tx.wait();
             // const receipt = await tx.wait();
             // // console.log(receipt);
+            const receipt = await tx.wait();
+
+            if (!receipt.blockNumber || Number(receipt.status) !== 1) {
+                throw new Error("Transaction failed. Please try again.");
+            }
 
             await initIsMintedViaContract();
 
