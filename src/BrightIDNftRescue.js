@@ -227,8 +227,6 @@ function BrightIDNftRescue({
         const tokenBalance = await registration.queryTokenBalance();
 
         const holdsToken = tokenBalance > 0;
-        console.log(tokenBalance);
-        console.log(holdsToken);
 
         setAlreadyHoldsToken(holdsToken);
     }
