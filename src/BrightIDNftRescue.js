@@ -1,7 +1,3 @@
-import googlePlay from "./google-play.png";
-import appStore from "./app-store.png";
-import openAchievementsSS from "./open-achievements-ss.png";
-import isVerifiedSS from "./is-verified-ss.png";
 import "./BrightIDNftMint.css";
 import React, { useState, useEffect, useRef } from "react";
 import QRCode from "qrcode.react";
@@ -351,10 +347,6 @@ function BrightIDNftRescue({
 
     /* Interactive Events */
     /* ---------------------------------------------------------------------- */
-
-    function verifyWithBrightID() {
-        window.open(brightIdMeetUrl, "_blank");
-    }
 
     function linkUUIDToBrightID() {
         // window.open(qrCodeUUIDUrl);
