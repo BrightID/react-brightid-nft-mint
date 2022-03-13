@@ -918,128 +918,28 @@ function BrightIDNftRescue({
                     <div className="brightid-nft-mint-step__main">
                         <div className="brightid-nft-mint-step__header">
                             <h2 className="brightid-nft-mint-step__heading">
-                                Install BrightID
+                                Rescuing a BrightID Soulbound NFT
                             </h2>
-                        </div>
-                        <div className="brightid-nft-mint-step__action brightid-nft-mint-step__action--app-store">
-                            <div>
-                                <a
-                                    href={appStoreAndroid}
-                                    target="_blank"
-                                    rel="noreferrer noopener"
-                                >
-                                    <img
-                                        className="brightid-nft-mint-step__app-store-image"
-                                        src={googlePlay}
-                                        alt="Get it on Google Play"
-                                    />
-                                </a>
-                            </div>
-                            <div>
-                                <a
-                                    href={appStoreIos}
-                                    target="_blank"
-                                    rel="noreferrer noopener"
-                                >
-                                    <img
-                                        className="brightid-nft-mint-step__app-store-image"
-                                        src={appStore}
-                                        alt="Download on App Store"
-                                    />
-                                </a>
-                            </div>
                         </div>
                     </div>
                     <div className="brightid-nft-mint-step__description">
                         <p className="brightid-nft-mint-step__description-p">
-                            The first step is to install the BrightID app on
-                            your mobile device.
-                        </p>
-                    </div>
-                </section>
-
-                <section className={`brightid-nft-mint-step`}>
-                    <div className="brightid-nft-mint-step__main">
-                        <div className="brightid-nft-mint-step__header">
-                            <h2 className="brightid-nft-mint-step__heading">
-                                Verify with BrightID
-                            </h2>
-                        </div>
-                        {/* <div className="brightid-nft-mint-step__action">
-                            <button
-                                className="brightid-nft-mint-step__button"
-                                onClick={() => verifyWithBrightID()}
-                            >
-                                Get Verified
-                            </button>
-                        </div> */}
-                    </div>
-                    <div className="brightid-nft-mint-step__description">
-                        <p className="brightid-nft-mint-step__description-p">
-                            Once you have BrightID installed you need to become
-                            verified in their system by participating in a
-                            "Connection Party".
-                        </p>
-                        <p className="brightid-nft-mint-step__description-button-container">
-                            <button
-                                className="brightid-nft-mint-step__button"
-                                onClick={() => verifyWithBrightID()}
-                            >
-                                Find Connection Party
-                            </button>
-                        </p>
-                        <h3 className="brightid-nft-mint-step__description-p">
-                            Support
-                        </h3>
-                        <p className="brightid-nft-mint-step__description-p">
-                            More details on becoming verified within the
-                            BrightID system can be found at{" "}
-                            <a
-                                className="brightid-nft-mint-step__description-link"
-                                href="https://brightid.gitbook.io/brightid/getting-verified"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                How To Verify
-                            </a>
-                            .
+                            To rescue your BrightID Soulbound NFT you'll perform
+                            a 'rescue' process that will allow you to transfer
+                            your soulbound NFT from a lost or compromised wallet
+                            to a new wallet of your choice. This is made
+                            possible by using the BrightID verification system
+                            to assure that only the owner of the BrightID
+                            account that minted the NFT can rescue it to a new
+                            wallet.
                         </p>
                         <p className="brightid-nft-mint-step__description-p">
-                            They also have a{" "}
-                            <a
-                                className="brightid-nft-mint-step__description-link"
-                                href="https://discord.gg/xzhFEeK"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                Discord channel
-                            </a>{" "}
-                            for support.
-                        </p>
-                        <h3 className="brightid-nft-mint-step__description-p">
-                            After Verification
-                        </h3>
-                        <p className="brightid-nft-mint-step__description-p">
-                            After you have verified via a connection party, it
-                            will take up to 10 minutes for you to become
-                            verified in their system. You will know when you're
-                            ready to continue through the rest of steps in this
-                            process when you see "BrightID meet" checked off in
-                            your list of achievements. See the screenshots below
-                            for where to look in the app.
-                        </p>
-
-                        <p className="brightid-nft-mint-step__description-p brightid-nft-mint-step__description-p--2col-img">
-                            <img
-                                className="brightid-nft-mint-step__app-store-image"
-                                src={openAchievementsSS}
-                                alt="Open Achievements"
-                            />
-                            <img
-                                className="brightid-nft-mint-step__app-store-image"
-                                src={isVerifiedSS}
-                                alt="Check Is Verified"
-                            />
+                            To execute the rescue you'll need to perform the
+                            tasks below with the{" "}
+                            <strong>
+                                wallet you want to rescue the NFT to
+                            </strong>{" "}
+                            (not the lost wallet holding it).
                         </p>
                     </div>
                 </section>
