@@ -1022,9 +1022,9 @@ function BrightIDNftRescue({
                         <div className="brightid-nft-mint-step__description">
                             <p className="brightid-nft-mint-step__description-p">
                                 It looks like this wallet already holds a
-                                BrightID Soulbound NFT. You need to connect a
-                                wallet which does not already hold one to rescue
-                                your lost wallet's NFT too.
+                                BrightID Soulbound NFT. Only a wallet that
+                                doesn't already have an NFT can be used to
+                                rescue a lost NFT.
                             </p>
                         </div>
                     </section>
