@@ -923,32 +923,6 @@ class BrightIDNftMintModel {
 
     // -------------------------------------------------------------------------
 
-    setCachedBoundUUID(uuid) {
-        sessionStorage.setItem(`${this.statePrefix}-uuid-bound`, uuid);
-    }
-
-    getCachedBoundUUID() {
-        return sessionStorage.getItem(`${this.statePrefix}-uuid-bound`);
-    }
-
-    removeCachedBoundUUID() {
-        sessionStorage.removeItem(`${this.statePrefix}-uuid-bound`);
-    }
-
-    hasCachedBoundUUID() {
-        const uuid = this.getCachedBoundUUID();
-
-        return uuid !== null && uuid !== "";
-    }
-
-    restoreCachedBoundUUID() {
-        const boundUUID = this.getCachedBoundUUID();
-
-        this.boundUUID = boundUUID;
-    }
-
-    // -------------------------------------------------------------------------
-
     hasUUID() {
         return this.uuid !== null && this.uuid !== "";
     }
@@ -972,7 +946,64 @@ class BrightIDNftMintModel {
             return false;
         }
 
-        return this.uuid === this.boundUUID;
+        const addr = await this.queryWalletAddress();
+
+        const uuidHash = await this.hashUUID(this.uuid);
+
+        const bindParams = await this.getBindParams();
+
+        if (bindParams.addr !== addr || bindParams.uuidHash !== uuidHash) {
+            return false;
+        }
+
+        const provider = await this.getRegistrationProvider();
+        const contract = await this.getContract();
+
+        let filter = contract.filters.AddressBound(bindParams.addr);
+
+        filter.fromBlock = 21019766;
+        filter.toBlock = "latest";
+
+        const abi = [
+            "function bind(address owner, bytes32 uuidHash, uint256 nonce, bytes signature)",
+        ];
+
+        const iface = new ethers.utils.Interface(abi);
+
+        const logs = await provider.getLogs(filter);
+        // console.log(logs);
+
+        const logsReversed = logs.reverse();
+
+        for (let log of logsReversed) {
+            const receipt = await provider.getTransactionReceipt(
+                log.transactionHash
+            );
+            // console.log(receipt);
+
+            const txn = await provider.getTransaction(log.transactionHash);
+            // console.log(txn);
+
+            const parsed = iface.parseTransaction(txn);
+            // console.log(parsed);
+
+            // console.log(bindParams.addr);
+            // console.log(parsed.args[0]);
+
+            // console.log(bindParams.uuidHash);
+            // console.log(parsed.args[1]);
+
+            if (
+                receipt.blockNumber &&
+                Number(receipt.status) === 1 &&
+                bindParams.addr === parsed.args[0] &&
+                bindParams.uuidHash === parsed.args[1]
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // -------------------------------------------------------------------------
@@ -1008,13 +1039,13 @@ class BrightIDNftMintModel {
     async restoreUUID() {
         this.restoreCachedUUID();
         this.restoreCachedSignedUUID();
-        this.restoreCachedBoundUUID();
+        // this.restoreCachedBoundUUID();
     }
 
     async resetUUID() {
         this.removeCachedUUID();
         this.removeCachedSignedUUID();
-        this.removeCachedBoundUUID();
+        // this.removeCachedBoundUUID();
     }
 
     async initNewUUID() {
@@ -1028,16 +1059,6 @@ class BrightIDNftMintModel {
     async resetAndInitNewUUID() {
         await this.resetUUID();
         await this.initNewUUID();
-    }
-
-    async resetBoundUUID() {
-        this.removeCachedBoundUUID();
-        this.boundUUID = "";
-    }
-
-    async setBoundUUID() {
-        this.setCachedBoundUUID(this.uuid);
-        this.boundUUID = this.uuid;
     }
 
     generateUUID() {
@@ -1056,6 +1077,16 @@ class BrightIDNftMintModel {
         return "0x" + new Buffer(str).toString("hex");
     }
 
+    async hashUUID(uuid) {
+        const contract = await this.getRegistrationProviderContract();
+
+        const uuidByte32 = this.strToByte32(uuid);
+
+        const uuidHash = await contract.hashUUID(uuidByte32);
+
+        return uuidHash;
+    }
+
     // -------------------------------------------------------------------------
 
     async initIsUUIDLinked() {
@@ -1068,6 +1099,10 @@ class BrightIDNftMintModel {
         } catch (e) {
             // console.error(e);
             // console.log(e);
+
+            this.isUUIDLinked = false;
+
+            return this.isUUIDLinked;
         }
     }
 
@@ -1081,6 +1116,10 @@ class BrightIDNftMintModel {
         } catch (e) {
             // console.error(e);
             // console.log(e);
+
+            this.isUUIDSigned = false;
+
+            return this.isUUIDSigned;
         }
     }
 
@@ -1094,6 +1133,10 @@ class BrightIDNftMintModel {
         } catch (e) {
             // console.error(e);
             // console.log(e);
+
+            this.isBoundViaContract = false;
+
+            return this.isBoundViaContract;
         }
     }
 
@@ -1109,6 +1152,10 @@ class BrightIDNftMintModel {
         } catch (e) {
             // console.error(e);
             // console.log(e);
+
+            this.isMintedViaContract = false;
+
+            return this.isMintedViaContract;
         }
     }
 
@@ -1183,16 +1230,11 @@ class BrightIDNftMintModel {
         const contract = await this.getRegistrationProviderContract();
         const provider = await this.getProvider();
 
-        // console.log(this.uuid);
-
-        const uuidByte32 = this.strToByte32(this.uuid);
-        // console.log(uuidByte32);
-
         const addr = await this.getWalletAddress();
         // console.log("Wallet Address");
         // console.log(addr);
 
-        const uuidHash = await contract.hashUUID(uuidByte32);
+        const uuidHash = await this.hashUUID(this.uuid);
         // console.log("UUID Hash");
         // console.log(uuidHash);
 

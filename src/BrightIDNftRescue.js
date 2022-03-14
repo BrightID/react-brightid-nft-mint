@@ -117,6 +117,9 @@ function BrightIDNftRescue({
 
     const [alreadyHoldsToken, setAlreadyHoldsToken] = useState(false);
 
+    const [boundViaContractChecking, setBoundViaContractChecking] =
+        useState(false);
+
     /* Web3 Data Init & Monitoring */
     /* ---------------------------------------------------------------------- */
 
@@ -164,9 +167,9 @@ function BrightIDNftRescue({
             initGasBalance();
         }
 
-        if (registration.isBoundViaContract === false) {
-            initIsBoundViaContract();
-        }
+        // if (registration.isBoundViaContract === false) {
+        //     initIsBoundViaContract();
+        // }
 
         if (
             registration.isBoundViaContract === true &&
@@ -351,15 +354,19 @@ function BrightIDNftRescue({
 
     async function initIsBoundViaContract() {
         try {
+            setBoundViaContractChecking(true);
+
             const isBoundViaContract =
                 await registration.initIsBoundViaContract();
 
             // console.log(isBoundViaContract);
 
             setIsBoundViaContract(isBoundViaContract);
+            setBoundViaContractChecking(false);
         } catch (e) {
             // console.error(e);
             // console.log(e);
+            setBoundViaContractChecking(false);
         }
     }
 
@@ -595,6 +602,24 @@ function BrightIDNftRescue({
         }
     }
 
+    async function handleUUIDAlreadyBoundError() {
+        setStepBoundViaContractError("");
+        setIsBoundViaContractTxnProcessing(false);
+        setIsBoundViaContractTxnId(null);
+        setStepBindViaRelayProcessing(false);
+
+        try {
+            await initIsBoundViaContract();
+
+            if (registration.isBoundViaContract === false) {
+                throw new Error("Transaction failed. Please try again.");
+            }
+        } catch (e) {
+            const errorMessage = registration.getBindErrorMessage(e);
+            setStepBoundViaContractError(errorMessage);
+        }
+    }
+
     async function bindViaTransaction(isRetry = false) {
         try {
             setStepBindViaRelayProcessing(true);
@@ -612,13 +637,18 @@ function BrightIDNftRescue({
                 throw new Error("Transaction failed. Please try again.");
             }
 
-            await registration.setBoundUUID();
             await initIsBoundViaContract();
+
+            if (registration.isBoundViaContract === false) {
+                throw new Error("Transaction failed. Please try again.");
+            }
 
             setStepBoundViaContractError("");
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
             setStepBindViaRelayProcessing(false);
+
+            setAllowBindRetry(false);
         } catch (e) {
             console.error(e);
             // console.log(e);
@@ -627,18 +657,11 @@ function BrightIDNftRescue({
                 isRetry === false &&
                 registration.getIsUUIDAlreadyBoundError(e)
             ) {
-                await registration.setBoundUUID();
-                await initIsBoundViaContract();
-
-                setStepBoundViaContractError("");
-                setIsBoundViaContractTxnProcessing(false);
-                setIsBoundViaContractTxnId(null);
-                setStepBindViaRelayProcessing(false);
+                handleUUIDAlreadyBoundError();
 
                 return;
             }
 
-            await registration.resetBoundUUID();
             await initIsBoundViaContract();
 
             const errorMessage = registration.getBindErrorMessage(e);
@@ -646,6 +669,58 @@ function BrightIDNftRescue({
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
             setStepBindViaRelayProcessing(false);
+
+            setAllowBindRetry(false);
+        }
+    }
+
+    async function bindViaRelay(isRetry = false) {
+        try {
+            setStepBindViaRelayProcessing(true);
+
+            setStepBindViaRelayStatus(
+                "We're binding your UUID.  This could take a minute or two. Please wait."
+            );
+
+            const response = await registration.bindViaRelay();
+
+            if (response.ok === false) {
+                const body = await response.json();
+
+                // console.log(body);
+                // console.log(body.error);
+                // console.log(body.error.message);
+
+                throw new Error(body.error.message);
+            }
+
+            await initIsBoundViaContract();
+
+            setStepBindViaRelayError("");
+            setStepBindViaRelayStatus("");
+            setStepBindViaRelayProcessing(false);
+
+            setAllowBindRetry(false);
+        } catch (e) {
+            console.error(e);
+            // console.log(e);
+
+            if (
+                isRetry === false &&
+                registration.getIsUUIDAlreadyBoundError(e)
+            ) {
+                handleUUIDAlreadyBoundError();
+
+                return;
+            }
+
+            await initIsBoundViaContract();
+
+            const errorMessage = registration.getBindErrorMessage(e);
+            setStepBindViaRelayError(errorMessage);
+            setStepBindViaRelayStatus("");
+            setStepBindViaRelayProcessing(false);
+
             setAllowBindRetry(false);
         }
     }
@@ -696,64 +771,6 @@ function BrightIDNftRescue({
             if (registration.getIsUUIDUnboundError(e)) {
                 setAllowBindRetry(true);
             }
-        }
-    }
-
-    async function bindViaRelay(isRetry = false) {
-        try {
-            setStepBindViaRelayProcessing(true);
-
-            setStepBindViaRelayStatus(
-                "We're binding your UUID.  This could take a minute or two. Please wait."
-            );
-
-            const response = await registration.bindViaRelay();
-
-            if (response.ok === false) {
-                const body = await response.json();
-
-                // console.log(body);
-                // console.log(body.error);
-                // console.log(body.error.message);
-
-                throw new Error(body.error.message);
-            }
-
-            await registration.setBoundUUID();
-            await initIsBoundViaContract();
-
-            setStepBindViaRelayError("");
-            setStepBindViaRelayStatus("");
-            setStepBindViaRelayProcessing(false);
-
-            setAllowBindRetry(false);
-        } catch (e) {
-            console.error(e);
-            // console.log(e);
-
-            if (
-                isRetry === false &&
-                registration.getIsUUIDAlreadyBoundError(e)
-            ) {
-                await registration.setBoundUUID();
-                await initIsBoundViaContract();
-
-                setStepBoundViaContractError("");
-                setIsBoundViaContractTxnProcessing(false);
-                setIsBoundViaContractTxnId(null);
-                setStepBindViaRelayProcessing(false);
-
-                return;
-            }
-
-            await registration.resetBoundUUID();
-            await initIsBoundViaContract();
-
-            const errorMessage = registration.getBindErrorMessage(e);
-            setStepBindViaRelayError(errorMessage);
-            setStepBindViaRelayStatus("");
-            setStepBindViaRelayProcessing(false);
-            setAllowBindRetry(false);
         }
     }
 
@@ -900,7 +917,7 @@ function BrightIDNftRescue({
     }
 
     function stepBindViaRelayComplete() {
-        return hasBoundViaContract();
+        return hasBoundViaContract() && boundViaContractChecking === false;
     }
 
     function stepRescueViaRelayComplete() {
@@ -1353,7 +1370,8 @@ function BrightIDNftRescue({
                                         className="brightid-nft-mint-step__button"
                                         onClick={() => bindViaRelay(false)}
                                         disabled={
-                                            stepBindViaRelayProcessing
+                                            stepBindViaRelayProcessing ||
+                                            boundViaContractChecking
                                                 ? true
                                                 : null
                                         }
@@ -1368,7 +1386,8 @@ function BrightIDNftRescue({
                                             bindViaTransaction(false)
                                         }
                                         disabled={
-                                            stepBindViaRelayProcessing
+                                            stepBindViaRelayProcessing ||
+                                            boundViaContractChecking
                                                 ? true
                                                 : null
                                         }
@@ -1394,6 +1413,13 @@ function BrightIDNftRescue({
                                     </div>
                                 </div>
                             )}
+                            {!stepBindViaRelayProcessing &&
+                                boundViaContractChecking && (
+                                    <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--status">
+                                        Checking to see if UUID is already
+                                        bound. Please wait.
+                                    </div>
+                                )}
                             {stepBindViaRelayError && (
                                 <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
                                     {stepBindViaRelayError}
