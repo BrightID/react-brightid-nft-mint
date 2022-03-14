@@ -967,7 +967,11 @@ class BrightIDNftMintModel {
         );
     }
 
-    hasBoundUUID() {
+    async hasBoundUUID() {
+        if (this.hasUUID() === false || this.hasSignedUUID() === false) {
+            return false;
+        }
+
         return this.uuid === this.boundUUID;
     }
 
@@ -1082,7 +1086,7 @@ class BrightIDNftMintModel {
 
     async initIsBoundViaContract() {
         try {
-            this.isBoundViaContract = this.hasBoundUUID();
+            this.isBoundViaContract = await this.hasBoundUUID();
 
             // this.isBoundViaContract = true; // DEBUG
 
