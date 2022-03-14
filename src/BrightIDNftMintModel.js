@@ -281,6 +281,8 @@ class BrightIDNftMintModel {
         },
     ];
 
+    bindParams = null;
+
     web3Modal;
 
     web3Instance;
@@ -300,6 +302,8 @@ class BrightIDNftMintModel {
     brightIDLinkedWallets = [];
 
     isBrightIDLinked = false;
+
+    isUUIDSigned = false;
 
     isUUIDLinked = false;
 
@@ -347,9 +351,7 @@ class BrightIDNftMintModel {
 
     uuid = "";
 
-    uuidHex = "";
-
-    uuidByte32 = "";
+    boundUUID = "";
 
     constructor(
         statePrefix = "",
@@ -571,7 +573,7 @@ class BrightIDNftMintModel {
     }
 
     async getQrCodeUUIDUrl() {
-        return `${this.deepLinkPrefix}/${this.context}/${this.uuidHex}`;
+        return `${this.deepLinkPrefix}/${this.context}/${this.uuid}`;
     }
 
     async queryWalletAddress() {
@@ -859,37 +861,116 @@ class BrightIDNftMintModel {
         }
     }
 
-    resetBoundUUID() {
-        sessionStorage.removeItem(`${this.statePrefix}-uuid-bound`);
+    // -------------------------------------------------------------------------
+
+    setCachedUUID(uuid) {
+        sessionStorage.setItem(`${this.statePrefix}-uuid`, uuid);
     }
 
-    setBoundUUID() {
-        sessionStorage.setItem(`${this.statePrefix}-uuid-bound`, this.uuid);
+    getCachedUUID() {
+        return sessionStorage.getItem(`${this.statePrefix}-uuid`);
     }
 
-    hasBoundUUID() {
-        return (
-            sessionStorage.getItem(`${this.statePrefix}-uuid`) ===
-            sessionStorage.getItem(`${this.statePrefix}-uuid-bound`)
+    removeCachedUUID() {
+        sessionStorage.removeItem(`${this.statePrefix}-uuid`);
+    }
+
+    hasCachedUUID() {
+        const uuid = this.getCachedUUID();
+
+        return uuid !== null && uuid !== "";
+    }
+
+    restoreCachedUUID() {
+        const uuid = this.getCachedUUID();
+
+        this.uuid = uuid;
+    }
+
+    // -------------------------------------------------------------------------
+
+    setCachedSignedUUID(bindParams) {
+        const bindParamJson = JSON.stringify(bindParams);
+
+        sessionStorage.setItem(
+            `${this.statePrefix}-uuid-bind-params`,
+            bindParamJson
         );
     }
 
-    async resetUUID() {
-        sessionStorage.removeItem(`${this.statePrefix}-uuid`);
-        this.resetBoundUUID();
-        await this.initUUID();
+    getCachedSignedUUID() {
+        return sessionStorage.getItem(`${this.statePrefix}-uuid-bind-params`);
     }
+
+    removeCachedSignedUUID() {
+        sessionStorage.removeItem(`${this.statePrefix}-uuid-bind-params`);
+    }
+
+    hasCachedSignedUUID() {
+        const paramsString = this.getCachedSignedUUID();
+
+        return paramsString !== null && paramsString !== "";
+    }
+
+    restoreCachedSignedUUID() {
+        const paramsString = this.getCachedSignedUUID();
+
+        const params = JSON.parse(paramsString);
+
+        this.bindParams = params;
+    }
+
+    // -------------------------------------------------------------------------
+
+    setCachedBoundUUID(uuid) {
+        sessionStorage.setItem(`${this.statePrefix}-uuid-bound`, uuid);
+    }
+
+    getCachedBoundUUID() {
+        return sessionStorage.getItem(`${this.statePrefix}-uuid-bound`);
+    }
+
+    removeCachedBoundUUID() {
+        sessionStorage.removeItem(`${this.statePrefix}-uuid-bound`);
+    }
+
+    hasCachedBoundUUID() {
+        const uuid = this.getCachedBoundUUID();
+
+        return uuid !== null && uuid !== "";
+    }
+
+    restoreCachedBoundUUID() {
+        const boundUUID = this.getCachedBoundUUID();
+
+        this.boundUUID = boundUUID;
+    }
+
+    // -------------------------------------------------------------------------
+
+    hasUUID() {
+        return this.uuid !== null && this.uuid !== "";
+    }
+
+    hasSignedUUID() {
+        return (
+            this.bindParams !== null &&
+            this.bindParams.addr &&
+            this.bindParams.uuidHash &&
+            this.bindParams.nonce &&
+            this.bindParams.signature
+        );
+    }
+
+    hasBoundUUID() {
+        return this.uuid === this.boundUUID;
+    }
+
+    // -------------------------------------------------------------------------
 
     async initUUID() {
         try {
             const walletAddress = await this.queryWalletAddress();
-
-            if (sessionStorage.getItem(`${this.statePrefix}-wallet`) === null) {
-                sessionStorage.setItem(
-                    `${this.statePrefix}-wallet`,
-                    walletAddress
-                );
-            }
 
             if (
                 sessionStorage.getItem(`${this.statePrefix}-wallet`) !==
@@ -900,39 +981,50 @@ class BrightIDNftMintModel {
                     walletAddress
                 );
 
-                return await this.resetUUID();
+                return await this.resetAndInitNewUUID();
+            }
+
+            this.restoreUUID();
+
+            if (this.hasUUID() === false) {
+                return await this.resetAndInitNewUUID();
             }
         } catch (e) {
             // console.error(e);
             // console.log(e);
-            return await this.resetUUID();
+            return await this.resetAndInitNewUUID();
         }
+    }
 
-        if (sessionStorage.getItem(`${this.statePrefix}-uuid`) === null) {
-            const newUUID = this.generateUUID();
+    async restoreUUID() {
+        this.restoreCachedUUID();
+        this.restoreCachedSignedUUID();
+        this.restoreCachedBoundUUID();
+    }
 
-            sessionStorage.setItem(`${this.statePrefix}-uuid`, newUUID);
-        }
+    async resetUUID() {
+        this.removeCachedUUID();
+        this.removeCachedSignedUUID();
+        this.removeCachedBoundUUID();
+    }
 
-        this.uuid = sessionStorage.getItem(`${this.statePrefix}-uuid`);
+    async initNewUUID() {
+        this.uuid = this.generateUUID();
         // console.log("UUID");
         // console.log(this.uuid);
 
-        this.uuidHex = this.uuid.replaceAll("-", "");
-        // console.log("UUID Hex");
-        // console.log(this.uuidHex);
+        this.setCachedUUID(this.uuid);
+    }
 
-        // this.uuidHex = "a5e502211e8b406b8877e68a01063cfe"; // DEBUG
-
-        this.uuidByte32 = "0x" + new Buffer(this.uuidHex).toString("hex");
-        // console.log("UUID Bytes32");
-        // console.log(this.uuidByte32);
+    async resetAndInitNewUUID() {
+        await this.resetUUID();
+        await this.initNewUUID();
     }
 
     generateUUID() {
         // if (typeof crypto !== "undefined") {
         //     console.log("crypto.randomUUID");
-        //     return crypto.randomUUID();
+        //     return crypto.randomUUID().replaceAll("-", "");
         // }
 
         const number = ethers.BigNumber.from(ethers.utils.randomBytes(16));
@@ -941,13 +1033,32 @@ class BrightIDNftMintModel {
         return uuid;
     }
 
+    strToByte32(str) {
+        return "0x" + new Buffer(str).toString("hex");
+    }
+
+    // -------------------------------------------------------------------------
+
     async initIsUUIDLinked() {
         try {
-            this.isUUIDLinked = await this.queryBrightIDLink(this.uuidHex);
+            this.isUUIDLinked = await this.queryBrightIDLink(this.uuid);
 
             // this.isUUIDLinked = true; // DEBUG
 
             return this.isUUIDLinked;
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
+    async initIsUUIDSigned() {
+        try {
+            this.isUUIDSigned = this.hasSignedUUID();
+
+            // this.isUUIDSigned = true; // DEBUG
+
+            return this.isUUIDSigned;
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -1037,19 +1148,32 @@ class BrightIDNftMintModel {
         });
     }
 
-    async getBindParams() {
+    standardizeSignature(signature) {
+        if (signature.slice(-2) === "00") {
+            return signature.slice(0, -2) + "1b";
+        }
+
+        if (signature.slice(-2) === "01") {
+            return signature.slice(0, -2) + "1c";
+        }
+
+        return signature;
+    }
+
+    async signBindParams() {
         const contract = await this.getRegistrationProviderContract();
         const provider = await this.getProvider();
 
         // console.log(this.uuid);
-        // console.log(this.uuidHex);
-        // console.log(this.uuidByte32);
+
+        const uuidByte32 = this.strToByte32(this.uuid);
+        // console.log(uuidByte32);
 
         const addr = await this.getWalletAddress();
         // console.log("Wallet Address");
         // console.log(addr);
 
-        const uuidHash = await contract.hashUUID(this.uuidByte32);
+        const uuidHash = await contract.hashUUID(uuidByte32);
         // console.log("UUID Hash");
         // console.log(uuidHash);
 
@@ -1067,6 +1191,7 @@ class BrightIDNftMintModel {
         const rawSignature = await provider
             .getSigner()
             .signMessage(bytesDataHash);
+
         const signature = this.standardizeSignature(rawSignature);
         // console.log("signMessage");
         // console.log(rawSignature);
@@ -1080,30 +1205,24 @@ class BrightIDNftMintModel {
         console.log(signature);
         console.log("--------------------------");
 
-        return {
+        this.bindParams = {
             addr,
             uuidHash,
             nonce,
             signature,
         };
+
+        this.setCachedSignedUUID(this.bindParams);
+
+        return this.bindParams;
     }
 
-    standardizeSignature(signature) {
-        if (signature.slice(-2) === "00") {
-            return signature.slice(0, -2) + "1b";
-        }
-
-        if (signature.slice(-2) === "01") {
-            return signature.slice(0, -2) + "1c";
-        }
-
-        return signature;
+    async getBindParams() {
+        return this.bindParams;
     }
 
     async getMintParams() {
-        const verificationData = await this.queryBrightIDSignature(
-            this.uuidHex
-        );
+        const verificationData = await this.queryBrightIDSignature(this.uuid);
 
         const contextIds = verificationData.data.contextIds;
         const timestamp = verificationData.data.timestamp;
@@ -1112,7 +1231,7 @@ class BrightIDNftMintModel {
         const s = "0x" + verificationData.data.sig.s;
 
         const contextIdsByte32 = contextIds.map((contextId) => {
-            return "0x" + new Buffer(contextId).toString("hex");
+            return this.strToByte32(contextId);
         });
 
         console.log("pass to mint");
@@ -1167,9 +1286,7 @@ class BrightIDNftMintModel {
     async getRescueParams(rescueFrom) {
         const tokenId = await this.getTokenId(rescueFrom);
 
-        const verificationData = await this.queryBrightIDSignature(
-            this.uuidHex
-        );
+        const verificationData = await this.queryBrightIDSignature(this.uuid);
 
         const contextIds = verificationData.data.contextIds;
         const timestamp = verificationData.data.timestamp;
@@ -1178,7 +1295,7 @@ class BrightIDNftMintModel {
         const s = "0x" + verificationData.data.sig.s;
 
         const contextIdsByte32 = contextIds.map((contextId) => {
-            return "0x" + new Buffer(contextId).toString("hex");
+            return this.strToByte32(contextId);
         });
 
         console.log("pass to mint");
@@ -1204,7 +1321,7 @@ class BrightIDNftMintModel {
 
     async getMintRelayParams() {
         const addr = await this.getWalletAddress();
-        const uuid = this.uuidHex;
+        const uuid = this.uuid;
 
         console.log("pass to mint relay");
         console.log("-------------------------------");
@@ -1316,6 +1433,12 @@ class BrightIDNftMintModel {
 
     async rescueViaRelay(rescueFrom) {
         throw new Error("Not implemented");
+    }
+
+    getSignErrorMessage(error) {
+        const errorMessage = this.getErrorMessage(error);
+
+        return this.decodeErrorMessage(errorMessage);
     }
 
     getBindErrorMessage(error) {
