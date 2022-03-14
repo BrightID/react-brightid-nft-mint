@@ -914,12 +914,6 @@ class BrightIDNftMintModel {
             sessionStorage.setItem(`${this.statePrefix}-uuid`, newUUID);
         }
 
-        if (sessionStorage.getItem(`${this.statePrefix}-uuid`) === null) {
-            const newUUID = this.generateUUID();
-
-            sessionStorage.setItem(`${this.statePrefix}-uuid`, newUUID);
-        }
-
         this.uuid = sessionStorage.getItem(`${this.statePrefix}-uuid`);
         // console.log("UUID");
         // console.log(this.uuid);
