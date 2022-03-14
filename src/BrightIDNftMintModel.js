@@ -1291,9 +1291,9 @@ class BrightIDNftMintModel {
 
         const tokenId = parseInt(tokenIdHex, 16);
 
-        console.log(lastLog);
-        console.log(tokenIdHex);
-        console.log(tokenId);
+        // console.log(lastLog);
+        // console.log(tokenIdHex);
+        // console.log(tokenId);
 
         return tokenId;
     }
