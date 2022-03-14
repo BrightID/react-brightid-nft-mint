@@ -920,13 +920,6 @@ function BrightIDNftMint({
             {remainingSupplyChecked && hasReachedMaxSupply() && (
                 <div className="brightid-nft-mint-supply brightid-nft-mint-supply--sold-out">
                     <section className={`brightid-nft-mint-step`}>
-                        {/* <div className="brightid-nft-mint-step__main">
-                            <div className="brightid-nft-mint-step__header">
-                                <h2 className="brightid-nft-mint-step__heading">
-                                    Mints Remaining
-                                </h2>
-                            </div>
-                        </div> */}
                         <div className="brightid-nft-mint-step__description brightid-nft-mint-step__description--no-header">
                             <p className="brightid-nft-mint-step__description-p">
                                 <strong>Mints Remaining:</strong> No more mints
@@ -947,13 +940,6 @@ function BrightIDNftMint({
             {remainingSupplyChecked && !hasReachedMaxSupply() && (
                 <div className="brightid-nft-mint-supply">
                     <section className={`brightid-nft-mint-step`}>
-                        {/* <div className="brightid-nft-mint-step__main">
-                            <div className="brightid-nft-mint-step__header">
-                                <h2 className="brightid-nft-mint-step__heading">
-                                    Mints Remaining
-                                </h2>
-                            </div>
-                        </div> */}
                         <div className="brightid-nft-mint-step__description brightid-nft-mint-step__description--no-header">
                             <p className="brightid-nft-mint-step__description-p">
                                 <strong>Mints Remaining:</strong>{" "}
@@ -1018,14 +1004,6 @@ function BrightIDNftMint({
                                     Verify with BrightID
                                 </h2>
                             </div>
-                            {/* <div className="brightid-nft-mint-step__action">
-                            <button
-                                className="brightid-nft-mint-step__button"
-                                onClick={() => verifyWithBrightID()}
-                            >
-                                Get Verified
-                            </button>
-                        </div> */}
                         </div>
                         <div className="brightid-nft-mint-step__description">
                             <p className="brightid-nft-mint-step__description-p">
@@ -1100,15 +1078,15 @@ function BrightIDNftMint({
 
                     <section
                         className={`
-                        brightid-nft-mint-step
-                        brightid-nft-mint-step--connect
-                        brightid-nft-mint-step--${getStepCompleteString(
-                            stepConnectWalletComplete()
-                        )}
-                        brightid-nft-mint-step--${getStepActiveString(
-                            stepConnectWalletActive()
-                        )}
-                    `}
+                            brightid-nft-mint-step
+                            brightid-nft-mint-step--connect
+                            brightid-nft-mint-step--${getStepCompleteString(
+                                stepConnectWalletComplete()
+                            )}
+                            brightid-nft-mint-step--${getStepActiveString(
+                                stepConnectWalletActive()
+                            )}
+                        `}
                     >
                         <div className="brightid-nft-mint-step__main">
                             <div className="brightid-nft-mint-step__status">
@@ -1214,14 +1192,14 @@ function BrightIDNftMint({
                     {hasModeSelected() && !hasRelay() && (
                         <section
                             className={`
-                        brightid-nft-mint-step
-                        brightid-nft-mint-step--${getStepCompleteString(
-                            stepSwitchToMintNetworkComplete()
-                        )}
-                        brightid-nft-mint-step--${getStepActiveString(
-                            stepSwitchToMintNetworkActive()
-                        )}
-                    `}
+                                brightid-nft-mint-step
+                                brightid-nft-mint-step--${getStepCompleteString(
+                                    stepSwitchToMintNetworkComplete()
+                                )}
+                                brightid-nft-mint-step--${getStepActiveString(
+                                    stepSwitchToMintNetworkActive()
+                                )}
+                            `}
                         >
                             <div className="brightid-nft-mint-step__main">
                                 <div className="brightid-nft-mint-step__status">
@@ -1249,10 +1227,10 @@ function BrightIDNftMint({
                                 !canAutoSwitchNetworks && (
                                     <div
                                         className="
-                                brightid-nft-mint-step__description
-                                brightid-nft-mint-step__description--action
-                                brightid-nft-mint-step__description--action-hide-on-complete
-                            "
+                                            brightid-nft-mint-step__description
+                                            brightid-nft-mint-step__description--action
+                                            brightid-nft-mint-step__description--action-hide-on-complete
+                                        "
                                     >
                                         <p className="brightid-nft-mint-step__description-p">
                                             In your wallet app create a new
@@ -1296,14 +1274,14 @@ function BrightIDNftMint({
                     {hasModeSelected() && !hasRelay() && (
                         <section
                             className={`
-                        brightid-nft-mint-step
-                        brightid-nft-mint-step--${getStepCompleteString(
-                            stepObtainGasTokensComplete()
-                        )}
-                        brightid-nft-mint-step--${getStepActiveString(
-                            stepObtainGasTokensActive()
-                        )}
-                    `}
+                                brightid-nft-mint-step
+                                brightid-nft-mint-step--${getStepCompleteString(
+                                    stepObtainGasTokensComplete()
+                                )}
+                                brightid-nft-mint-step--${getStepActiveString(
+                                    stepObtainGasTokensActive()
+                                )}
+                            `}
                         >
                             <div className="brightid-nft-mint-step__main">
                                 <div className="brightid-nft-mint-step__status">
@@ -1339,14 +1317,14 @@ function BrightIDNftMint({
                     {hasModeSelected() && (
                         <section
                             className={`
-                        brightid-nft-mint-step
-                        brightid-nft-mint-step--${getStepCompleteString(
-                            stepBindViaRelayComplete()
-                        )}
-                        brightid-nft-mint-step--${getStepActiveString(
-                            stepBindViaRelayActive()
-                        )}
-                    `}
+                                brightid-nft-mint-step
+                                brightid-nft-mint-step--${getStepCompleteString(
+                                    stepBindViaRelayComplete()
+                                )}
+                                brightid-nft-mint-step--${getStepActiveString(
+                                    stepBindViaRelayActive()
+                                )}
+                            `}
                         >
                             <div className="brightid-nft-mint-step__main">
                                 <div className="brightid-nft-mint-step__status">
@@ -1421,16 +1399,18 @@ function BrightIDNftMint({
                                             {uuidHex}
                                         </span>
 
-                                        {/* <span className="brightid-nft-mint-step__description-reset">
-                                    If you have issues with this UUID you can
-                                    reset it.
-                                </span>
-                                <button
-                                    className="brightid-nft-mint-step__button brightid-nft-mint-step__button--small"
-                                    onClick={() => resetUUID()}
-                                >
-                                    Reset
-                                </button> */}
+                                        {/*
+                                        <span className="brightid-nft-mint-step__description-reset">
+                                            If you have issues with this UUID
+                                            you can reset it.
+                                        </span>
+                                        <button
+                                            className="brightid-nft-mint-step__button brightid-nft-mint-step__button--small"
+                                            onClick={() => resetUUID()}
+                                        >
+                                            Reset
+                                        </button>
+                                        */}
                                     </p>
                                 )}
                             </div>
@@ -1504,15 +1484,15 @@ function BrightIDNftMint({
                     {hasModeSelected() && (
                         <section
                             className={`
-                        brightid-nft-mint-step
-                        brightid-nft-mint-step--brightid-link
-                        brightid-nft-mint-step--${getStepCompleteString(
-                            stepUUIDLinkedComplete()
-                        )}
-                        brightid-nft-mint-step--${getStepActiveString(
-                            stepUUIDLinkedActive()
-                        )}
-                    `}
+                                brightid-nft-mint-step
+                                brightid-nft-mint-step--brightid-link
+                                brightid-nft-mint-step--${getStepCompleteString(
+                                    stepUUIDLinkedComplete()
+                                )}
+                                brightid-nft-mint-step--${getStepActiveString(
+                                    stepUUIDLinkedActive()
+                                )}
+                            `}
                         >
                             <div className="brightid-nft-mint-step__main">
                                 <div className="brightid-nft-mint-step__status">
@@ -1523,21 +1503,13 @@ function BrightIDNftMint({
                                         Link UUID to BrightID
                                     </h2>
                                 </div>
-                                {/* <div className="brightid-nft-mint-step__action">
-                            <button
-                                className="brightid-nft-mint-step__button"
-                                onClick={() => linkUUIDToBrightID()}
-                            >
-                                Link Address
-                            </button>
-                        </div> */}
                             </div>
                             {stepBindViaRelayComplete() && qrCodeUUIDUrl && (
                                 <div
                                     className="
-                            brightid-nft-mint-step__description
-                            brightid-nft-mint-step__description--action
-                        "
+                                        brightid-nft-mint-step__description
+                                        brightid-nft-mint-step__description--action
+                                    "
                                 >
                                     <div className="brightid-nft-mint-step--mobile">
                                         <p className="brightid-nft-mint-step__description-p">
@@ -1579,9 +1551,6 @@ function BrightIDNftMint({
                                             below.
                                         </p>
                                     </div>
-                                    {/* <p className="brightid-nft-mint-step__description-qrcode-container">
-                                {qrCodeUUIDUrl}
-                            </p> */}
                                     <p className="brightid-nft-mint-step__description-qrcode-container">
                                         <QRCode
                                             renderAs="svg"
@@ -1607,15 +1576,15 @@ function BrightIDNftMint({
                     {hasModeSelected() && (
                         <section
                             className={`
-                        brightid-nft-mint-step
-                        brightid-nft-mint-step--${getStepCompleteString(
-                            stepMintViaRelayComplete()
-                        )}
-                        brightid-nft-mint-step--${getStepActiveString(
-                            stepMintViaRelayComplete() ||
-                                stepMintViaRelayActive()
-                        )}
-                    `}
+                                brightid-nft-mint-step
+                                brightid-nft-mint-step--${getStepCompleteString(
+                                    stepMintViaRelayComplete()
+                                )}
+                                brightid-nft-mint-step--${getStepActiveString(
+                                    stepMintViaRelayComplete() ||
+                                        stepMintViaRelayActive()
+                                )}
+                            `}
                         >
                             <div className="brightid-nft-mint-step__main">
                                 <div className="brightid-nft-mint-step__status">

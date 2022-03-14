@@ -1114,10 +1114,10 @@ function BrightIDNftRescue({
                         {stepConnectWalletComplete() && !canAutoSwitchNetworks && (
                             <div
                                 className="
-                                brightid-nft-mint-step__description
-                                brightid-nft-mint-step__description--action
-                                brightid-nft-mint-step__description--action-hide-on-complete
-                            "
+                                    brightid-nft-mint-step__description
+                                    brightid-nft-mint-step__description--action
+                                    brightid-nft-mint-step__description--action-hide-on-complete
+                                "
                             >
                                 <p className="brightid-nft-mint-step__description-p">
                                     In your wallet app create a new network with
@@ -1276,16 +1276,18 @@ function BrightIDNftRescue({
                                         {uuidHex}
                                     </span>
 
-                                    {/* <span className="brightid-nft-mint-step__description-reset">
-                                    If you have issues with this UUID you can
-                                    reset it.
-                                </span>
-                                <button
-                                    className="brightid-nft-mint-step__button brightid-nft-mint-step__button--small"
-                                    onClick={() => resetUUID()}
-                                >
-                                    Reset
-                                </button> */}
+                                    {/*
+                                    <span className="brightid-nft-mint-step__description-reset">
+                                        If you have issues with this UUID you
+                                        can reset it.
+                                    </span>
+                                    <button
+                                        className="brightid-nft-mint-step__button brightid-nft-mint-step__button--small"
+                                        onClick={() => resetUUID()}
+                                    >
+                                        Reset
+                                    </button>
+                                    */}
                                 </p>
                             )}
                         </div>
@@ -1377,14 +1379,6 @@ function BrightIDNftRescue({
                                     Link UUID to BrightID
                                 </h2>
                             </div>
-                            {/* <div className="brightid-nft-mint-step__action">
-                            <button
-                                className="brightid-nft-mint-step__button"
-                                onClick={() => linkUUIDToBrightID()}
-                            >
-                                Link Address
-                            </button>
-                        </div> */}
                         </div>
                         {stepBindViaRelayComplete() && qrCodeUUIDUrl && (
                             <div
@@ -1430,9 +1424,6 @@ function BrightIDNftRescue({
                                         BrightID app to scan the QR code below.
                                     </p>
                                 </div>
-                                {/* <p className="brightid-nft-mint-step__description-qrcode-container">
-                                {qrCodeUUIDUrl}
-                            </p> */}
                                 <p className="brightid-nft-mint-step__description-qrcode-container">
                                     <QRCode
                                         renderAs="svg"
