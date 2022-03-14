@@ -407,6 +407,7 @@ class BrightIDNftMintModel {
         this.gasBalance = 0.0;
         this.isBrightIDLinked = false;
         this.isUUIDLinked = false;
+        this.isUUIDSigned = false;
         this.isBoundViaContract = false;
         this.isMintedViaContract = false;
     }
@@ -955,10 +956,14 @@ class BrightIDNftMintModel {
     hasSignedUUID() {
         return (
             this.bindParams !== null &&
-            this.bindParams.addr &&
-            this.bindParams.uuidHash &&
-            this.bindParams.nonce &&
-            this.bindParams.signature
+            typeof this.bindParams.addr !== "undefined" &&
+            typeof this.bindParams.uuidHash !== "undefined" &&
+            typeof this.bindParams.nonce !== "undefined" &&
+            typeof this.bindParams.signature !== "undefined" &&
+            this.bindParams.addr !== "" &&
+            this.bindParams.uuidHash !== "" &&
+            this.bindParams.nonce !== "" &&
+            this.bindParams.signature !== ""
         );
     }
 
@@ -1019,6 +1024,16 @@ class BrightIDNftMintModel {
     async resetAndInitNewUUID() {
         await this.resetUUID();
         await this.initNewUUID();
+    }
+
+    async resetBoundUUID() {
+        this.removeCachedBoundUUID();
+        this.boundUUID = "";
+    }
+
+    async setBoundUUID() {
+        this.setCachedBoundUUID(this.uuid);
+        this.boundUUID = this.uuid;
     }
 
     generateUUID() {

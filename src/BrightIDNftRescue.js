@@ -67,8 +67,6 @@ function BrightIDNftRescue({
 
     const [stepConnectWalletError, setStepConnectWalletError] = useState("");
 
-    const [stepSignUUIDStatus, setStepSignUUIDStatus] = useState("");
-
     const [stepSignUUIDError, setStepSignUUIDError] = useState("");
 
     const [stepBindViaRelayStatus, setStepBindViaRelayStatus] = useState("");
@@ -579,7 +577,7 @@ function BrightIDNftRescue({
         try {
             setStepSignUUIDProcessing(true);
 
-            const bindParams = await registration.signBindParams();
+            await registration.signBindParams();
 
             await initIsUUIDSigned();
 
