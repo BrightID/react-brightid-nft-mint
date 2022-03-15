@@ -63,17 +63,23 @@ function BrightIDNftMint({
 
     const [gasBalance, setGasBalance] = useState(0.0);
 
+    const [alreadyHoldsToken, setAlreadyHoldsToken] = useState(false);
+
     const [canAutoSwitchNetworks, setCanAutoSwitchNetworks] = useState(false);
 
     const [qrCodeUUIDUrl, setQrCodeUUIDUrl] = useState("");
 
     const [isUUIDLinked, setIsUUIDLinked] = useState(false);
 
+    const [isUUIDSigned, setIsUUIDSigned] = useState(false);
+
     const [isBoundViaContract, setIsBoundViaContract] = useState(false);
 
     const [isMintedViaContract, setIsMintedViaContract] = useState(false);
 
     const [stepConnectWalletError, setStepConnectWalletError] = useState("");
+
+    const [stepSignUUIDError, setStepSignUUIDError] = useState("");
 
     const [stepBindViaRelayStatus, setStepBindViaRelayStatus] = useState("");
 
@@ -110,11 +116,16 @@ function BrightIDNftMint({
     const [isMintedViaContractTxnId, setIsMintedViaContractTxnId] =
         useState(null);
 
+    const [stepSignUUIDProcessing, setStepSignUUIDProcessing] = useState(false);
+
     const [stepBindViaRelayProcessing, setStepBindViaRelayProcessing] =
-        useState("");
+        useState(false);
+
+    const [boundViaContractChecking, setBoundViaContractChecking] =
+        useState(false);
 
     const [stepMintViaRelayProcessing, setStepMintViaRelayProcessing] =
-        useState("");
+        useState(false);
 
     /* Web3 Data Init & Monitoring */
     /* ---------------------------------------------------------------------- */
@@ -131,6 +142,7 @@ function BrightIDNftMint({
         setCanAutoSwitchNetworks("");
         setQrCodeUUIDUrl("");
         setIsUUIDLinked("");
+        setIsUUIDSigned(false);
         setIsBoundViaContract(false);
         setIsMintedViaContract(false);
     }
@@ -138,6 +150,7 @@ function BrightIDNftMint({
     async function onAccountChange() {
         resetWalletData();
         initAllowMode();
+        await checkIfAlreadyHoldsNFT();
         await registration.initUUID();
         initUUIDHex();
         initWalletAddress();
@@ -147,6 +160,7 @@ function BrightIDNftMint({
         initCanAutoSwitchNetworks();
         initQrCodeUUIDUrl();
         initIsUUIDLinked();
+        initIsUUIDSigned();
         initIsBoundViaContract();
         initIsMintedViaContract();
     }
@@ -160,9 +174,9 @@ function BrightIDNftMint({
             initGasBalance();
         }
 
-        if (registration.isBoundViaContract === false) {
-            initIsBoundViaContract();
-        }
+        // if (registration.isBoundViaContract === false) {
+        //     initIsBoundViaContract();
+        // }
 
         if (
             registration.isBoundViaContract === true &&
@@ -231,6 +245,14 @@ function BrightIDNftMint({
     //     }
     // }
 
+    async function checkIfAlreadyHoldsNFT() {
+        const tokenBalance = await registration.queryTokenBalance();
+
+        const holdsToken = tokenBalance > 0;
+
+        setAlreadyHoldsToken(holdsToken);
+    }
+
     async function resetWalletData() {
         try {
             await registration.resetWalletData();
@@ -254,7 +276,7 @@ function BrightIDNftMint({
 
     async function initUUIDHex() {
         try {
-            setUUIDHex(registration.uuidHex);
+            setUUIDHex(registration.uuid);
         } catch (e) {
             // console.error(e);
             // console.log(e);
@@ -343,17 +365,34 @@ function BrightIDNftMint({
         }
     }
 
+    async function initIsUUIDSigned() {
+        try {
+            const isUUIDSigned = await registration.initIsUUIDSigned();
+
+            // console.log(isUUIDSigned);
+
+            setIsUUIDSigned(isUUIDSigned);
+        } catch (e) {
+            // console.error(e);
+            // console.log(e);
+        }
+    }
+
     async function initIsBoundViaContract() {
         try {
+            setBoundViaContractChecking(true);
+
             const isBoundViaContract =
                 await registration.initIsBoundViaContract();
 
             // console.log(isBoundViaContract);
 
             setIsBoundViaContract(isBoundViaContract);
+            setBoundViaContractChecking(false);
         } catch (e) {
             // console.error(e);
             // console.log(e);
+            setBoundViaContractChecking(false);
         }
     }
 
@@ -565,6 +604,46 @@ function BrightIDNftMint({
         }
     }
 
+    async function signUUID() {
+        try {
+            setStepSignUUIDProcessing(true);
+
+            await registration.signBindParams();
+
+            await initIsUUIDSigned();
+
+            setStepSignUUIDError("");
+            setStepSignUUIDProcessing(false);
+        } catch (e) {
+            console.error(e);
+            // console.log(e);
+
+            await initIsUUIDSigned();
+
+            const errorMessage = registration.getSignErrorMessage(e);
+            setStepSignUUIDError(errorMessage);
+            setStepSignUUIDProcessing(false);
+        }
+    }
+
+    async function handleUUIDAlreadyBoundError() {
+        setStepBoundViaContractError("");
+        setIsBoundViaContractTxnProcessing(false);
+        setIsBoundViaContractTxnId(null);
+        setStepBindViaRelayProcessing(false);
+
+        try {
+            await initIsBoundViaContract();
+
+            if (registration.isBoundViaContract === false) {
+                throw new Error("Transaction failed. Please try again.");
+            }
+        } catch (e) {
+            const errorMessage = registration.getBindErrorMessage(e);
+            setStepBoundViaContractError(errorMessage);
+        }
+    }
+
     async function bindViaTransaction(isRetry = false) {
         try {
             setStepBindViaRelayProcessing(true);
@@ -582,13 +661,18 @@ function BrightIDNftMint({
                 throw new Error("Transaction failed. Please try again.");
             }
 
-            await registration.setBoundUUID();
             await initIsBoundViaContract();
+
+            if (registration.isBoundViaContract === false) {
+                throw new Error("Transaction failed. Please try again.");
+            }
 
             setStepBoundViaContractError("");
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
             setStepBindViaRelayProcessing(false);
+
+            setAllowBindRetry(false);
         } catch (e) {
             console.error(e);
             // console.log(e);
@@ -597,18 +681,11 @@ function BrightIDNftMint({
                 isRetry === false &&
                 registration.getIsUUIDAlreadyBoundError(e)
             ) {
-                await registration.setBoundUUID();
-                await initIsBoundViaContract();
-
-                setStepBoundViaContractError("");
-                setIsBoundViaContractTxnProcessing(false);
-                setIsBoundViaContractTxnId(null);
-                setStepBindViaRelayProcessing(false);
+                handleUUIDAlreadyBoundError();
 
                 return;
             }
 
-            await registration.resetBoundUUID();
             await initIsBoundViaContract();
 
             const errorMessage = registration.getBindErrorMessage(e);
@@ -616,6 +693,58 @@ function BrightIDNftMint({
             setIsBoundViaContractTxnProcessing(false);
             setIsBoundViaContractTxnId(null);
             setStepBindViaRelayProcessing(false);
+
+            setAllowBindRetry(false);
+        }
+    }
+
+    async function bindViaRelay(isRetry = false) {
+        try {
+            setStepBindViaRelayProcessing(true);
+
+            setStepBindViaRelayStatus(
+                "We're binding your UUID.  This could take a minute or two. Please wait."
+            );
+
+            const response = await registration.bindViaRelay();
+
+            if (response.ok === false) {
+                const body = await response.json();
+
+                // console.log(body);
+                // console.log(body.error);
+                // console.log(body.error.message);
+
+                throw new Error(body.error.message);
+            }
+
+            await initIsBoundViaContract();
+
+            setStepBindViaRelayError("");
+            setStepBindViaRelayStatus("");
+            setStepBindViaRelayProcessing(false);
+
+            setAllowBindRetry(false);
+        } catch (e) {
+            console.error(e);
+            // console.log(e);
+
+            if (
+                isRetry === false &&
+                registration.getIsUUIDAlreadyBoundError(e)
+            ) {
+                handleUUIDAlreadyBoundError();
+
+                return;
+            }
+
+            await initIsBoundViaContract();
+
+            const errorMessage = registration.getBindErrorMessage(e);
+            setStepBindViaRelayError(errorMessage);
+            setStepBindViaRelayStatus("");
+            setStepBindViaRelayProcessing(false);
+
             setAllowBindRetry(false);
         }
     }
@@ -658,64 +787,6 @@ function BrightIDNftMint({
             if (registration.getIsUUIDUnboundError(e)) {
                 setAllowBindRetry(true);
             }
-        }
-    }
-
-    async function bindViaRelay(isRetry = false) {
-        try {
-            setStepBindViaRelayProcessing(true);
-
-            setStepBindViaRelayStatus(
-                "We're binding your UUID.  This could take a minute or two. Please wait."
-            );
-
-            const response = await registration.bindViaRelay();
-
-            if (response.ok === false) {
-                const body = await response.json();
-
-                // console.log(body);
-                // console.log(body.error);
-                // console.log(body.error.message);
-
-                throw new Error(body.error.message);
-            }
-
-            await registration.setBoundUUID();
-            await initIsBoundViaContract();
-
-            setStepBindViaRelayError("");
-            setStepBindViaRelayStatus("");
-            setStepBindViaRelayProcessing(false);
-
-            setAllowBindRetry(false);
-        } catch (e) {
-            console.error(e);
-            // console.log(e);
-
-            if (
-                isRetry === false &&
-                registration.getIsUUIDAlreadyBoundError(e)
-            ) {
-                await registration.setBoundUUID();
-                await initIsBoundViaContract();
-
-                setStepBoundViaContractError("");
-                setIsBoundViaContractTxnProcessing(false);
-                setIsBoundViaContractTxnId(null);
-                setStepBindViaRelayProcessing(false);
-
-                return;
-            }
-
-            await registration.resetBoundUUID();
-            await initIsBoundViaContract();
-
-            const errorMessage = registration.getBindErrorMessage(e);
-            setStepBindViaRelayError(errorMessage);
-            setStepBindViaRelayStatus("");
-            setStepBindViaRelayProcessing(false);
-            setAllowBindRetry(false);
         }
     }
 
@@ -794,6 +865,10 @@ function BrightIDNftMint({
         return walletAddress !== "";
     }
 
+    function hasSignedUUID() {
+        return isUUIDSigned === true;
+    }
+
     function hasUUIDLinked() {
         return isUUIDLinked === true;
     }
@@ -845,12 +920,16 @@ function BrightIDNftMint({
         return hasObtainedGasTokens();
     }
 
+    function stepSignUUIDComplete() {
+        return hasSignedUUID();
+    }
+
     function stepUUIDLinkedComplete() {
         return hasUUIDLinked();
     }
 
     function stepBindViaRelayComplete() {
-        return hasBoundViaContract();
+        return hasBoundViaContract() && boundViaContractChecking === false;
     }
 
     function stepMintViaRelayComplete() {
@@ -878,7 +957,7 @@ function BrightIDNftMint({
         );
     }
 
-    function stepBindViaRelayActive() {
+    function stepSignUUIDActive() {
         return (
             (hasRelay() &&
                 stepConnectWalletComplete() &&
@@ -887,6 +966,10 @@ function BrightIDNftMint({
                 stepObtainGasTokensComplete() &&
                 stepObtainGasTokensActive())
         );
+    }
+
+    function stepBindViaRelayActive() {
+        return stepSignUUIDComplete() && stepSignUUIDActive();
     }
 
     function stepUUIDLinkedActive() {
@@ -1319,6 +1402,80 @@ function BrightIDNftMint({
                             className={`
                                 brightid-nft-mint-step
                                 brightid-nft-mint-step--${getStepCompleteString(
+                                    stepSignUUIDComplete()
+                                )}
+                                brightid-nft-mint-step--${getStepActiveString(
+                                    stepSignUUIDActive()
+                                )}
+                            `}
+                        >
+                            <div className="brightid-nft-mint-step__main">
+                                <div className="brightid-nft-mint-step__status">
+                                    <div className="brightid-nft-mint-step__status-icon"></div>
+                                </div>
+                                <div className="brightid-nft-mint-step__header">
+                                    <h2 className="brightid-nft-mint-step__heading">
+                                        Sign UUID
+                                    </h2>
+                                </div>
+                                <div className="brightid-nft-mint-step__action">
+                                    {stepConnectWalletComplete() && (
+                                        <button
+                                            className="brightid-nft-mint-step__button"
+                                            onClick={() => signUUID()}
+                                            disabled={
+                                                stepSignUUIDProcessing
+                                                    ? true
+                                                    : null
+                                            }
+                                        >
+                                            Sign
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="brightid-nft-mint-step__description">
+                                <p className="brightid-nft-mint-step__description-p">
+                                    In this step you will be asked to sign a
+                                    hash of the UUID below with your wallet.
+                                </p>
+                                {uuidHex && (
+                                    <p className="brightid-nft-mint-step__description-p">
+                                        <strong>UUID: </strong>
+                                        <span className="brightid-nft-mint-step__description-wallet-address">
+                                            {uuidHex}
+                                        </span>
+
+                                        {/*
+                                        <span className="brightid-nft-mint-step__description-reset">
+                                            If you have issues with this UUID you
+                                            can reset it.
+                                        </span>
+                                        <button
+                                            className="brightid-nft-mint-step__button brightid-nft-mint-step__button--small"
+                                            onClick={() => resetUUID()}
+                                        >
+                                            Reset
+                                        </button>
+                                        */}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="brightid-nft-mint-step__feedback">
+                                {stepSignUUIDError && (
+                                    <div className="brightid-nft-mint-step__response brightid-nft-mint-step__response--error">
+                                        {stepSignUUIDError}
+                                    </div>
+                                )}
+                            </div>
+                        </section>
+                    )}
+
+                    {hasModeSelected() && (
+                        <section
+                            className={`
+                                brightid-nft-mint-step
+                                brightid-nft-mint-step--${getStepCompleteString(
                                     stepBindViaRelayComplete()
                                 )}
                                 brightid-nft-mint-step--${getStepActiveString(
@@ -1345,7 +1502,8 @@ function BrightIDNftMint({
                                                     bindViaRelay(false)
                                                 }
                                                 disabled={
-                                                    stepBindViaRelayProcessing
+                                                    stepBindViaRelayProcessing ||
+                                                    boundViaContractChecking
                                                         ? true
                                                         : null
                                                 }
@@ -1362,7 +1520,8 @@ function BrightIDNftMint({
                                                     bindViaTransaction(false)
                                                 }
                                                 disabled={
-                                                    stepBindViaRelayProcessing
+                                                    stepBindViaRelayProcessing ||
+                                                    boundViaContractChecking
                                                         ? true
                                                         : null
                                                 }
@@ -1372,47 +1531,6 @@ function BrightIDNftMint({
                                         )}
                                     {hasReachedMaxSupply() && <em>Sold Out</em>}
                                 </div>
-                            </div>
-                            <div className="brightid-nft-mint-step__description">
-                                {hasRelay() && (
-                                    <p className="brightid-nft-mint-step__description-p">
-                                        In this step you will be asked to sign a
-                                        hash of the UUID below with your wallet.
-                                        This will bind the UUID to you.
-                                    </p>
-                                )}
-                                {!hasRelay() && (
-                                    <p className="brightid-nft-mint-step__description-p">
-                                        In this step you will be presented with
-                                        two prompts by your wallet. The first
-                                        will ask you to sign a hash of the UUID
-                                        below. The second will ask you to
-                                        process the bind transaction. You must
-                                        complete both. This will bind the UUID
-                                        to you.
-                                    </p>
-                                )}
-                                {uuidHex && (
-                                    <p className="brightid-nft-mint-step__description-p">
-                                        <strong>UUID: </strong>
-                                        <span className="brightid-nft-mint-step__description-wallet-address">
-                                            {uuidHex}
-                                        </span>
-
-                                        {/*
-                                        <span className="brightid-nft-mint-step__description-reset">
-                                            If you have issues with this UUID
-                                            you can reset it.
-                                        </span>
-                                        <button
-                                            className="brightid-nft-mint-step__button brightid-nft-mint-step__button--small"
-                                            onClick={() => resetUUID()}
-                                        >
-                                            Reset
-                                        </button>
-                                        */}
-                                    </p>
-                                )}
                             </div>
                             <div className="brightid-nft-mint-step__feedback">
                                 {stepBindViaRelayStatus && (
