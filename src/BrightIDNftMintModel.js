@@ -281,8 +281,6 @@ class BrightIDNftMintModel {
         },
     ];
 
-    bindParams = null;
-
     web3Modal;
 
     web3Instance;
@@ -351,7 +349,7 @@ class BrightIDNftMintModel {
 
     uuid = "";
 
-    boundUUID = "";
+    bindParams = null;
 
     constructor(
         statePrefix = "",
@@ -1039,19 +1037,17 @@ class BrightIDNftMintModel {
     async restoreUUID() {
         this.restoreCachedUUID();
         this.restoreCachedSignedUUID();
-        // this.restoreCachedBoundUUID();
     }
 
     async resetUUID() {
         this.removeCachedUUID();
         this.removeCachedSignedUUID();
-        // this.removeCachedBoundUUID();
+        this.uuid = "";
+        this.bindParams = null;
     }
 
     async initNewUUID() {
         this.uuid = this.generateUUID();
-        // console.log("UUID");
-        // console.log(this.uuid);
 
         this.setCachedUUID(this.uuid);
     }
@@ -1258,13 +1254,13 @@ class BrightIDNftMintModel {
         // console.log(rawSignature);
         // console.log(signature);
 
-        console.log("pass to bind");
-        console.log("--------------------------");
-        console.log(addr);
-        console.log(uuidHash);
-        console.log(nonce);
-        console.log(signature);
-        console.log("--------------------------");
+        // console.log("pass to bind");
+        // console.log("--------------------------");
+        // console.log(addr);
+        // console.log(uuidHash);
+        // console.log(nonce);
+        // console.log(signature);
+        // console.log("--------------------------");
 
         this.bindParams = {
             addr,
@@ -1295,15 +1291,15 @@ class BrightIDNftMintModel {
             return this.strToByte32(contextId);
         });
 
-        console.log("pass to mint");
-        console.log("-------------------------------");
-        console.log(contextIds);
-        console.log(contextIdsByte32);
-        console.log(timestamp);
-        console.log(v);
-        console.log(r);
-        console.log(s);
-        console.log("-------------------------------");
+        // console.log("pass to mint");
+        // console.log("-------------------------------");
+        // console.log(contextIds);
+        // console.log(contextIdsByte32);
+        // console.log(timestamp);
+        // console.log(v);
+        // console.log(r);
+        // console.log(s);
+        // console.log("-------------------------------");
 
         return {
             contextIds,
@@ -1359,15 +1355,15 @@ class BrightIDNftMintModel {
             return this.strToByte32(contextId);
         });
 
-        console.log("pass to mint");
-        console.log("-------------------------------");
-        console.log(contextIds);
-        console.log(contextIdsByte32);
-        console.log(timestamp);
-        console.log(v);
-        console.log(r);
-        console.log(s);
-        console.log("-------------------------------");
+        // console.log("pass to mint");
+        // console.log("-------------------------------");
+        // console.log(contextIds);
+        // console.log(contextIdsByte32);
+        // console.log(timestamp);
+        // console.log(v);
+        // console.log(r);
+        // console.log(s);
+        // console.log("-------------------------------");
 
         return {
             contextIds,
@@ -1384,11 +1380,11 @@ class BrightIDNftMintModel {
         const addr = await this.getWalletAddress();
         const uuid = this.uuid;
 
-        console.log("pass to mint relay");
-        console.log("-------------------------------");
-        console.log(addr);
-        console.log(uuid);
-        console.log("-------------------------------");
+        // console.log("pass to mint relay");
+        // console.log("-------------------------------");
+        // console.log(addr);
+        // console.log(uuid);
+        // console.log("-------------------------------");
 
         return {
             addr,
