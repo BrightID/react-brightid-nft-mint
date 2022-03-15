@@ -53,6 +53,8 @@ function BrightIDNftRescue({
 
     const [gasBalance, setGasBalance] = useState(0.0);
 
+    const [alreadyHoldsToken, setAlreadyHoldsToken] = useState(false);
+
     const [canAutoSwitchNetworks, setCanAutoSwitchNetworks] = useState(false);
 
     const [qrCodeUUIDUrl, setQrCodeUUIDUrl] = useState("");
@@ -105,20 +107,18 @@ function BrightIDNftRescue({
     const [isMintedViaContractTxnId, setIsMintedViaContractTxnId] =
         useState(null);
 
-    const [stepSignUUIDProcessing, setStepSignUUIDProcessing] = useState("");
+    const [stepSignUUIDProcessing, setStepSignUUIDProcessing] = useState(false);
 
     const [stepBindViaRelayProcessing, setStepBindViaRelayProcessing] =
-        useState("");
-
-    const [stepRescueViaRelayProcessing, setStepRescueViaRelayProcessing] =
-        useState("");
-
-    const [rescueAddress, setRescueAddress] = useState("");
-
-    const [alreadyHoldsToken, setAlreadyHoldsToken] = useState(false);
+        useState(false);
 
     const [boundViaContractChecking, setBoundViaContractChecking] =
         useState(false);
+
+    const [stepRescueViaRelayProcessing, setStepRescueViaRelayProcessing] =
+        useState(false);
+
+    const [rescueAddress, setRescueAddress] = useState("");
 
     /* Web3 Data Init & Monitoring */
     /* ---------------------------------------------------------------------- */
