@@ -1016,6 +1016,20 @@ function BrightIDNftMint({
                                 those who were unable to get one.
                             </p>
                         </div>
+                        <br />
+
+                        <h3 className="brightid-nft-mint-step__description-p">
+                            Rescuing a BrightID Soulbound NFT
+                        </h3>
+                        <div className="brightid-nft-mint-step__description">
+                            <p className="brightid-nft-mint-step__description-p">
+                                If you need to rescue your BrightID Soulbound
+                                NFT from a lost wallet please go to{" "}
+                                <a href="https://10krescue.brightid.org">
+                                    https://10krescue.brightid.org
+                                </a>
+                            </p>
+                        </div>
                     </section>
                 </div>
             )}
@@ -1033,8 +1047,7 @@ function BrightIDNftMint({
                 </div>
             )}
 
-            {((remainingSupplyChecked && !hasReachedMaxSupply()) ||
-                stepConnectWalletComplete()) && (
+            {remainingSupplyChecked && !hasReachedMaxSupply() && (
                 <div>
                     <section className={`brightid-nft-mint-step`}>
                         <div className="brightid-nft-mint-step__main">
