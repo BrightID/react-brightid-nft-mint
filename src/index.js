@@ -1,3 +1,4 @@
 import BrightIDNftMint from "./BrightIDNftMint";
+import BrightIDNftRescue from "./BrightIDNftRescue";
 
-export default BrightIDNftMint;
+export { BrightIDNftMint, BrightIDNftRescue };

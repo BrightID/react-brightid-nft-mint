@@ -83,6 +83,15 @@
     cursor: default;
 }
 
+/* Form */
+/* -------------------------------------------------------------------------- */
+.brightid-nft-mint-step__input {
+    box-sizing: border-box;
+    font-size: 12px;
+    width: 100%;
+    padding: 5px;
+}
+
 /* Step */
 /* -------------------------------------------------------------------------- */
 
@@ -218,7 +227,17 @@
     display: none;
 }
 
-@media only screen and (hover: none) and (pointer: coarse) {
+/* @media only screen and (hover: none) and (pointer: coarse) {
+    .brightid-nft-mint-step--mobile {
+        display: block;
+    }
+
+    .brightid-nft-mint-step--desktop {
+        display: none;
+    }
+} */
+
+@media (any-pointer: coarse) {
     .brightid-nft-mint-step--mobile {
         display: block;
     }
